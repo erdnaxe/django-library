@@ -30,7 +30,7 @@ from django.utils.functional import cached_property
 
 from macaddress.fields import MACAddressField
 
-from portail_captif.settings import GENERIC_IPSET_COMMAND, IPSET_NAME, REQ_EXPIRE_HRS,FORBIDEN_INTERFACES, SERVER_SELF_IP, AUTORIZED_INTERFACES
+from portail_captif.settings import GENERIC_IPSET_COMMAND, IPSET_NAME, REQ_EXPIRE_HRS,FORBIDEN_INTERFACES, SERVER_SELF_IP, AUTORIZED_INTERFACES, PORTAIL_ACTIVE
 import re, uuid
 import datetime
 
@@ -108,7 +108,8 @@ def gen_nat(ipt):
     ipt.init_nat("CAPTIF", decision="-")
     ipt.jump("nat", "PREROUTING", "CAPTIF")
     ipt.jump("nat", "POSTROUTING", "MASQUERADE")
-    ipt.add("nat", "-A CAPTIF -m set ! --match-set %s src -j DNAT --to-destination %s" % (IPSET_NAME, SERVER_SELF_IP))
+    if PORTAIL_ACTIVE:
+        ipt.add("nat", "-A CAPTIF -m set ! --match-set %s src -j DNAT --to-destination %s" % (IPSET_NAME, SERVER_SELF_IP))
     ipt.jump("nat", "CAPTIF", "RETURN")
     ipt.commit("nat")
     return ipt
