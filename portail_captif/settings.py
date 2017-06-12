@@ -148,8 +148,3 @@ PAGINATION_NUMBER = 25
 PAGINATION_LARGE_NUMBER = 8
 
 GENERIC_IPSET_COMMAND = "/sbin/ipset -q "
-
-GRAPH_MODELS = {
-  'all_applications': True,
-  'group_models': True,
-}

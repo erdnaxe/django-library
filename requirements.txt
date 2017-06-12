@@ -1,2 +1,0 @@
-django-bootstrap3
-python-dateutil
