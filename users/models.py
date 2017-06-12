@@ -30,7 +30,7 @@ from django.utils.functional import cached_property
 
 from macaddress.fields import MACAddressField
 
-from portail_captif.settings import GENERIC_IPSET_COMMAND, IPSET_NAME, REQ_EXPIRE_HRS
+from portail_captif.settings import GENERIC_IPSET_COMMAND, IPSET_NAME, REQ_EXPIRE_HRS,FORBIDEN_INTERFACES, SERVER_SELF_IP, AUTORIZED_INTERFACES
 import re, uuid
 import datetime
 
@@ -65,6 +65,76 @@ def fill_ipset():
     file.close()
     command_to_execute = "sudo " + GENERIC_IPSET_COMMAND + " restore < /tmp/ipset_restore"
     apply(command_to_execute)
+    return
+
+class iptables:
+    def __init__(self):
+        self.nat = "\n*nat"
+        self.mangle = "\n*mangle"
+        self.filter = "\n*filter"
+
+    def commit(self, chain):
+        self.add(chain, "COMMIT\n")
+
+    def add(self, chain, value):
+        setattr(self, chain, getattr(self, chain) + "\n" + value)
+
+    def init_filter(self, subchain, decision="ACCEPT"):
+        self.add("filter", ":" + subchain + " " + decision)
+
+    def init_nat(self, subchain, decision="ACCEPT"):
+        self.add("nat", ":" + subchain + " " + decision)
+
+    def init_mangle(self, subchain, decision="ACCEPT"):
+        self.add("mangle", ":" + subchain + " " + decision)
+
+    def jump(self, chain, subchainA, subchainB):
+        self.add(chain, "-A " + subchainA + " -j " + subchainB)
+
+def gen_filter(ipt):
+    ipt.init_filter("INPUT")
+    ipt.init_filter("FORWARD")
+    ipt.init_filter("OUTPUT")
+    for interface in FORBIDEN_INTERFACES:
+        ipt.add("filter", "-A FORWARD -o %s -j REJECT --reject-with icmp-port-unreachable" % interface)
+    ipt.commit("filter")
+    return ipt
+
+def gen_nat(ipt):
+    ipt.init_nat("PREROUTING")
+    ipt.init_nat("INPUT")
+    ipt.init_nat("OUTPUT")
+    ipt.init_nat("POSTROUTING")
+    ipt.init_nat("CAPTIF", decision="-")
+    ipt.jump("nat", "PREROUTING", "CAPTIF")
+    ipt.jump("nat", "POSTROUTING", "MASQUERADE")
+    ipt.add("nat", "-A CAPTIF -m set ! --match-set %s src -j DNAT --to-destination %s" % (IPSET_NAME, SERVER_SELF_IP))
+    ipt.jump("nat", "CAPTIF", "RETURN")
+    ipt.commit("nat")
+    return ipt
+
+def gen_mangle(ipt):
+    ipt.init_mangle("PREROUTING")
+    ipt.init_mangle("INPUT")
+    ipt.init_mangle("FORWARD")
+    ipt.init_mangle("OUTPUT")
+    ipt.init_mangle("POSTROUTING")
+    for interface in AUTORIZED_INTERFACES:
+        ipt.add("mangle", """-A PREROUTING -i %s -m state --state NEW -j LOG --log-prefix "LOG_ALL " """ % interface)
+    ipt.commit("mangle")
+    return ipt
+
+def restore_iptables():
+    """ Restrore l'iptables pour la création du portail. Est appellé par root au démarage du serveur"""
+    ipt = iptables()
+    gen_mangle(ipt)
+    gen_nat(ipt)
+    gen_filter(ipt)
+    global_chain = ipt.nat + ipt.filter + ipt.mangle
+    file = open("/tmp/iptables_restore", 'w+')
+    file.write(global_chain)
+    file.close()
+    apply("iptables-restore < /tmp/iptables_restore")
     return
 
 class UserManager(BaseUserManager):
@@ -156,7 +226,7 @@ class User(AbstractBaseUser):
 
     def get_short_name(self):
         return self.name
-    
+
     def has_perm(self, perm, obj=None):
         return True
 
