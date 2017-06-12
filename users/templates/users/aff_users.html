@@ -43,7 +43,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             <td>{{ user.surname }}</td>
             <td>{{ user.pseudo }}</td>
             <td>{{ user.email }}</td>
-	    <td><table class="table table-striped"><tr>{% for machine in user.machines %}<td>{{ machine.mac_address }}</td>{% endfor %}</tr></table></td>
+            <td><table class="table table-striped">
+                {% for machine in user.machines %}
+                <tr>
+                <td>{{ machine.mac_address }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+            </td>
             <td><a href="{% url "users:profil" user.id%}" class="btn btn-primary btn-sm" role="button"><i class="glyphicon glyphicon-user"></i></a>
             </td>
         </tr>
