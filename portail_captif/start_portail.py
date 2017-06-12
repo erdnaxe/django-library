@@ -15,11 +15,14 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-# 
+#
 # Ce script est appellé avant le démarage du portail, il insère les bonnes règles
 # dans l'iptables et active le routage
 
 import os, sys
+
+from django.core.wsgi import get_wsgi_application
+from os.path import dirname
 
 proj_path = "/var/www/portail_captif/"
 # This is so Django knows where to find stuff.
@@ -29,8 +32,17 @@ sys.path.append(proj_path)
 # This is so my local_settings.py gets loaded.
 os.chdir(proj_path)
 
-from users.models import restore_iptables, apply
+from users.models import restore_iptables, create_ip_set, fill_ipset, apply
 from portail_captif.settings import AUTORIZED_INTERFACES
+
+
+application = get_wsgi_application()
+
+# Creation de l'ipset
+create_ip_set()
+
+# Remplissage avec les macs autorisées
+fill_ipset()
 
 # Restauration de l'iptables
 restore_iptables()
