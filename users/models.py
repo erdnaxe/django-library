@@ -39,10 +39,10 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 import subprocess
 
 def apply(cmd):
-    return subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE)
+    return subprocess.Popen(cmd, stdin=subprocess.PIPE)
 
 def mac_from_ip(ip):
-    cmd = '/usr/sbin/arp -na %s' % ip
+    cmd = ['/usr/sbin/arp','-na',ip]
     p = apply(cmd)
     output, errors = p.communicate()
     if output is not None :
@@ -52,19 +52,18 @@ def mac_from_ip(ip):
         return None
 
 def create_ip_set():
-    command_to_execute = "sudo " + GENERIC_IPSET_COMMAND + " create " + IPSET_NAME + " hash:mac hashsize 1024 maxelem 65536"
+    command_to_execute = ["sudo", "-n"] + GENERIC_IPSET_COMMAND.split() + ["create",IPSET_NAME,"hash:mac","hashsize","1024","maxelem","65536"]
     apply(command_to_execute)
-    command_to_execute = "sudo " + GENERIC_IPSET_COMMAND + " flush " + IPSET_NAME
+    command_to_execute = ["sudo", "-n"] + GENERIC_IPSET_COMMAND.split() + ["flush",IPSET_NAME]
     apply(command_to_execute)
     return
 
 def fill_ipset():
     all_machines = Machine.objects.filter(proprio__in=User.objects.filter(state=User.STATE_ACTIVE))
-    file = open("/tmp/ipset_restore", 'w+')
-    file.write("%s\nCOMMIT\n" % '\n'.join(["add %s %s" % (IPSET_NAME, str(machine.mac_address)) for machine in all_machines]))
-    file.close()
-    command_to_execute = "sudo " + GENERIC_IPSET_COMMAND + " restore < /tmp/ipset_restore"
-    apply(command_to_execute)
+    ipset = "%s\nCOMMIT\n" % '\n'.join(["add %s %s" % (IPSET_NAME, str(machine.mac_address)) for machine in all_machines])
+    command_to_execute = ["sudo", "-n"] + GENERIC_IPSET_COMMAND.split() + ["restore"]
+    process = apply(command_to_execute)
+    process.communicate(input=ipset.encode('utf-8'))
     return
 
 class iptables:
@@ -100,17 +99,18 @@ def gen_filter(ipt):
     ipt.commit("filter")
     return ipt
 
-def gen_nat(ipt):
+def gen_nat(ipt, nat_active=True):
     ipt.init_nat("PREROUTING")
     ipt.init_nat("INPUT")
     ipt.init_nat("OUTPUT")
     ipt.init_nat("POSTROUTING")
-    ipt.init_nat("CAPTIF", decision="-")
-    ipt.jump("nat", "PREROUTING", "CAPTIF")
-    ipt.jump("nat", "POSTROUTING", "MASQUERADE")
-    if PORTAIL_ACTIVE:
-        ipt.add("nat", "-A CAPTIF -m set ! --match-set %s src -j DNAT --to-destination %s" % (IPSET_NAME, SERVER_SELF_IP))
-    ipt.jump("nat", "CAPTIF", "RETURN")
+    if nat_active:
+        ipt.init_nat("CAPTIF", decision="-")
+        ipt.jump("nat", "PREROUTING", "CAPTIF")
+        ipt.jump("nat", "POSTROUTING", "MASQUERADE")
+        if PORTAIL_ACTIVE:
+            ipt.add("nat", "-A CAPTIF -m set ! --match-set %s src -j DNAT --to-destination %s" % (IPSET_NAME, SERVER_SELF_IP))
+        ipt.jump("nat", "CAPTIF", "RETURN")
     ipt.commit("nat")
     return ipt
 
@@ -132,10 +132,21 @@ def restore_iptables():
     gen_nat(ipt)
     gen_filter(ipt)
     global_chain = ipt.nat + ipt.filter + ipt.mangle
-    file = open("/tmp/iptables_restore", 'w+')
-    file.write(global_chain)
-    file.close()
-    apply("iptables-restore < /tmp/iptables_restore")
+    command_to_execute = ["sudo","-n","/sbin/iptables-restore"]
+    process = apply(command_to_execute)
+    process.communicate(input=global_chain.encode('utf-8'))
+    return
+
+def disable_iptables():
+    """ Insère une iptables minimaliste sans nat"""
+    ipt = iptables()
+    gen_mangle(ipt)
+    gen_filter(ipt)
+    gen_nat(ipt, nat_active=False)
+    global_chain = ipt.nat + ipt.filter + ipt.mangle
+    command_to_execute = ["sudo","-n","/sbin/iptables-restore"]
+    process = apply(command_to_execute)
+    process.communicate(input=global_chain.encode('utf-8'))
     return
 
 class UserManager(BaseUserManager):
@@ -256,11 +267,11 @@ class Machine(models.Model):
     mac_address = MACAddressField(integer=False, unique=True)
 
     def add_to_set(self):
-        command_to_execute = "sudo " + GENERIC_IPSET_COMMAND + " add " + IPSET_NAME + " " + str(self.mac_address)
+        command_to_execute = ["sudo", "-n"] + GENERIC_IPSET_COMMAND.split() + ["add",IPSET_NAME,str(self.mac_address)]
         apply(command_to_execute)
 
     def del_to_set(self):
-        command_to_execute = "sudo " + GENERIC_IPSET_COMMAND + " del " + IPSET_NAME + " " + str(self.mac_address)
+        command_to_execute = ["sudo", "-n"] + GENERIC_IPSET_COMMAND.split() + ["del",IPSET_NAME,str(self.mac_address)]
         apply(command_to_execute)
 
 @receiver(post_save, sender=Machine)

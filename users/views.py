@@ -40,7 +40,7 @@ from django.db import transaction
 from reversion.models import Version
 from reversion import revisions as reversion
 from users.models import User, MachineForm, Request
-from users.models import EditInfoForm, InfoForm, BaseInfoForm, Machine, StateForm, mac_from_ip, apply
+from users.models import EditInfoForm, InfoForm, BaseInfoForm, Machine, StateForm, mac_from_ip
 from users.forms import PassForm, ResetPasswordForm
 import ipaddress
 import subprocess
@@ -272,10 +272,10 @@ def capture_mac(request, users, verbose=True):
                     messages.error(request, "Assurez-vous que la machine n'est pas déjà enregistrée")
         else:
             if verbose:
-                messages.error(request, "Impossible d'enregistrer la machine") 
+                messages.error(request, "Impossible d'enregistrer la machine")
     else:
         if verbose:
-            messages.error(request, "Merci de vous connecter sur le réseau du portail captif pour capturer la machine (WiFi %s)" % CAPTIVE_WIFI) 
+            messages.error(request, "Merci de vous connecter sur le réseau du portail captif pour capturer la machine (WiFi %s)" % CAPTIVE_WIFI)
 
 def capture_mac_afterlogin(sender, user, request, **kwargs):
     capture_mac(request, user, verbose=False)
@@ -301,14 +301,14 @@ def reset_password(request):
             user = User.objects.get(pseudo=userform.cleaned_data['pseudo'],email=userform.cleaned_data['email'])
         except User.DoesNotExist:
             messages.error(request, "Cet utilisateur n'existe pas")
-            return form({'userform': userform}, 'users/user.html', request)   
+            return form({'userform': userform}, 'users/user.html', request)
         req = Request()
         req.type = Request.PASSWD
         req.user = user
         req.save()
         reset_passwd_mail(req, request)
         messages.success(request, "Un mail pour l'initialisation du mot de passe a été envoyé")
-        redirect("/") 
+        redirect("/")
     return form({'userform': userform}, 'users/user.html', request)
 
 def process(request, token):
