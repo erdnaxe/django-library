@@ -19,36 +19,26 @@
 # Ce script est appellé avant le démarage du portail, il insère les bonnes règles
 # dans l'iptables et active le routage
 
-import os, sys
+from django.core.management.base import BaseCommand, CommandError
 
-from django.core.wsgi import get_wsgi_application
-from os.path import dirname
-
-proj_path = "/var/www/portail_captif/"
-# This is so Django knows where to find stuff.
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "portail_captif.settings")
-sys.path.append(proj_path)
-
-# This is so my local_settings.py gets loaded.
-os.chdir(proj_path)
 
 from users.models import restore_iptables, create_ip_set, fill_ipset, apply
 from portail_captif.settings import AUTORIZED_INTERFACES
 
+class Command(BaseCommand):
+    help = 'Mets en place iptables et le set ip au démarage'
 
-application = get_wsgi_application()
+    def handle(self, *args, **options):
+        # Creation de l'ipset
+        create_ip_set()
+        # Remplissage avec les macs autorisées
+        fill_ipset()
+        # Restauration de l'iptables
+        restore_iptables()
+        # Activation du routage sur les bonnes if
+        for interface in AUTORIZED_INTERFACES:
+            apply(["sudo", "-n", "sysctl",  "net.ipv6.conf.%s.forwarding=1" % interface])
+            apply(["sudo", "-n", "sysctl",  "net.ipv4.conf.%s.forwarding=1" % interface])
 
-# Creation de l'ipset
-create_ip_set()
-
-# Remplissage avec les macs autorisées
-fill_ipset()
-
-# Restauration de l'iptables
-restore_iptables()
-# Activation du routage sur les bonnes if
-for interface in AUTORIZED_INTERFACES:
-    apply("echo 1 > /proc/sys/net/ipv6/conf/%s/forwarding" % interface)
-    apply("echo 1 > /proc/sys/net/ipv4/conf/%s/forwarding" % interface)
 
 

@@ -15,30 +15,27 @@
 # You should have received a copy of the GNU General Public License along
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-# 
+#
 # Ce script est appellé avant le démarage du portail, il insère les bonnes règles
 # dans l'iptables et active le routage
 
-import os, sys
+from django.core.management.base import BaseCommand, CommandError
 
-proj_path = "/var/www/portail_captif/"
-# This is so Django knows where to find stuff.
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "portail_captif.settings")
-sys.path.append(proj_path)
 
-# This is so my local_settings.py gets loaded.
-os.chdir(proj_path)
-
-from users.models import restore_iptables, apply
+from users.models import restore_iptables, create_ip_set, fill_ipset, disable_iptables, apply
 from portail_captif.settings import AUTORIZED_INTERFACES
 
-# Destruction de l'iptables
-apply("iptables -t nat -F")
-apply("iptables -t filter -F")
-apply("iptables -t mangle  -F")
-# Desactivation du routage sur les bonnes if
-for interface in AUTORIZED_INTERFACES:
-    apply("echo 0 > /proc/sys/net/ipv6/conf/%s/forwarding" % interface)
-    apply("echo 0 > /proc/sys/net/ipv4/conf/%s/forwarding" % interface)
+class Command(BaseCommand):
+    help = 'Mets en place iptables et le set ip au démarage'
+
+    def handle(self, *args, **options):
+        # Destruction de l'iptables
+        disable_iptables()
+        # Desactivation du routage sur les bonnes if
+        for interface in AUTORIZED_INTERFACES:
+            apply(["sudo", "-n", "sysctl",  "net.ipv6.conf.%s.forwarding=0" % interface])
+            apply(["sudo", "-n", "sysctl",  "net.ipv4.conf.%s.forwarding=0" % interface])
+
+
 
 
