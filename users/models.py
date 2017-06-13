@@ -39,7 +39,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 import subprocess
 
 def apply(cmd):
-    return subprocess.Popen(cmd, stdin=subprocess.PIPE)
+    return subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
 
 def mac_from_ip(ip):
     cmd = ['/usr/sbin/arp','-na',ip]
