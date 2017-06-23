@@ -24,6 +24,7 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = 'users'
 urlpatterns = [
     url(r'^new_user/$', views.new_user, name='new-user'),
     url(r'^capture/$', views.capture, name='capture'),
