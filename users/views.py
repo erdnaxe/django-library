@@ -80,7 +80,7 @@ def reset_passwd_mail(req, request):
        reverse('users:process', kwargs={'token': req.token})),
        'expire_in': REQ_EXPIRE_STR,
     })
-    send_mail('Changement de mot de passe', t.render(c),
+    send_mail('Votre compte %s' % SITE_NAME, t.render(c),
     EMAIL_FROM, [req.user.email], fail_silently=False)
     return
 
