@@ -11,7 +11,7 @@ Ce portail minimaliste permet aux utilisateurs de s'identifier. Leurs mac sont c
 
 ## Installation des dépendances
 
-L'installation comporte 2 parties : le serveur web où se trouve le depot portail_captif ainsi que toutes ses dépendances, et le serveur bdd (mysql ou pgsql). Ces 2 serveurs peuvent en réalité être la même machine, ou séparés (recommandé en production).
+L'installation comporte 2 parties : le serveur web où se trouve le depot med ainsi que toutes ses dépendances, et le serveur bdd (mysql ou pgsql). Ces 2 serveurs peuvent en réalité être la même machine, ou séparés (recommandé en production).
 Le serveur web sera nommé serveur A, le serveur bdd serveur B .
 
 ### Prérequis sur le serveur A
@@ -49,19 +49,19 @@ Sur le serveur B, installer mysql ou postgresql, dans la version jessie ou stret
 
 ### Installation sur le serveur principal A
 
-Cloner le dépot portail_captif à partir du gitlab, par exemple dans /var/www/portail_captif.
-Ensuite, il faut créer le fichier settings_local.py dans le sous dossier portail_captif, un settings_local.example.py est présent. Les options sont commentées, et des options par défaut existent.
+Cloner le dépot med à partir du gitlab, par exemple dans /var/www/med.
+Ensuite, il faut créer le fichier settings_local.py dans le sous dossier med, un settings_local.example.py est présent. Les options sont commentées, et des options par défaut existent.
 
 En particulier, il est nécessaire de générer un login/mdp admin pour le ldap et un login/mdp pour l'utilisateur sql (cf ci-dessous), à mettre dans settings_local.py
 
 ### Installation du serveur mysql/postgresql sur B
 
-Sur le serveur mysql ou postgresl, il est nécessaire de créer une base de donnée portail_captif, ainsi qu'un user portail_captif et un mot de passe associé. Ne pas oublier de faire écouter le serveur mysql ou postgresql avec les acl nécessaire pour que A puisse l'utiliser.
+Sur le serveur mysql ou postgresl, il est nécessaire de créer une base de donnée med, ainsi qu'un user med et un mot de passe associé. Ne pas oublier de faire écouter le serveur mysql ou postgresql avec les acl nécessaire pour que A puisse l'utiliser.
 
 Voici les étapes à éxecuter pour mysql :
- * CREATE DATABASE portail_captif;
+ * CREATE DATABASE med;
  * CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
- * GRANT ALL PRIVILEGES ON portail_captif.* TO 'newuser'@'localhost';
+ * GRANT ALL PRIVILEGES ON med.* TO 'newuser'@'localhost';
  * FLUSH PRIVILEGES;
 
 Si les serveurs A et B ne sont pas la même machine, il est nécessaire de remplacer localhost par l'ip avec laquelle A contacte B dans les commandes du dessus.
@@ -71,7 +71,7 @@ Une fois ces commandes effectuées, ne pas oublier de vérifier que newuser et p
 
 Normalement à cette étape, le ldap et la bdd sql sont configurées correctement.
 
-Il faut alors lancer dans le dépot portail_captif '''python3 manage.py migrate''' qui va structurer initialement la base de données.
+Il faut alors lancer dans le dépot med '''python3 manage.py migrate''' qui va structurer initialement la base de données.
 Les migrations sont normalement comitées au fur et à mesure, néanmoins cette étape peut crasher, merci de reporter les bugs.
 
 ## Démarer le site web
@@ -81,13 +81,12 @@ Pour apache2 :
  * apt install apache2
  * apt install libapache2-mod-wsgi-py3 (pour le module wsgi)
 
-portail_captif/wsgi.py permet de fonctionner avec apache2 en production
+med/wsgi.py permet de fonctionner avec apache2 en production
 
 Pour nginx :
  * apt install nginx
  * apt install gunicorn3
 
-Utilisez alors un site nginx qui proxifie vers une socket gunicorn. Ensuite, utilisez les fichier portail_captif.service et portail_captif.socket avec systemd pour lancer le sous process gunicorn, présents dans portail_captif/ . 
 
 ## Configuration avancée
 

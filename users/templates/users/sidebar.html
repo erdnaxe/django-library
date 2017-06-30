@@ -1,4 +1,4 @@
-{% extends "users/sidebar.html" %}
+{% extends "base.html" %}
 {% comment %}
 Re2o est un logiciel d'administration développé initiallement au rezometz. Il
 se veut agnostique au réseau considéré, de manière à être installable en
@@ -23,15 +23,26 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 {% endcomment %}
 
-{% load bootstrap3 %}
 
-{% block title %}Utilisateurs{% endblock %}
-
-{% block content %}
-  <h2>Users</h2>
-  {%  include "users/aff_users.html" with  users_list=users_list %}
-  <br />
-  <br />
-  <br />
+{% block sidebar %}
+    {% if is_perm %}
+        <a class="list-group-item list-group-item-success" href="{% url "users:new-user" %}">
+            <i class="glyphicon glyphicon-plus"></i>
+            Créer un adhérent
+        </a>
+        <a class="list-group-item list-group-item-info" href="{% url "users:index" %}">
+            <i class="glyphicon glyphicon-list"></i>
+            Adhérents
+        </a>
+        <a class="list-group-item list-group-item-info" href="{% url "users:index-listright" %}">
+            <i class="glyphicon glyphicon-list"></i>
+            Droits
+        </a>
+    {% endif %}
+    {% if is_bureau %}
+        <a class="list-group-item list-group-item-danger" href="{% url "users:del-right" %}">
+            <i class="glyphicon glyphicon-trash"></i>
+            Retirer un droit
+        </a>
+    {% endif %}
 {% endblock %}
-

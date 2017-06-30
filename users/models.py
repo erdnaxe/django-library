@@ -28,9 +28,8 @@ from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from django.utils.functional import cached_property
 
-from macaddress.fields import MACAddressField
 
-from portail_captif.settings import GENERIC_IPSET_COMMAND, IPSET_NAME, REQ_EXPIRE_HRS,FORBIDEN_INTERFACES, SERVER_SELF_IP, AUTORIZED_INTERFACES, PORTAIL_ACTIVE
+from med.settings import MAX_EMPRUNT, REQ_EXPIRE_HRS
 import re, uuid
 import datetime
 
@@ -38,116 +37,6 @@ from django.utils import timezone
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 import subprocess
 
-def apply(cmd):
-    return subprocess.Popen(cmd, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-
-def mac_from_ip(ip):
-    cmd = ['/usr/sbin/arp','-na',ip]
-    p = apply(cmd)
-    output, errors = p.communicate()
-    if output is not None :
-        mac_addr = output.decode().split()[3]
-        return str(mac_addr)
-    else:
-        return None
-
-def create_ip_set():
-    command_to_execute = ["sudo", "-n"] + GENERIC_IPSET_COMMAND.split() + ["create",IPSET_NAME,"hash:mac","hashsize","1024","maxelem","65536"]
-    apply(command_to_execute)
-    command_to_execute = ["sudo", "-n"] + GENERIC_IPSET_COMMAND.split() + ["flush",IPSET_NAME]
-    apply(command_to_execute)
-    return
-
-def fill_ipset():
-    all_machines = Machine.objects.filter(proprio__in=User.objects.filter(state=User.STATE_ACTIVE))
-    ipset = "%s\nCOMMIT\n" % '\n'.join(["add %s %s" % (IPSET_NAME, str(machine.mac_address)) for machine in all_machines])
-    command_to_execute = ["sudo", "-n"] + GENERIC_IPSET_COMMAND.split() + ["restore"]
-    process = apply(command_to_execute)
-    process.communicate(input=ipset.encode('utf-8'))
-    return
-
-class iptables:
-    def __init__(self):
-        self.nat = "\n*nat"
-        self.mangle = "\n*mangle"
-        self.filter = "\n*filter"
-
-    def commit(self, chain):
-        self.add(chain, "COMMIT\n")
-
-    def add(self, chain, value):
-        setattr(self, chain, getattr(self, chain) + "\n" + value)
-
-    def init_filter(self, subchain, decision="ACCEPT"):
-        self.add("filter", ":" + subchain + " " + decision)
-
-    def init_nat(self, subchain, decision="ACCEPT"):
-        self.add("nat", ":" + subchain + " " + decision)
-
-    def init_mangle(self, subchain, decision="ACCEPT"):
-        self.add("mangle", ":" + subchain + " " + decision)
-
-    def jump(self, chain, subchainA, subchainB):
-        self.add(chain, "-A " + subchainA + " -j " + subchainB)
-
-def gen_filter(ipt):
-    ipt.init_filter("INPUT")
-    ipt.init_filter("FORWARD")
-    ipt.init_filter("OUTPUT")
-    for interface in FORBIDEN_INTERFACES:
-        ipt.add("filter", "-A FORWARD -o %s -j REJECT --reject-with icmp-port-unreachable" % interface)
-    ipt.commit("filter")
-    return ipt
-
-def gen_nat(ipt, nat_active=True):
-    ipt.init_nat("PREROUTING")
-    ipt.init_nat("INPUT")
-    ipt.init_nat("OUTPUT")
-    ipt.init_nat("POSTROUTING")
-    if nat_active:
-        ipt.init_nat("CAPTIF", decision="-")
-        ipt.jump("nat", "PREROUTING", "CAPTIF")
-        ipt.jump("nat", "POSTROUTING", "MASQUERADE")
-        if PORTAIL_ACTIVE:
-            ipt.add("nat", "-A CAPTIF -m set ! --match-set %s src -j DNAT --to-destination %s" % (IPSET_NAME, SERVER_SELF_IP))
-        ipt.jump("nat", "CAPTIF", "RETURN")
-    ipt.commit("nat")
-    return ipt
-
-def gen_mangle(ipt):
-    ipt.init_mangle("PREROUTING")
-    ipt.init_mangle("INPUT")
-    ipt.init_mangle("FORWARD")
-    ipt.init_mangle("OUTPUT")
-    ipt.init_mangle("POSTROUTING")
-    for interface in AUTORIZED_INTERFACES:
-        ipt.add("mangle", """-A PREROUTING -i %s -m state --state NEW -j LOG --log-prefix "LOG_ALL " """ % interface)
-    ipt.commit("mangle")
-    return ipt
-
-def restore_iptables():
-    """ Restrore l'iptables pour la création du portail. Est appellé par root au démarage du serveur"""
-    ipt = iptables()
-    gen_mangle(ipt)
-    gen_nat(ipt)
-    gen_filter(ipt)
-    global_chain = ipt.nat + ipt.filter + ipt.mangle
-    command_to_execute = ["sudo","-n","/sbin/iptables-restore"]
-    process = apply(command_to_execute)
-    process.communicate(input=global_chain.encode('utf-8'))
-    return
-
-def disable_iptables():
-    """ Insère une iptables minimaliste sans nat"""
-    ipt = iptables()
-    gen_mangle(ipt)
-    gen_filter(ipt)
-    gen_nat(ipt, nat_active=False)
-    global_chain = ipt.nat + ipt.filter + ipt.mangle
-    command_to_execute = ["sudo","-n","/sbin/iptables-restore"]
-    process = apply(command_to_execute)
-    process.communicate(input=global_chain.encode('utf-8'))
-    return
 
 class UserManager(BaseUserManager):
     def _create_user(self, pseudo, name, surname, email, password=None, su=False):
@@ -193,15 +82,17 @@ class User(AbstractBaseUser):
             (2, 'STATE_ARCHIVE'),
             )
 
-
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
-    email = models.EmailField()
+    email = models.EmailField(null=True, blank=True)
+    telephone = models.CharField(max_length=15, null=True, blank=True)
+    adresse = models.CharField(max_length=255, null=True, blank=True)
+    maxemprunt = models.IntegerField(default=MAX_EMPRUNT, help_text="Maximum d'emprunts autorisés") 
     state = models.IntegerField(choices=STATES, default=STATE_ACTIVE)
     pseudo = models.CharField(max_length=32, unique=True, help_text="Doit contenir uniquement des lettres, chiffres, ou tirets. ")
     comment = models.CharField(help_text="Commentaire, promo", max_length=255, blank=True)
     registered = models.DateTimeField(auto_now_add=True)
-    admin = models.BooleanField(default=False)
+
 
     USERNAME_FIELD = 'pseudo'
     REQUIRED_FIELDS = ['name', 'surname', 'email']
@@ -218,7 +109,11 @@ class User(AbstractBaseUser):
 
     @property
     def is_admin(self):
-        return self.admin
+        try:
+            Right.objects.get(user=self, right__listright='admin')
+        except Right.DoesNotExist:
+            return False
+        return True
 
     @is_admin.setter
     def is_admin(self, value):
@@ -229,9 +124,11 @@ class User(AbstractBaseUser):
 
     def has_perms(self, perms, obj=None):
         for perm in perms:
-            if perm=="admin":
-                return self.is_admin
-        return False
+            try:
+                Right.objects.get(user=self, right__listright=perm)
+                return True
+            except Right.DoesNotExist:
+                return False
 
     def get_full_name(self):
         return '%s %s' % (self.name, self.surname)
@@ -242,47 +139,32 @@ class User(AbstractBaseUser):
     def has_perm(self, perm, obj=None):
         return True
 
+    def has_right(self, right):
+        return Right.objects.filter(user=self).filter(right=ListRight.objects.get(listright=right)).exists()
+
     def has_module_perms(self, app_label):
         # Simplest version again
         return True
 
+    def get_admin_right(self):
+        admin, created = ListRight.objects.get_or_create(listright="admin")
+        return admin 
+
     def make_admin(self):
         """ Make User admin """
-        self.admin = True
-        self.save()
-
+        user_admin_right = Right(user=self, right=self.get_admin_right())
+        user_admin_right.save()
+ 
     def un_admin(self):
-        self.admin = False
-        self.save()
-
-    def machines(self):
-        return Machine.objects.filter(proprio=self)
+        try:
+            user_right = Right.objects.get(user=self,right=self.get_admin_right())
+        except Right.DoesNotExist:
+            return
+        user_right.delete()
 
     def __str__(self):
-        return self.name + " " + self.surname
+        return self.pseudo
 
-
-class Machine(models.Model):
-    proprio = models.ForeignKey('User', on_delete=models.PROTECT)
-    mac_address = MACAddressField(integer=False, unique=True)
-
-    def add_to_set(self):
-        command_to_execute = ["sudo", "-n"] + GENERIC_IPSET_COMMAND.split() + ["add",IPSET_NAME,str(self.mac_address)]
-        apply(command_to_execute)
-
-    def del_to_set(self):
-        command_to_execute = ["sudo", "-n"] + GENERIC_IPSET_COMMAND.split() + ["del",IPSET_NAME,str(self.mac_address)]
-        apply(command_to_execute)
-
-@receiver(post_save, sender=Machine)
-def machine_post_save(sender, **kwargs):
-    machine = kwargs['instance']
-    machine.add_to_set()
-
-@receiver(post_delete, sender=Machine)
-def machine_post_delete(sender, **kwargs):
-    machine = kwargs['instance']
-    machine.del_to_set()
 
 class Request(models.Model):
     PASSWD = 'PW'
@@ -305,6 +187,27 @@ class Request(models.Model):
             self.token = str(uuid.uuid4()).replace('-', '')  # remove hyphens
         super(Request, self).save()
 
+class Right(models.Model):
+    PRETTY_NAME = "Droits affectés à des users"
+ 
+    user = models.ForeignKey('User', on_delete=models.PROTECT)
+    right = models.ForeignKey('ListRight', on_delete=models.PROTECT)
+ 
+    class Meta:
+        unique_together = ("user", "right")
+ 
+    def __str__(self):
+        return str(self.user) + " - " + str(self.right)
+
+class ListRight(models.Model):
+    PRETTY_NAME = "Liste des droits existants"
+
+    listright = models.CharField(max_length=255, unique=True)
+    details = models.CharField(help_text="Description", max_length=255, blank=True)
+ 
+    def __str__(self):
+        return self.listright
+
 class BaseInfoForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(BaseInfoForm, self).__init__(*args, **kwargs)
@@ -319,33 +222,22 @@ class BaseInfoForm(ModelForm):
             'pseudo',
             'surname',
             'email',
-        ]
-
-class EditInfoForm(BaseInfoForm):
-    class Meta(BaseInfoForm.Meta):
-        fields = [
-            'name',
-            'pseudo',
-            'surname',
-            'comment',
-            'email',
-            'admin',
+            'telephone',
+            'adresse',
         ]
 
 class InfoForm(BaseInfoForm):
     class Meta(BaseInfoForm.Meta):
-        fields = [
+         fields = [
             'name',
             'pseudo',
-            'comment',
             'surname',
             'email',
-            'admin',
+            'telephone',
+            'adresse',
+            'maxemprunt',
         ]
 
-class UserForm(EditInfoForm):
-    class Meta(EditInfoForm.Meta):
-        fields = '__all__'
 
 class PasswordForm(ModelForm):
     class Meta:
@@ -357,7 +249,35 @@ class StateForm(ModelForm):
         model = User
         fields = ['state']
 
-class MachineForm(ModelForm):
+class RightForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(RightForm, self).__init__(*args, **kwargs)
+        self.fields['right'].label = 'Droit'
+        self.fields['right'].empty_label = "Choisir un nouveau droit"
+
     class Meta:
-        model = Machine
-        exclude = '__all__'
+        model = Right
+        fields = ['right']
+
+
+class DelRightForm(Form):
+    rights = forms.ModelMultipleChoiceField(queryset=Right.objects.all(), label="Droits actuels",  widget=forms.CheckboxSelectMultiple)
+
+
+class ListRightForm(ModelForm):
+    class Meta:
+        model = ListRight
+        fields = ['listright', 'details']
+
+    def __init__(self, *args, **kwargs):
+        super(ListRightForm, self).__init__(*args, **kwargs)
+        self.fields['listright'].label = 'Nom du droit/groupe'
+
+class NewListRightForm(ListRightForm):
+    class Meta(ListRightForm.Meta):
+        fields = '__all__'
+
+class DelListRightForm(Form):
+    listrights = forms.ModelMultipleChoiceField(queryset=ListRight.objects.all(), label="Droits actuels",  widget=forms.CheckboxSelectMultiple)
+
+

@@ -20,7 +20,7 @@
 # with this program; if not, write to the Free Software Foundation, Inc.,
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-# App de gestion des users pour portail_captif
+# App de gestion des users pour med
 # Goulven Kermarec, Gabriel Détraz, Lemesle Augustin
 # Gplv2
 from django.shortcuts import get_object_or_404, render, redirect
@@ -39,13 +39,12 @@ from django.db import transaction
 
 from reversion.models import Version
 from reversion import revisions as reversion
-from users.models import User, MachineForm, Request
-from users.models import EditInfoForm, InfoForm, BaseInfoForm, Machine, StateForm, mac_from_ip
+from users.models import User, Request, ListRight, Right, DelListRightForm, NewListRightForm, ListRightForm, RightForm, DelRightForm
+from users.models import InfoForm, BaseInfoForm, StateForm
 from users.forms import PassForm, ResetPasswordForm
-import ipaddress
-import subprocess
+from media.models import Emprunt
 
-from portail_captif.settings import REQ_EXPIRE_STR, EMAIL_FROM, ASSO_NAME, ASSO_EMAIL, SITE_NAME, CAPTIVE_IP_RANGE, CAPTIVE_WIFI, PAGINATION_NUMBER
+from med.settings import REQ_EXPIRE_STR, EMAIL_FROM, ASSO_NAME, ASSO_EMAIL, SITE_NAME, PAGINATION_NUMBER
 
 
 def form(ctx, template, request):
@@ -85,6 +84,8 @@ def reset_passwd_mail(req, request):
     return
 
 
+@login_required
+@permission_required('perm')
 def new_user(request):
     """ Vue de création d'un nouvel utilisateur, envoie un mail pour le mot de passe"""
     user = BaseInfoForm(request.POST or None)
@@ -111,10 +112,10 @@ def edit_info(request, userid):
     except User.DoesNotExist:
         messages.error(request, "Utilisateur inexistant")
         return redirect("/users/")
-    if not request.user.is_admin and user != request.user:
+    if not request.user.has_perms(('perm',)) and user != request.user:
         messages.error(request, "Vous ne pouvez pas modifier un autre user que vous sans droit admin")
         return redirect("/users/profil/" + str(request.user.id))
-    if not request.user.is_admin:
+    if not request.user.has_perms(('perm',)):
         user = BaseInfoForm(request.POST or None, instance=user)
     else:
         user = InfoForm(request.POST or None, instance=user)
@@ -128,7 +129,7 @@ def edit_info(request, userid):
     return form({'userform': user}, 'users/user.html', request)
 
 @login_required
-@permission_required('admin')
+@permission_required('bureau')
 def state(request, userid):
     """ Changer l'etat actif/desactivé/archivé d'un user, need droit bureau """
     try:
@@ -156,7 +157,7 @@ def password(request, userid):
     except User.DoesNotExist:
         messages.error(request, "Utilisateur inexistant")
         return redirect("/users/")
-    if not request.user.is_admin and user != request.user:
+    if not request.user.has_perms(('perm',)) and user != request.user:
         messages.error(request, "Vous ne pouvez pas modifier un autre user que vous sans droit admin")
         return redirect("/users/profil/" + str(request.user.id))
     u_form = PassForm(request.POST or None)
@@ -165,7 +166,108 @@ def password(request, userid):
     return form({'userform': u_form}, 'users/user.html', request)
 
 @login_required
-@permission_required('admin')
+@permission_required('bureau')
+def add_listright(request):
+    """ Ajouter un droit/groupe, nécessite droit bureau.
+    Obligation de fournir un gid pour la synchro ldap, unique """
+    listright = NewListRightForm(request.POST or None)
+    if listright.is_valid():
+        with transaction.atomic(), reversion.create_revision():
+            listright.save()
+            reversion.set_user(request.user)
+            reversion.set_comment("Création")
+        messages.success(request, "Le droit/groupe a été ajouté")
+        return redirect("/users/index_listright/")
+    return form({'userform': listright}, 'users/user.html', request)
+
+@login_required
+@permission_required('bureau')
+def edit_listright(request, listrightid):
+    """ Editer un groupe/droit, necessite droit bureau, à partir du listright id """
+    try:
+        listright_instance = ListRight.objects.get(pk=listrightid)
+    except ListRight.DoesNotExist:
+        messages.error(request, u"Entrée inexistante" )
+        return redirect("/users/")
+    listright = ListRightForm(request.POST or None, instance=listright_instance)
+    if listright.is_valid():
+        with transaction.atomic(), reversion.create_revision():
+            listright.save()
+            reversion.set_user(request.user)
+            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(field for field in listright.changed_data))
+        messages.success(request, "Droit modifié")
+        return redirect("/users/index_listright/")
+    return form({'userform': listright}, 'users/user.html', request)
+
+@login_required
+@permission_required('bureau')
+def del_listright(request):
+    """ Supprimer un ou plusieurs groupe, possible si il est vide, need droit bureau """
+    listright = DelListRightForm(request.POST or None)
+    if listright.is_valid():
+        listright_dels = listright.cleaned_data['listrights']
+        for listright_del in listright_dels:
+            try:
+                with transaction.atomic(), reversion.create_revision():
+                    listright_del.delete()
+                    reversion.set_comment("Destruction")
+                messages.success(request, "Le droit/groupe a été supprimé")
+            except ProtectedError:
+                messages.error(
+                    request,
+                    "L'établissement %s est affecté à au moins un user, \
+                        vous ne pouvez pas le supprimer" % listright_del)
+        return redirect("/users/index_listright/")
+    return form({'userform': listright}, 'users/user.html', request)
+
+@login_required
+@permission_required('bureau')
+def add_right(request, userid):
+    """ Ajout d'un droit à un user, need droit bureau """
+    try:
+        user = User.objects.get(pk=userid)
+    except User.DoesNotExist:
+        messages.error(request, "Utilisateur inexistant")
+        return redirect("/users/")
+    right = RightForm(request.POST or None)
+    if right.is_valid():
+        right = right.save(commit=False)
+        right.user = user
+        try:
+            with transaction.atomic(), reversion.create_revision():
+                reversion.set_user(request.user)
+                reversion.set_comment("Ajout du droit %s" % right.right)
+                right.save()
+            messages.success(request, "Droit ajouté")
+        except IntegrityError:
+            pass
+        return redirect("/users/profil/" + userid)
+    return form({'userform': right}, 'users/user.html', request)
+
+@login_required
+@permission_required('bureau')
+def del_right(request):
+    """ Supprimer un droit à un user, need droit bureau """
+    user_right_list = DelRightForm(request.POST or None)
+    if user_right_list.is_valid():
+        right_del = user_right_list.cleaned_data['rights']
+        with transaction.atomic(), reversion.create_revision():
+            reversion.set_user(request.user)
+            reversion.set_comment("Retrait des droit %s" % ','.join(str(deleted_right) for deleted_right in right_del))
+            right_del.delete()
+        messages.success(request, "Droit retiré avec succès")
+        return redirect("/users/")
+    return form({'userform': user_right_list}, 'users/user.html', request)
+
+@login_required
+@permission_required('perm')
+def index_listright(request):
+    """ Affiche l'ensemble des droits , need droit perm """
+    listright_list = ListRight.objects.order_by('listright')
+    return render(request, 'users/index_listright.html', {'listright_list':listright_list})
+
+@login_required
+@permission_required('perm')
 def index(request):
     """ Affiche l'ensemble des users, need droit admin """
     users_list = User.objects.order_by('state', 'name')
@@ -191,18 +293,15 @@ def history(request, object, id):
         except User.DoesNotExist:
              messages.error(request, "Utilisateur inexistant")
              return redirect("/users/")
-        if not request.user.is_admin and object_instance != request.user:
+        if not request.user.has_perms(('perm',)) and object_instance != request.user:
              messages.error(request, "Vous ne pouvez pas afficher l'historique d'un autre user que vous sans droit admin")
              return redirect("/users/profil/" + str(request.user.id))
-    elif object == 'machines':
+    elif object == 'listright' and request.user.has_perms(('perm',)):
         try:
-             object_instance = Machine.objects.get(pk=id)
-        except User.DoesNotExist:
-             messages.error(request, "Machine inexistante")
+             object_instance = ListRight.objects.get(pk=id)
+        except ListRight.DoesNotExist:
+             messages.error(request, "Droit inexistant")
              return redirect("/users/")
-        if not request.user.is_admin and object_instance.proprio != request.user:
-             messages.error(request, "Vous ne pouvez pas afficher l'historique d'un autre user que vous sans droit admin")
-             return redirect("/users/profil/" + str(request.user.id))
     else:
         messages.error(request, "Objet  inconnu")
         return redirect("/users/")
@@ -217,7 +316,7 @@ def history(request, object, id):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         reversions = paginator.page(paginator.num_pages)
-    return render(request, 'portail_captif/history.html', {'reversions': reversions, 'object': object_instance})
+    return render(request, 'med/history.html', {'reversions': reversions, 'object': object_instance})
 
 @login_required
 def mon_profil(request):
@@ -230,69 +329,20 @@ def profil(request, userid):
     except User.DoesNotExist:
         messages.error(request, "Utilisateur inexistant")
         return redirect("/users/")
-    machines_list = Machine.objects.filter(proprio=users)
-    if not request.user.is_admin and users != request.user:
+    if not request.user.has_perms(('perm',)) and users != request.user:
         messages.error(request, "Vous ne pouvez pas afficher un autre user que vous sans droit admin")
         return redirect("/users/profil/" + str(request.user.id))
+    emprunts_list = Emprunt.objects.filter(user=users)
+    list_droits = Right.objects.filter(user=users)
     return render(
         request,
         'users/profil.html',
         {
             'user': users,
-            'machines_list': machines_list,
+            'emprunts_list': emprunts_list,
+            'list_droits': list_droits,  
         }
     )
-
-def get_ip(request):
-    """Returns the IP of the request, accounting for the possibility of being
-    behind a proxy.
-    """
-    ip = request.META.get("HTTP_X_FORWARDED_FOR", None)
-    if ip:
-        # X_FORWARDED_FOR returns client1, proxy1, proxy2,...
-        ip = ip.split(", ")[0]
-    else:
-        ip = request.META.get("REMOTE_ADDR", "")
-    return ip
-
-def capture_mac(request, users, verbose=True):
-    remote_ip = get_ip(request)
-    if ipaddress.ip_address(remote_ip) in ipaddress.ip_network(CAPTIVE_IP_RANGE):
-        mac_addr = mac_from_ip(remote_ip)
-        if mac_addr:
-            machine = Machine()
-            machine.proprio = users
-            machine.mac_address = str(mac_addr)
-            try:
-                with transaction.atomic(), reversion.create_revision():
-                    machine.save()
-                    reversion.set_comment("Enregistrement de la machine")
-            except:
-                if verbose:
-                    messages.error(request, "Assurez-vous que la machine n'est pas déjà enregistrée")
-        else:
-            if verbose:
-                messages.error(request, "Impossible d'enregistrer la machine")
-    else:
-        if verbose:
-            messages.error(request, "Merci de vous connecter sur le réseau du portail captif pour capturer la machine (WiFi %s)" % CAPTIVE_WIFI)
-
-def capture_mac_afterlogin(sender, user, request, **kwargs):
-    capture_mac(request, user, verbose=False)
-
-# On récupère la mac après le login
-user_logged_in.connect(capture_mac_afterlogin)
-
-@login_required
-def capture(request):
-    userid = str(request.user.id)
-    try:
-        users = User.objects.get(pk=userid)
-    except User.DoesNotExist:
-        messages.error(request, "Utilisateur inexistant")
-        return redirect("/users/")
-    capture_mac(request, users)
-    return redirect("/users/profil/" + str(users.id))
 
 def reset_password(request):
     userform = ResetPasswordForm(request.POST or None)

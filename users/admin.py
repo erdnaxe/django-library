@@ -25,7 +25,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from reversion.admin import VersionAdmin
 
-from .models import User, Machine, Request
+from .models import User, Right, ListRight, Request
 from .forms import UserChangeForm, UserCreationForm
 
 
@@ -42,8 +42,11 @@ class UserAdmin(admin.ModelAdmin):
 class RequestAdmin(admin.ModelAdmin):
     list_display = ('user', 'type', 'created_at', 'expires_at')
 
-class MachineAdmin(VersionAdmin):
-    list_display = ('mac_address','proprio')
+class RightAdmin(VersionAdmin):
+    list_display = ('user', 'right')
+
+class ListRightAdmin(VersionAdmin):
+    list_display = ('listright',)
 
 class UserAdmin(VersionAdmin, BaseUserAdmin):
     # The forms to add and change user instances
@@ -72,9 +75,10 @@ class UserAdmin(VersionAdmin, BaseUserAdmin):
     ordering = ('pseudo',)
     filter_horizontal = ()
 
-admin.site.register(Machine, MachineAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(Request, RequestAdmin)
+admin.site.register(ListRight, ListRightAdmin)
+admin.site.register(Right, RightAdmin)
 # Now register the new UserAdmin...
 admin.site.unregister(User)
 admin.site.register(User, UserAdmin)

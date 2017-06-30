@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "users/sidebar.html" %}
 {% comment %}
 Re2o est un logiciel d'administration développé initiallement au rezometz. Il
 se veut agnostique au réseau considéré, de manière à être installable en
@@ -38,10 +38,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             <i class="glyphicon glyphicon-lock"></i>
             Changer le mot de passe
         </a>
-        {% if is_admin %}
+        {% if is_bureau %}
         <a class="btn btn-primary btn-sm" role="button" href="{% url 'users:state' user.id %}">
             <i class="glyphicon glyphicon-flash"></i>
             Changer le statut
+        </a>
+        <a class="btn btn-primary btn-sm" role="button" href="{% url 'users:add-right' user.id %}">
+            <i class="glyphicon glyphicon-ok"></i>
+            Ajouter un droit
         </a>
         {% endif %}
         <a class="btn btn-info btn-sm" role="button" href="{% url 'users:history' 'user' user.id %}">
@@ -71,7 +75,24 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             <th>Date d'inscription</th>
             <td>{{ user.registered }}</td>
         </tr>
-            <th>Statut</th>
+        <tr>
+            <th>Adresse</th>
+            <td>{{ user.adresse }}</td>
+            <th>Telephone</th>
+            <td>{{ user.telephone }}</td>
+        </tr>
+        <tr>
+            <th>Emprunts maximums autorisés</th>
+            <td>{{ user.maxemprunt }}</td>
+            <th>Droits</th>
+            {% if list_droits %}
+            <td>{% for droit in list_droits %}{{ droit.right }}{% if list_droits|length != forloop.counter %}  - {% endif %} {% endfor %}</td>
+            {% else %}
+            <td>Aucun</td>
+            {% endif %}
+        </tr>
+        <tr> 
+           <th>Statut</th>
             {% if user.state == 0 %}
             <td><font color="green">Actif</font></td>
             {% elif user.state == 1 %}
@@ -83,28 +104,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             <td>{{ user.last_login }}</td>
         </tr>
     </table>
-    <h2>Machines enregistrées</h2>
-    <a class="btn btn-primary btn-sm" role="button" href="{% url 'users:capture' %}">
-        <i class="glyphicon glyphicon-flash"></i>
-        Enregistrer la machine utilisée actuellement
-    </a>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Adresse mac</th>
-                <th>Historique</th>
-            </tr>
-        </thead>
-        {% for machine in machines_list %}
-        <tr>
-            <td>{{ machine.mac_address }}</td>
-            <td><a class="btn btn-info btn-sm" role="button" href="{% url 'users:history' 'machines' machine.id %}">
-            <i class="glyphicon glyphicon-time"></i>
-            </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    <h2>Emprunts</h2>
+    <h4><a class="btn btn-primary btn-sm" role="button" href="{% url 'media:add-emprunt' user.id %}"><i class="glyphicon glyphicon-flag"></i> Ajouter</a></h4>
+    {% if emprunts_list %}
+    {% include "media/aff_emprunts.html" with emprunts_list=emprunts_list %}
+    {% else %}
+    <p>Aucun emprunt</p>
+    {% endif %}
     <br />
     <br />
     <br />
