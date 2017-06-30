@@ -9,7 +9,7 @@ class Auteur(models.Model):
 class Media(models.Model):
     titre = models.CharField(max_length=255)
     cote = models.CharField(max_length=31)
-    auteur = models.ForeignKey('Auteur', on_delete=models.PROTECT) 
+    auteur = models.ManyToManyField('Auteur') 
 #    type = TODO
 
     def __str__(self):
