@@ -234,6 +234,16 @@ def index(request):
         emprunts_list = Emprunt.objects.all()
     else:
         emprunts_list = Emprunt.objects.filter(user=request.user)
+    paginator = Paginator(emprunts_list.order_by('date_emprunt').reverse(), PAGINATION_NUMBER)
+    page = request.GET.get('page')
+    try:
+        emprunts_list = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        emprunts_list = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        emprunts_list = paginator.page(paginator.num_pages)
     return render(request, 'media/index_emprunts.html', {'emprunts_list':emprunts_list})
 
 
