@@ -33,6 +33,8 @@ from django.db.models import Q
 from users.models import User
 from search.forms import SearchForm, SearchFormPlus
 
+from med.settings import SEARCH_DISPLAY_PAGE
+
 from media.models import Media, Emprunt
 
 def form(ctx, template, request):
@@ -83,13 +85,12 @@ def search_result(search, type, request):
             recherche['emprunts_list'] = Emprunt.objects.filter(query & date_query).order_by('date_emprunt').reverse()
         if i == '2':
             recherche['medias_list'] = Media.objects.filter(Q(auteur__nom__icontains = search) | Q(titre__icontains = search))
-    search_display_page = 5
 
     for r in recherche:
         if recherche[r] != None:
-            recherche[r] = recherche[r][:search_display_page]
+            recherche[r] = recherche[r][:SEARCH_DISPLAY_PAGE]
 
-    recherche.update({'max_result': search_display_page})
+    recherche.update({'max_result': SEARCH_DISPLAY_PAGE})
 
     return recherche
 
