@@ -37,8 +37,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 	    <td>{{ clef.proprio }}</td>
 	    <td>{{ clef.commentaire }}</td>
             <td class="text-right">
+                {% if is_bureau %}
                 {% include 'buttons/edit.html' with href='users:edit-clef' id=clef.id %}
                 {% include 'buttons/suppr.html' with href='users:del-clef' id=clef.id %}
+                {% endif %}
                 {% include 'buttons/history.html' with href='users:history' name='clef' id=clef.id %}
             </td>
         </tr>

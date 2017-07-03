@@ -25,11 +25,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 
 {% block sidebar %}
-    {% if is_perm %}
+        {% if is_bureau %}
         <a class="list-group-item list-group-item-success" href="{% url "users:new-user" %}">
             <i class="glyphicon glyphicon-plus"></i>
             Créer un adhérent
         </a>
+        {% endif %}
+        {% if is_perm %}
         <a class="list-group-item list-group-item-info" href="{% url "users:index" %}">
             <i class="glyphicon glyphicon-list"></i>
             Adhérents

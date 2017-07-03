@@ -85,7 +85,7 @@ def reset_passwd_mail(req, request):
 
 
 @login_required
-@permission_required('perm')
+@permission_required('bureau')
 def new_user(request):
     """ Vue de création d'un nouvel utilisateur, envoie un mail pour le mot de passe"""
     user = BaseInfoForm(request.POST or None)
@@ -111,10 +111,10 @@ def edit_info(request, userid):
     except User.DoesNotExist:
         messages.error(request, "Utilisateur inexistant")
         return redirect("/users/")
-    if not request.user.has_perms(('perm',)) and user != request.user:
+    if not request.user.has_perms(('bureau',)) and user != request.user:
         messages.error(request, "Vous ne pouvez pas modifier un autre user que vous sans droit admin")
         return redirect("/users/profil/" + str(request.user.id))
-    if not request.user.has_perms(('perm',)):
+    if not request.user.has_perms(('bureau',)):
         user = BaseInfoForm(request.POST or None, instance=user)
     else:
         user = InfoForm(request.POST or None, instance=user)
@@ -156,7 +156,7 @@ def password(request, userid):
     except User.DoesNotExist:
         messages.error(request, "Utilisateur inexistant")
         return redirect("/users/")
-    if not request.user.has_perms(('perm',)) and user != request.user:
+    if not request.user.has_perms(('bureau',)) and user != request.user:
         messages.error(request, "Vous ne pouvez pas modifier un autre user que vous sans droit admin")
         return redirect("/users/profil/" + str(request.user.id))
     u_form = PassForm(request.POST or None)
@@ -266,7 +266,7 @@ def index_listright(request):
     return render(request, 'users/index_listright.html', {'listright_list':listright_list})
 
 @login_required
-@permission_required('perm')
+@permission_required('bureau')
 def add_clef(request):
     clef = ClefForm(request.POST or None)
     if clef.is_valid():
@@ -279,7 +279,7 @@ def add_clef(request):
     return form({'userform': clef}, 'users/user.html', request)
 
 @login_required
-@permission_required('perm')
+@permission_required('bureau')
 def edit_clef(request, clefid):
     try:
         clef_instance = Clef.objects.get(pk=clefid)
@@ -297,7 +297,7 @@ def edit_clef(request, clefid):
     return form({'userform': clef}, 'users/user.html', request)
 
 @login_required
-@permission_required('perm')
+@permission_required('bureau')
 def del_clef(request, clefid):
     try:
         clef_instance = Clef.objects.get(pk=clefid)
@@ -353,7 +353,7 @@ def history(request, object, id):
         except Clef.DoesNotExist:
              messages.error(request, "Utilisateur inexistant")
              return redirect("/users/")
-    elif object == 'listright' and request.user.has_perms(('perm',)):
+    elif object == 'listright':
         try:
              object_instance = ListRight.objects.get(pk=id)
         except ListRight.DoesNotExist:
@@ -387,7 +387,7 @@ def profil(request, userid):
         messages.error(request, "Utilisateur inexistant")
         return redirect("/users/")
     if not request.user.has_perms(('perm',)) and users != request.user:
-        messages.error(request, "Vous ne pouvez pas afficher un autre user que vous sans droit admin")
+        messages.error(request, "Vous ne pouvez pas afficher un autre user que vous sans droit perm")
         return redirect("/users/profil/" + str(request.user.id))
     emprunts_list = Emprunt.objects.filter(user=users)
     list_droits = Right.objects.filter(user=users)

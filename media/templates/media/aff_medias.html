@@ -40,8 +40,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             <td>{{ media.titre }}</td>
             <td>{% for aut in media.auteur.all %}{{ aut }}, {% endfor %}</td>
             <td>{{ media.cote }}</td>
-            <td>{% include 'buttons/edit.html' with href='media:edit-media' id=media.id %}
-            {% include 'buttons/suppr.html' with href='media:del-media' id=media.id %}
+            <td>{% if is_perm %}{% include 'buttons/edit.html' with href='media:edit-media' id=media.id %}
+            {% include 'buttons/suppr.html' with href='media:del-media' id=media.id %}{% endif %}
             {% include 'buttons/history.html' with href='media:history' name='media' id=media.id %}</td>
         </tr>
         {% endfor %}

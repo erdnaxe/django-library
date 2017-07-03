@@ -46,8 +46,8 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             <td>{{ jeu.nombre_joueurs_min }}</td>
             <td>{{ jeu.nombre_joueurs_max }}</td>
             <td>{{ jeu.comment }}</td>
-            <td>{% include 'buttons/edit.html' with href='media:edit-jeu' id=jeu.id %}
-            {% include 'buttons/suppr.html' with href='media:del-jeu' id=jeu.id %}
+            <td>{% if is_perm %}{% include 'buttons/edit.html' with href='media:edit-jeu' id=jeu.id %}
+            {% include 'buttons/suppr.html' with href='media:del-jeu' id=jeu.id %}{% endif %}
             {% include 'buttons/history.html' with href='media:history' name='jeu' id=jeu.id %}</td>
         </tr>
         {% endfor %}

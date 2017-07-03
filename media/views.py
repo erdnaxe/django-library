@@ -210,7 +210,7 @@ def edit_emprunt(request, empruntid):
     return form({'mediaform': emprunt}, 'media/media.html', request)
 
 @login_required
-@permission_required('bureau')
+@permission_required('perm')
 def retour_emprunt(request, empruntid):
     try:
         emprunt_instance = Emprunt.objects.get(pk=empruntid)
@@ -226,7 +226,7 @@ def retour_emprunt(request, empruntid):
     return redirect("/media/index_emprunts/")
 
 @login_required
-@permission_required('bureau')
+@permission_required('perm')
 def del_emprunt(request, empruntid):
     try:
         emprunt_instance = Emprunt.objects.get(pk=empruntid)
@@ -261,7 +261,7 @@ def index_jeux(request):
 
 @login_required
 def index_auteurs(request):
-    auteurs_list = Auteur.objects.all()
+    auteurs_list = Auteur.objects.all().order_by('nom')
     paginator = Paginator(auteurs_list, PAGINATION_NUMBER)
     page = request.GET.get('page')
     try:

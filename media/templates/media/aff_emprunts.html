@@ -46,7 +46,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             </td>
             <td>{{ emprunt.date_emprunt }}</td>
             <td>{{ emprunt.permanencier_emprunt }}</td>
-            <td>{% if not emprunt.date_rendu %}<a class="btn btn-primary btn-sm" role="button" href="{% url 'media:retour-emprunt' emprunt.id  %}"><i class="glyphicon glyphicon-ok"></i> Retour</a>{% else %}{{ emprunt.date_rendu }}{% endif %}</td>
+            <td>{% if not emprunt.date_rendu %}{% if is_perm %}<a class="btn btn-primary btn-sm" role="button" href="{% url 'media:retour-emprunt' emprunt.id  %}"><i class="glyphicon glyphicon-ok"></i> Retour</a>{% endif %}{% else %}{{ emprunt.date_rendu }}{% endif %}</td>
             <td>{{ emprunt.permanencier_rendu }}</td>
             <td>
              <div class="dropdown">
@@ -57,8 +57,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
              <ul class="dropdown-menu" aria-labelledby="editionemprunt">
                  {% if is_perm %}
                  <li><a href="{% url 'media:edit-emprunt' emprunt.id %}"><i class="glyphicon glyphicon-edit"></i> Editer</a></li>
-                 {% endif %}
-                 {% if is_bureau %}
                  <li><a href="{% url 'media:del-emprunt' emprunt.id %}"><i class="glyphicon glyphicon-trash"></i> Supprimer</a></li>
                  {% endif %}
                  <li><a href="{% url 'media:history' 'emprunt' emprunt.id %}"><i class="glyphicon glyphicon-time"></i> Historique</a></li>

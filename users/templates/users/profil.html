@@ -105,7 +105,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         </tr>
     </table>
     <h2>Emprunts</h2>
+    {% if is_perm or is_bureau %}
     <h4><a class="btn btn-primary btn-sm" role="button" href="{% url 'media:add-emprunt' user.id %}"><i class="glyphicon glyphicon-flag"></i> Ajouter</a></h4>
+    {% endif %}
     {% if emprunts_list %}
     {% include "media/aff_emprunts.html" with emprunts_list=emprunts_list %}
     {% else %}

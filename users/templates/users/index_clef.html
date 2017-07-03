@@ -29,7 +29,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 {% block content %}
   <h2>Liste des clef</h2>
-  {% if is_perm %}
+  {% if is_bureau %}
   <a class="btn btn-primary btn-sm" role="button" href="{% url 'users:add-clef'  %}"><i class="glyphicon glyphicon-plus"></i> Ajouter une clef</a>
   {% endif %}
   {%  include "users/aff_clef.html" with  clef_list=clef_list %}

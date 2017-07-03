@@ -36,7 +36,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             <td>{{ listright.listright }}</td>
 	    <td>{{ listright.details }}</td>
             <td class="text-right">
+                {% if is_bureau %}
                 {% include 'buttons/edit.html' with href='users:edit-listright' id=listright.id %}
+                {% endif %}
                 {% include 'buttons/history.html' with href='users:history' name='listright' id=listright.id %}
             </td>
         </tr>
