@@ -5,7 +5,8 @@ Gnu public license v2.0
 ## Avant propos 
 
 Ce projet est forké à partir de re2o  (https://gitlab.rezometz.org/rezo/re2o).
-Ce portail minimaliste permet aux utilisateurs de s'identifier. Leurs mac sont capturées, et injectée dans une ipset qui leur donne accès à internet.
+
+Le projet med permet la gestion de la bdd de la med, importé à partir de l'ancienne bdd. Elle permet de gérer les medias, bd, jeux, emprunts, ainsi que les adhérents de la med.
 
 #Installation
 
@@ -20,16 +21,15 @@ Voici la liste des dépendances à installer sur le serveur principal (A).
 
 ### Avec apt :
 
-#### Sous debian 8
+#### Sous debian 9
 Paquets obligatoires:
- * python3-django (1.8, jessie-backports)
- * python3-dateutil (jessie-backports)
- * python3-django-reversion (stretch)
- * python3-pip (jessie)
+ * python3-django 
+ * python3-dateutil 
+ * python3-django-reversion 
+ * python3-pip
 
 Avec pip3 :
  * django-bootstrap3
- * django-macaddress
 
 Paquet recommandés:
  * python3-django-extensions (jessie)
@@ -69,7 +69,7 @@ Une fois ces commandes effectuées, ne pas oublier de vérifier que newuser et p
 
 ## Configuration initiale
 
-Normalement à cette étape, le ldap et la bdd sql sont configurées correctement.
+Normalement à cette étape, la bdd sql est configurée correctement.
 
 Il faut alors lancer dans le dépot med '''python3 manage.py migrate''' qui va structurer initialement la base de données.
 Les migrations sont normalement comitées au fur et à mesure, néanmoins cette étape peut crasher, merci de reporter les bugs.
@@ -92,8 +92,8 @@ Pour nginx :
 
 Une fois démaré, le site web devrait être accessible. 
 Pour créer un premier user, faire '''python3 manage.py createsuperuser''' qui va alors créer un user admin.
-Il est conseillé de créer alors les droits cableur, bureau, trésorier et infra, qui n'existent pas par défaut dans le menu adhérents.
-Il est également conseillé de créer un user portant le nom de l'association/organisation, qui possedera l'ensemble des machines.
+Il est conseillé de créer alors les droits permanencier, bureau, qui n'existent pas par défaut dans le menu adhérents.
+Il est également conseillé de créer un user portant le nom de l'association/organisation.
 
 # Requète en base de donnée
 
