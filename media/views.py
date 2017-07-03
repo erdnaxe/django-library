@@ -16,7 +16,7 @@ from django.db import transaction
 from reversion import revisions as reversion
 from reversion.models import Version
 
-from med.settings import PAGINATION_NUMBER as pagination_number
+from med.settings import PAGINATION_NUMBER
 
 def form(ctx, template, request):
     c = ctx
@@ -200,11 +200,31 @@ def del_emprunt(request, empruntid):
 @login_required
 def index_auteurs(request):
     auteurs_list = Auteur.objects.all()
+    paginator = Paginator(auteurs_list, PAGINATION_NUMBER)
+    page = request.GET.get('page')
+    try:
+        auteurs_list = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        auteurs_list = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        auteurs_list = paginator.page(paginator.num_pages)
     return render(request, 'media/index_auteurs.html', {'auteurs_list':auteurs_list})
 
 @login_required
 def index_medias(request):
     medias_list = Media.objects.all()
+    paginator = Paginator(medias_list, PAGINATION_NUMBER)
+    page = request.GET.get('page')
+    try:
+        medias_list = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        medias_list = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        medias_list = paginator.page(paginator.num_pages)
     return render(request, 'media/index_medias.html', {'medias_list':medias_list})
 
 
@@ -238,7 +258,7 @@ def history(request, object, id):
              messages.error(request, "Emprunt inexistant")
              return redirect("/media/index_emprunts")
     reversions = Version.objects.get_for_object(object_instance)
-    paginator = Paginator(reversions, pagination_number)
+    paginator = Paginator(reversions, PAGINATION_NUMBER)
     page = request.GET.get('page')
     try:
         reversions = paginator.page(page)
