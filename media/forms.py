@@ -22,7 +22,7 @@
 
 from django.forms import ModelForm, Form, ValidationError
 from django import forms
-from .models import Auteur, Media, Emprunt
+from .models import Auteur, Media, Jeu, Emprunt
 
 class AuteurForm(ModelForm):
     class Meta:
@@ -32,6 +32,11 @@ class AuteurForm(ModelForm):
 class MediaForm(ModelForm):
     class Meta:
         model = Media
+        fields = '__all__'
+
+class JeuForm(ModelForm):
+    class Meta:
+        model = Jeu
         fields = '__all__'
 
 class EmpruntForm(ModelForm):

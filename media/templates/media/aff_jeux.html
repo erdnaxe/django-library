@@ -1,4 +1,3 @@
-{% extends "base.html" %}
 {% comment %}
 Re2o est un logiciel d'administration développé initiallement au rezometz. Il
 se veut agnostique au réseau considéré, de manière à être installable en
@@ -23,23 +22,33 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 {% endcomment %}
 
+{% if jeux_list.paginator %}
+{% include "pagination.html" with list=jeux_list %} 
+{% endif %}
 
-{% block sidebar %}
-    <a class="list-group-item list-group-item-info" href="{% url "media:index" %}">
-        <i class="glyphicon glyphicon-list"></i>
-        Emprunts
-    </a>
-    <a class="list-group-item list-group-item-info" href="{% url "media:index-auteurs" %}">
-        <i class="glyphicon glyphicon-list"></i>
-        Auteurs
-    </a>
-    <a class="list-group-item list-group-item-info" href="{% url "media:index-medias" %}">
-        <i class="glyphicon glyphicon-list"></i>
-        Medias
-    </a>
-    <a class="list-group-item list-group-item-info" href="{% url "media:index-jeux" %}">
-        <i class="glyphicon glyphicon-list"></i>
-        Jeux
-    </a>
-{% endblock %}
-
+    <table class="table table-striped">
+        <thead>
+            <tr>
+	    <th>Nom</th>
+	    <th>Proprietaire</th>
+ 	    <th>Durée</th>
+ 	    <th>Joueurs min</th>
+ 	    <th>Joueurs max</th>
+ 	    <th>Comment</th>
+            <th></th>
+            </tr>
+        </thead>
+        {% for jeu in jeux_list %}
+        <tr>
+            <td>{{ jeu.nom }}</td>
+            <td>{{ jeu.proprietaire }}</td>
+            <td>{{ jeu.duree }}</td>
+            <td>{{ jeu.nombre_joueurs_min }}</td>
+            <td>{{ jeu.nombre_joueurs_max }}</td>
+            <td>{{ jeu.comment }}</td>
+            <td>{% include 'buttons/edit.html' with href='media:edit-jeu' id=jeu.id %}
+            {% include 'buttons/suppr.html' with href='media:del-jeu' id=jeu.id %}
+            {% include 'buttons/history.html' with href='media:history' name='jeu' id=jeu.id %}</td>
+        </tr>
+        {% endfor %}
+    </table>

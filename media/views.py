@@ -9,8 +9,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth import authenticate, login
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
-from .forms import AuteurForm, MediaForm, EmpruntForm, EditEmpruntForm
-from .models import Auteur, Media, Emprunt
+from .forms import AuteurForm, MediaForm, JeuForm, EmpruntForm, EditEmpruntForm
+from .models import Auteur, Media, Jeu, Emprunt
 from users.models import User
 from django.db import transaction
 from reversion import revisions as reversion
@@ -120,6 +120,53 @@ def del_media(request, mediaid):
 
 @login_required
 @permission_required('perm')
+def add_jeu(request):
+    jeu = JeuForm(request.POST or None)
+    if jeu.is_valid():
+        with transaction.atomic(), reversion.create_revision():
+            jeu.save()
+            reversion.set_user(request.user)
+            reversion.set_comment("Création")
+        messages.success(request, "Le jeu a été ajouté")
+        return redirect("/media/index_jeux/")
+    return form({'mediaform': jeu}, 'media/media.html', request)
+
+@login_required
+@permission_required('perm')
+def edit_jeu(request, jeuid):
+    try:
+        jeu_instance = Jeu.objects.get(pk=jeuid)
+    except Jeu.DoesNotExist:
+        messages.error(request, u"Entrée inexistante" )
+        return redirect("/media/index_jeux/")
+    jeu = JeuForm(request.POST or None, instance=jeu_instance)
+    if jeu.is_valid():
+        with transaction.atomic(), reversion.create_revision():
+            jeu.save()
+            reversion.set_user(request.user)
+            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(field for field in jeu.changed_data))
+        messages.success(request, "Media modifié")
+        return redirect("/media/index_jeux/")
+    return form({'mediaform': jeu}, 'media/media.html', request)
+
+@login_required
+@permission_required('perm')
+def del_jeu(request, jeuid):
+    try:
+        jeu_instance = Jeu.objects.get(pk=jeuid)
+    except Jeu.DoesNotExist:
+        messages.error(request, u"Entrée inexistante" )
+        return redirect("/media/index_jeux/")
+    if request.method == "POST":
+        with transaction.atomic(), reversion.create_revision():
+            jeu_instance.delete()
+            reversion.set_user(request.user)
+            messages.success(request, "Le jeu a été détruit")
+        return redirect("/media/index_jeux")
+    return form({'objet': jeu_instance, 'objet_name': 'jeu'}, 'media/delete.html', request)
+
+@login_required
+@permission_required('perm')
 def add_emprunt(request, userid):
     try:
         user = User.objects.get(pk=userid)
@@ -198,6 +245,21 @@ def del_emprunt(request, empruntid):
 
 
 @login_required
+def index_jeux(request):
+    jeux_list = Jeu.objects.all()
+    paginator = Paginator(jeux_list, PAGINATION_NUMBER)
+    page = request.GET.get('page')
+    try:
+        jeux_list = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        jeux_list = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        jeux_list = paginator.page(paginator.num_pages)
+    return render(request, 'media/index_jeux.html', {'jeux_list':jeux_list})
+
+@login_required
 def index_auteurs(request):
     auteurs_list = Auteur.objects.all()
     paginator = Paginator(auteurs_list, PAGINATION_NUMBER)
@@ -267,6 +329,12 @@ def history(request, object, id):
         except Emprunt.DoesNotExist:
              messages.error(request, "Emprunt inexistant")
              return redirect("/media/index_emprunts")
+    elif object == 'jeu':
+        try:
+             object_instance = Jeu.objects.get(pk=id)
+        except Jeu.DoesNotExist:
+             messages.error(request, "Jeu inexistant")
+             return redirect("/media/index_jeux")
     reversions = Version.objects.get_for_object(object_instance)
     paginator = Paginator(reversions, PAGINATION_NUMBER)
     page = request.GET.get('page')
