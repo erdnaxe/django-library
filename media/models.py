@@ -1,4 +1,5 @@
 from django.db import models
+from django.core.validators import MinValueValidator
 
 class Auteur(models.Model):
     nom = models.CharField(max_length=255)
@@ -26,17 +27,18 @@ class Emprunt(models.Model):
 
 class Jeu(models.Model):
     DUREE = (
-            ('LONG', 'LONG'),
-            ('MOYEN', 'MOYEN'),
-            ('COURT', 'COURT'),
+            ('-1h', '-1h'),
+            ('1-2h', '1-2h'),
+            ('2-3h', '2-3h'),
+            ('4h+', '4h+'),
             )
 
 
     nom = models.CharField(max_length=255)
     proprietaire = models.ForeignKey('users.User', on_delete=models.PROTECT) 
     duree = models.CharField(choices=DUREE, max_length=255)
-    nombre_joueurs_min = models.IntegerField()
-    nombre_joueurs_max = models.IntegerField()
+    nombre_joueurs_min = models.IntegerField(validators=[MinValueValidator(1)])
+    nombre_joueurs_max = models.IntegerField(validators=[MinValueValidator(1)])
     comment = models.CharField(help_text="Commentaire", max_length=255, blank=True, null=True)
 
 

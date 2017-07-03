@@ -39,6 +39,11 @@ class JeuForm(ModelForm):
         model = Jeu
         fields = '__all__'
 
+    def clean_nombre_joueurs_max(self):
+        if self.cleaned_data['nombre_joueurs_max'] < self.cleaned_data['nombre_joueurs_min']:
+            raise forms.ValidationError("Max ne peut être inférieur à min")
+        return self.cleaned_data['nombre_joueurs_max']
+
 class EmpruntForm(ModelForm):
     class Meta:
         model = Emprunt
