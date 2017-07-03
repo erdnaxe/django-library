@@ -40,7 +40,11 @@ with this program; if not, write to the Free Software Foundation, Inc.,
     <h2>Résultats dans les media : </h2>
         {% include "media/aff_medias.html" with medias_list=medias_list %}
     {% endif %}
-    {% if not users_list and not emprunts_list and not medias_list %}
+    {% if jeux_list %}
+     <h2>Résultats dans les jeux : </h2>
+        {% include "media/aff_jeux.html" with jeux_list=jeux_list %}
+    {% endif %}
+    {% if not users_list and not emprunts_list and not medias_list and not jeux_list %}
         <h3>Aucun résultat</h3>
     {% endif %}
     <h6>(Seulement les {{ max_result }} premiers résultats sont affichés dans chaque catégorie)</h6>

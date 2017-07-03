@@ -35,7 +35,7 @@ from search.forms import SearchForm, SearchFormPlus
 
 from med.settings import SEARCH_DISPLAY_PAGE
 
-from media.models import Media, Emprunt
+from media.models import Media, Jeu, Emprunt
 
 def form(ctx, template, request):
     c = ctx
@@ -54,7 +54,7 @@ def search_result(search, type, request):
         date_fin = search.cleaned_data['date_fin']
     date_query = Q()
     if aff==[]:
-        aff = ['0','1','2']
+        aff = ['0','1','2','3']
     if date_deb != None:
         date_query = date_query & Q(date_emprunt__gte=date_deb)
     if date_fin != None:
@@ -66,7 +66,7 @@ def search_result(search, type, request):
     
     connexion = [] 
    
-    recherche = {'users_list': None, 'emprunts_list' : None, 'medias_list' : None}
+    recherche = {'users_list': None, 'emprunts_list' : None, 'medias_list' : None, 'jeux_list': None}
 
     if request.user.has_perms(('perm',)):
         query = Q(user__pseudo__icontains = search) | Q(user__name__icontains = search) | Q(user__surname__icontains = search)
@@ -85,6 +85,9 @@ def search_result(search, type, request):
             recherche['emprunts_list'] = Emprunt.objects.filter(query & date_query).order_by('date_emprunt').reverse()
         if i == '2':
             recherche['medias_list'] = Media.objects.filter(Q(auteur__nom__icontains = search) | Q(titre__icontains = search))
+        if i == '3':
+            recherche['jeux_list'] = Jeu.objects.filter(Q(nom__icontains = search) | Q(proprietaire__pseudo__icontains = search) | Q(proprietaire__name__icontains = search) | Q(proprietaire__surname__icontains = search))
+
 
     for r in recherche:
         if recherche[r] != None:

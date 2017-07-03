@@ -35,6 +35,7 @@ CHOICES2 = (
     ('0', 'Utilisateurs'),
     ('1', 'Media'),
     ('2', 'Emprunts'),
+    ('3', 'Jeu'),
 )
  
 
