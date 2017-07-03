@@ -208,6 +208,11 @@ class ListRight(models.Model):
     def __str__(self):
         return self.listright
 
+class Clef(models.Model):
+    nom = models.CharField(max_length=255, unique=True)
+    proprio = models.ForeignKey('User', on_delete=models.PROTECT, blank=True, null=True)
+    commentaire = models.CharField(max_length=255, null=True, blank=True)
+
 class BaseInfoForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(BaseInfoForm, self).__init__(*args, **kwargs)
@@ -248,6 +253,11 @@ class StateForm(ModelForm):
     class Meta:
         model = User
         fields = ['state']
+
+class ClefForm(ModelForm):
+    class Meta:
+        model = Clef
+        fields = '__all__'
 
 class RightForm(ModelForm):
     def __init__(self, *args, **kwargs):

@@ -40,7 +40,7 @@ from django.db import transaction
 from reversion.models import Version
 from reversion import revisions as reversion
 from users.models import User, Request, ListRight, Right, DelListRightForm, NewListRightForm, ListRightForm, RightForm, DelRightForm
-from users.models import InfoForm, BaseInfoForm, StateForm
+from users.models import InfoForm, BaseInfoForm, StateForm, Clef, ClefForm
 from users.forms import PassForm, ResetPasswordForm
 from media.models import Emprunt
 
@@ -100,7 +100,6 @@ def new_user(request):
         req.save()
         reset_passwd_mail(req, request)
         messages.success(request, "L'utilisateur %s a été crée, un mail pour l'initialisation du mot de passe a été envoyé" % user.pseudo)
-        capture_mac(request, user)
         return redirect("/users/profil/" + str(user.id))
     return form({'userform': user}, 'users/user.html', request)
 
@@ -268,6 +267,58 @@ def index_listright(request):
 
 @login_required
 @permission_required('perm')
+def add_clef(request):
+    clef = ClefForm(request.POST or None)
+    if clef.is_valid():
+        with transaction.atomic(), reversion.create_revision():
+            clef.save()
+            reversion.set_user(request.user)
+            reversion.set_comment("Création")
+        messages.success(request, "La clef a été ajouté")
+        return redirect("/users/index_clef/")
+    return form({'userform': clef}, 'users/user.html', request)
+
+@login_required
+@permission_required('perm')
+def edit_clef(request, clefid):
+    try:
+        clef_instance = Clef.objects.get(pk=clefid)
+    except Clef.DoesNotExist:
+        messages.error(request, u"Entrée inexistante" )
+        return redirect("/users/index_clef/")
+    clef = ClefForm(request.POST or None, instance=clef_instance)
+    if clef.is_valid():
+        with transaction.atomic(), reversion.create_revision():
+            clef.save()
+            reversion.set_user(request.user)
+            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(field for field in clef.changed_data))
+        messages.success(request, "Clef modifié")
+        return redirect("/users/index_clef/")
+    return form({'userform': clef}, 'users/user.html', request)
+
+@login_required
+@permission_required('perm')
+def del_clef(request, clefid):
+    try:
+        clef_instance = Clef.objects.get(pk=clefid)
+    except Clef.DoesNotExist:
+        messages.error(request, u"Entrée inexistante" )
+        return redirect("/users/index_clef/")
+    if request.method == "POST":
+        with transaction.atomic(), reversion.create_revision():
+            clef_instance.delete()
+            reversion.set_user(request.user)
+            messages.success(request, "La clef a été détruit")
+        return redirect("/users/index_clef")
+    return form({'objet': clef_instance, 'objet_name': 'clef'}, 'users/delete.html', request)
+
+@login_required
+def index_clef(request):
+    clef_list = Clef.objects.all().order_by('nom')
+    return render(request, 'users/index_clef.html', {'clef_list':clef_list})
+
+@login_required
+@permission_required('perm')
 def index(request):
     """ Affiche l'ensemble des users, need droit admin """
     users_list = User.objects.order_by('state', 'name')
@@ -296,6 +347,12 @@ def history(request, object, id):
         if not request.user.has_perms(('perm',)) and object_instance != request.user:
              messages.error(request, "Vous ne pouvez pas afficher l'historique d'un autre user que vous sans droit admin")
              return redirect("/users/profil/" + str(request.user.id))
+    elif object == 'clef':
+        try:
+             object_instance = Clef.objects.get(pk=id)
+        except Clef.DoesNotExist:
+             messages.error(request, "Utilisateur inexistant")
+             return redirect("/users/")
     elif object == 'listright' and request.user.has_perms(('perm',)):
         try:
              object_instance = ListRight.objects.get(pk=id)

@@ -38,6 +38,10 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             <i class="glyphicon glyphicon-list"></i>
             Droits
         </a>
+        <a class="list-group-item list-group-item-info" href="{% url "users:index-clef" %}">
+            <i class="glyphicon glyphicon-list"></i>
+            Clef
+        </a>
     {% endif %}
     {% if is_bureau %}
         <a class="list-group-item list-group-item-danger" href="{% url "users:del-right" %}">
