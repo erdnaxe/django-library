@@ -146,6 +146,10 @@ class User(AbstractBaseUser):
         # Simplest version again
         return True
 
+    @property
+    def is_adherent(self):
+        return self in Adhesion.objects.all().order_by('annee_debut').reverse().first().adherent.all()
+
     def get_admin_right(self):
         admin, created = ListRight.objects.get_or_create(listright="admin")
         return admin 
@@ -213,6 +217,11 @@ class Clef(models.Model):
     proprio = models.ForeignKey('User', on_delete=models.PROTECT, blank=True, null=True)
     commentaire = models.CharField(max_length=255, null=True, blank=True)
 
+class Adhesion(models.Model):
+    annee_debut = models.IntegerField(unique=True)
+    annee_fin = models.IntegerField(unique=True)
+    adherent = models.ManyToManyField('User', blank=True)
+
 class BaseInfoForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(BaseInfoForm, self).__init__(*args, **kwargs)
@@ -258,6 +267,11 @@ class ClefForm(ModelForm):
     class Meta:
         model = Clef
         fields = '__all__'
+
+class AdhesionForm(ModelForm):
+    class Meta:
+        model = Adhesion
+        fields = ['annee_debut', 'annee_fin']
 
 class RightForm(ModelForm):
     def __init__(self, *args, **kwargs):

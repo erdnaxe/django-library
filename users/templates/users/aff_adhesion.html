@@ -22,37 +22,25 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 {% endcomment %}
 
-{% if users_list.paginator %}
-{% include "pagination.html" with list=users_list %} 
-{% endif %}
-
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Prénom</th>
-                <th>Nom</th>
-                <th>Pseudo</th>
-                <th>Mail</th>
-                <th>Max emprunts</th>
-                <th>Adhérent</th>
-                <th>Profil</th>
+                <th>Année début</th>
+                <th>Année fin</th>
+                <th></th>
             </tr>
         </thead>
-        {% for user in users_list %}    
+        {% for adhesion in adhesion_list %}
         <tr>
-            <td>{{ user.name }}</td>
-            <td>{{ user.surname }}</td>
-            <td>{{ user.pseudo }}</td>
-            <td>{{ user.email }}</td>
-            <td>{{ user.maxemprunt }}</td>
-            {% if user.is_adherent %}
-            <td><font color="green">Oui</font></td>
-            {% else %}
-            <td><font color="red">Non</font></td>
-            {% endif %}
-            <td><a href="{% url "users:profil" user.id%}" class="btn btn-primary btn-sm" role="button"><i class="glyphicon glyphicon-user"></i></a>
+            <td>{{ adhesion.annee_debut }}</td>
+	    <td>{{ adhesion.annee_fin }}</td>
+            <td class="text-right">
+                {% if is_bureau %}
+                {% include 'buttons/edit.html' with href='users:edit-adhesion' id=adhesion.id %}
+                {% include 'buttons/suppr.html' with href='users:del-adhesion' id=adhesion.id %}
+                {% endif %}
+                {% include 'buttons/history.html' with href='users:history' name='adhesion' id=adhesion.id %}
             </td>
         </tr>
         {% endfor %}
     </table>
-

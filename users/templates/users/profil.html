@@ -103,6 +103,18 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             <th>Dernière connexion</th>
             <td>{{ user.last_login }}</td>
         </tr>
+        <tr>
+            <th>Adherent pour l'année en cours</th>
+            {% if user.is_adherent %}
+            <td><font color="green">Oui</font></td>
+            {% else %}
+            <td><font color="red">Non</font></td>
+            {% endif %}
+            {% if not user.is_adherent and is_bureau %}
+            <th></th>
+            <td><a class="btn btn-primary btn-sm" role="button" href="{% url 'users:adherer' user.id %}"><i class="glyphicon glyphicon-flag"></i> Adhérer</a></td>
+            {% endif %}
+        </tr> 
     </table>
     <h2>Emprunts</h2>
     {% if is_perm or is_bureau %}

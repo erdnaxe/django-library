@@ -25,7 +25,7 @@ from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from reversion.admin import VersionAdmin
 
-from .models import User, Right, ListRight, Clef, Request
+from .models import User, Right, Adhesion, ListRight, Clef, Request
 from .forms import UserChangeForm, UserCreationForm
 
 
@@ -47,6 +47,9 @@ class RightAdmin(VersionAdmin):
 
 class ClefAdmin(VersionAdmin):
     list_display = ('proprio', 'nom')
+
+class AdhesionAdmin(VersionAdmin):
+    list_display = ('annee_debut', 'annee_fin')
 
 class ListRightAdmin(VersionAdmin):
     list_display = ('listright',)
@@ -82,6 +85,7 @@ admin.site.register(User, UserAdmin)
 admin.site.register(Request, RequestAdmin)
 admin.site.register(ListRight, ListRightAdmin)
 admin.site.register(Right, RightAdmin)
+admin.site.register(Adhesion, AdhesionAdmin)
 admin.site.register(Clef, ClefAdmin)
 # Now register the new UserAdmin...
 admin.site.unregister(User)

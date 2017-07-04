@@ -34,7 +34,15 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         {% if is_perm %}
         <a class="list-group-item list-group-item-info" href="{% url "users:index" %}">
             <i class="glyphicon glyphicon-list"></i>
+            Utilisateurs dans la base
+        </a>
+        <a class="list-group-item list-group-item-info" href="{% url "users:index-ajour" %}">
+            <i class="glyphicon glyphicon-list"></i>
             Adhérents
+        </a>
+        <a class="list-group-item list-group-item-info" href="{% url "users:index-adhesion" %}">
+            <i class="glyphicon glyphicon-list"></i>
+            Adhesions
         </a>
         <a class="list-group-item list-group-item-info" href="{% url "users:index-listright" %}">
             <i class="glyphicon glyphicon-list"></i>

@@ -40,7 +40,7 @@ from django.db import transaction
 from reversion.models import Version
 from reversion import revisions as reversion
 from users.models import User, Request, ListRight, Right, DelListRightForm, NewListRightForm, ListRightForm, RightForm, DelRightForm
-from users.models import InfoForm, BaseInfoForm, StateForm, Clef, ClefForm
+from users.models import InfoForm, BaseInfoForm, StateForm, Clef, ClefForm, Adhesion, AdhesionForm
 from users.forms import PassForm, ResetPasswordForm
 from media.models import Emprunt
 
@@ -308,7 +308,7 @@ def del_clef(request, clefid):
         with transaction.atomic(), reversion.create_revision():
             clef_instance.delete()
             reversion.set_user(request.user)
-            messages.success(request, "La clef a été détruit")
+            messages.success(request, "La clef a été détruite")
         return redirect("/users/index_clef")
     return form({'objet': clef_instance, 'objet_name': 'clef'}, 'users/delete.html', request)
 
@@ -317,11 +317,81 @@ def index_clef(request):
     clef_list = Clef.objects.all().order_by('nom')
     return render(request, 'users/index_clef.html', {'clef_list':clef_list})
 
+
+@login_required
+@permission_required('bureau')
+def add_adhesion(request):
+    adhesion = AdhesionForm(request.POST or None)
+    if adhesion.is_valid():
+        with transaction.atomic(), reversion.create_revision():
+            adhesion.save()
+            reversion.set_user(request.user)
+            reversion.set_comment("Création")
+        messages.success(request, "L'adhesion a été ajouté")
+        return redirect("/users/index_adhesion/")
+    return form({'userform': adhesion}, 'users/user.html', request)
+
+@login_required
+@permission_required('bureau')
+def edit_adhesion(request, adhesionid):
+    try:
+        adhesion_instance = Adhesion.objects.get(pk=adhesionid)
+    except Adhesion.DoesNotExist:
+        messages.error(request, u"Entrée inexistante" )
+        return redirect("/users/index_adhesion/")
+    adhesion = AdhesionForm(request.POST or None, instance=adhesion_instance)
+    if adhesion.is_valid():
+        with transaction.atomic(), reversion.create_revision():
+            adhesion.save()
+            reversion.set_user(request.user)
+            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(field for field in adhesion.changed_data))
+        messages.success(request, "Adhesion modifiée")
+        return redirect("/users/index_adhesion/")
+    return form({'userform': adhesion}, 'users/user.html', request)
+
+@login_required
+@permission_required('bureau')
+def del_adhesion(request, adhesionid):
+    try:
+        adhesion_instance = Adhesion.objects.get(pk=adhesionid)
+    except Adhesion.DoesNotExist:
+        messages.error(request, u"Entrée inexistante" )
+        return redirect("/users/index_adhesion/")
+    if request.method == "POST":
+        with transaction.atomic(), reversion.create_revision():
+            adhesion_instance.delete()
+            reversion.set_user(request.user)
+            messages.success(request, "La adhesion a été détruit")
+        return redirect("/users/index_adhesion")
+    return form({'objet': adhesion_instance, 'objet_name': 'adhesion'}, 'users/delete.html', request)
+
+@login_required
+def index_adhesion(request):
+    adhesion_list = Adhesion.objects.all()
+    return render(request, 'users/index_adhesion.html', {'adhesion_list':adhesion_list})
+
 @login_required
 @permission_required('perm')
 def index(request):
     """ Affiche l'ensemble des users, need droit admin """
     users_list = User.objects.order_by('state', 'name')
+    paginator = Paginator(users_list, PAGINATION_NUMBER)
+    page = request.GET.get('page')
+    try:
+        users_list = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        users_list = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        users_list = paginator.page(paginator.num_pages)
+    return render(request, 'users/index.html', {'users_list': users_list})
+
+@login_required
+@permission_required('perm')
+def index_ajour(request):
+    """ Affiche l'ensemble des users, need droit admin """
+    users_list = Adhesion.objects.all().order_by('annee_debut').reverse().first().adherent.all().order_by('name')
     paginator = Paginator(users_list, PAGINATION_NUMBER)
     page = request.GET.get('page')
     try:
@@ -351,6 +421,12 @@ def history(request, object, id):
         try:
              object_instance = Clef.objects.get(pk=id)
         except Clef.DoesNotExist:
+             messages.error(request, "Utilisateur inexistant")
+             return redirect("/users/")
+    elif object == 'adhesion':
+        try:
+             object_instance = Adhesion.objects.get(pk=id)
+        except Adhesion.DoesNotExist:
              messages.error(request, "Utilisateur inexistant")
              return redirect("/users/")
     elif object == 'listright':
@@ -400,6 +476,24 @@ def profil(request, userid):
             'list_droits': list_droits,  
         }
     )
+
+@login_required
+@permission_required('bureau')
+def adherer(request, userid):
+    try:
+        users = User.objects.get(pk=userid)
+    except User.DoesNotExist:
+        messages.error(request, "Utilisateur inexistant")
+        return redirect("/users/")
+    adh_annee = Adhesion.objects.all().order_by('annee_debut').reverse().first()
+    with transaction.atomic(), reversion.create_revision():
+        reversion.set_user(request.user)
+        adh_annee.adherent.add(users)
+        adh_annee.save()
+        reversion.set_comment("Adhesion de %s" % users)
+    messages.success(request, "Adhesion effectuee")
+    return redirect("/users/profil/" + userid)
+ 
 
 def reset_password(request):
     userform = ResetPasswordForm(request.POST or None)
