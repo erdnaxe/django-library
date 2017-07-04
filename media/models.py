@@ -2,7 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator
 
 class Auteur(models.Model):
-    nom = models.CharField(max_length=255)
+    nom = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
         return self.nom
@@ -30,6 +30,7 @@ class Jeu(models.Model):
             ('-1h', '-1h'),
             ('1-2h', '1-2h'),
             ('2-3h', '2-3h'),
+            ('3-4h', '3-4h'),
             ('4h+', '4h+'),
             )
 
