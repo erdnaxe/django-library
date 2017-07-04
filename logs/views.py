@@ -39,6 +39,7 @@ from django.db.models import Count
 from reversion.models import Revision
 from reversion.models import Version
 
+from users.models import User
 from med.settings import PAGINATION_NUMBER as pagination_number
 
 from django.utils import timezone
@@ -77,3 +78,14 @@ def revert_action(request, revision_id):
         messages.success(request, "L'action a été supprimée")
         return redirect("/logs/")
     return form({'objet': revision, 'objet_name': revision.__class__.__name__ }, 'logs/delete.html', request)
+
+@login_required
+@permission_required('perm')
+def stats_actions(request):
+    onglet = request.GET.get('onglet')
+    stats = {
+    'Utilisateur' : {
+    'Action' : User.objects.annotate(num=Count('revision')).order_by('-num')[:40],
+    },
+    }
+    return render(request, 'logs/stats_users.html', {'stats_list': stats})
