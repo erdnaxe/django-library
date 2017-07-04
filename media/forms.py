@@ -30,6 +30,8 @@ class AuteurForm(ModelForm):
         fields = '__all__'
 
 class MediaForm(ModelForm):
+    auteur = forms.ModelMultipleChoiceField(Auteur.objects.all(), widget=forms.CheckboxSelectMultiple, required=False)
+
     class Meta:
         model = Media
         fields = '__all__'

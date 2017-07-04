@@ -269,11 +269,10 @@ class ClefForm(ModelForm):
         fields = '__all__'
 
 class AdhesionForm(ModelForm):
-    adherent = forms.ModelMultipleChoiceField(User.objects.all(), widget=forms.CheckboxSelectMultiple)
+    adherent = forms.ModelMultipleChoiceField(User.objects.all(), widget=forms.CheckboxSelectMultiple, required=False)
 
     class Meta:
         model = Adhesion
-#        fields = ['annee_debut', 'annee_fin']
         fields = '__all__'
 
 class RightForm(ModelForm):
