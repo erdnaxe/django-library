@@ -48,4 +48,5 @@ urlpatterns = [
     url(r'^users/', include('users.urls', namespace='users')),
     url(r'^media/', include('media.urls', namespace='media')),
     url(r'^search/', include('search.urls', namespace='search')),
+    url(r'^logs/', include('logs.urls', namespace='logs')),
 ]

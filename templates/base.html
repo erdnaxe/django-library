@@ -58,6 +58,9 @@ with this program; if not, write to the Free Software Foundation, Inc.,
                             <li><a href="{% url "users:index" %}">Utilisateurs</a></li>
                             {% endif %}
                             <li><a href="{% url "media:index" %}">Media</a></li>
+                            {% if is_perm %}
+                            <li><a href="{% url "logs:index" %}">Statistiques</a></li>
+                            {% endif %}
                         </ul>
                         <div class="col-sm-3 col-md-3 navbar-right">
                             <form action="{% url "search:search"%}"  method="POST" class="navbar-form" role="search">

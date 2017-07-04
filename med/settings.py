@@ -68,7 +68,8 @@ INSTALLED_APPS = (
     'med',
     'media',
     'search',
-    'reversion'
+    'reversion',
+    'logs'
 )
 
 MIDDLEWARE_CLASSES = (
