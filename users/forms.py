@@ -24,11 +24,12 @@
 
 
 from django import forms
+from django.forms import ModelForm, Form
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.validators import MinLengthValidator
 from django.utils import timezone
 
-from .models import User
+from .models import Adhesion, Clef, ListRight, Right, Request, User
 
 class PassForm(forms.Form):
     passwd1 = forms.CharField(label=u'Nouveau mot de passe', max_length=255, validators=[MinLengthValidator(8)], widget=forms.PasswordInput)
@@ -97,4 +98,89 @@ class UserChangeForm(forms.ModelForm):
 class ResetPasswordForm(forms.Form):
     pseudo = forms.CharField(label=u'Pseudo', max_length=255)
     email = forms.EmailField(max_length=255)
+
+class BaseInfoForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(BaseInfoForm, self).__init__(*args, **kwargs)
+        self.fields['name'].label = 'Prénom'
+        self.fields['surname'].label = 'Nom'
+        #self.fields['comment'].label = 'Commentaire'
+
+    class Meta:
+        model = User
+        fields = [
+            'name',
+            'pseudo',
+            'surname',
+            'email',
+            'telephone',
+            'adresse',
+        ]
+
+class InfoForm(BaseInfoForm):
+    class Meta(BaseInfoForm.Meta):
+         fields = [
+            'name',
+            'pseudo',
+            'surname',
+            'email',
+            'telephone',
+            'adresse',
+            'maxemprunt',
+        ]
+
+
+class PasswordForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['password']
+
+class StateForm(ModelForm):
+    class Meta:
+        model = User
+        fields = ['state']
+
+class ClefForm(ModelForm):
+    class Meta:
+        model = Clef
+        fields = '__all__'
+
+class AdhesionForm(ModelForm):
+    adherent = forms.ModelMultipleChoiceField(User.objects.all(), widget=forms.CheckboxSelectMultiple, required=False)
+
+    class Meta:
+        model = Adhesion
+        fields = '__all__'
+
+class RightForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(RightForm, self).__init__(*args, **kwargs)
+        self.fields['right'].label = 'Droit'
+        self.fields['right'].empty_label = "Choisir un nouveau droit"
+
+    class Meta:
+        model = Right
+        fields = ['right']
+
+
+class DelRightForm(Form):
+    rights = forms.ModelMultipleChoiceField(queryset=Right.objects.all(), label="Droits actuels",  widget=forms.CheckboxSelectMultiple)
+
+
+class ListRightForm(ModelForm):
+    class Meta:
+        model = ListRight
+        fields = ['listright', 'details']
+
+    def __init__(self, *args, **kwargs):
+        super(ListRightForm, self).__init__(*args, **kwargs)
+        self.fields['listright'].label = 'Nom du droit/groupe'
+
+class NewListRightForm(ListRightForm):
+    class Meta(ListRightForm.Meta):
+        fields = '__all__'
+
+class DelListRightForm(Form):
+    listrights = forms.ModelMultipleChoiceField(queryset=ListRight.objects.all(), label="Droits actuels",  widget=forms.CheckboxSelectMultiple)
+
 

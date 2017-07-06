@@ -39,8 +39,9 @@ from django.db import transaction
 
 from reversion.models import Version
 from reversion import revisions as reversion
-from users.models import User, Request, ListRight, Right, DelListRightForm, NewListRightForm, ListRightForm, RightForm, DelRightForm
-from users.models import InfoForm, BaseInfoForm, StateForm, Clef, ClefForm, Adhesion, AdhesionForm
+from users.forms import DelListRightForm, NewListRightForm, ListRightForm, RightForm, DelRightForm
+from users.forms import InfoForm, BaseInfoForm, StateForm, ClefForm, AdhesionForm 
+from users.models import User, Request, ListRight, Right, Clef, Adhesion
 from users.forms import PassForm, ResetPasswordForm
 from media.models import Emprunt
 
