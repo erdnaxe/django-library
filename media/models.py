@@ -23,6 +23,9 @@ class Emprunt(models.Model):
     date_rendu = models.DateTimeField(help_text='%d/%m/%y %H:%M:%S', blank=True, null=True)
     permanencier_emprunt = models.ForeignKey('users.User', on_delete=models.PROTECT, related_name='user_permanencier_emprunt')
     permanencier_rendu = models.ForeignKey('users.User', on_delete=models.PROTECT, related_name='user_permanencier_rendu', blank=True, null=True) 
+
+    def __str__(self):
+        return str(self.media) + str(self.user)
  
 
 class Jeu(models.Model):
@@ -42,4 +45,5 @@ class Jeu(models.Model):
     nombre_joueurs_max = models.IntegerField(validators=[MinValueValidator(1)])
     comment = models.CharField(help_text="Commentaire", max_length=255, blank=True, null=True)
 
-
+    def __str__(self):
+        return str(self.nom)
