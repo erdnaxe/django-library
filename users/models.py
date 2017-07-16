@@ -199,7 +199,7 @@ class Right(models.Model):
         unique_together = ("user", "right")
  
     def __str__(self):
-        return str(self.user) + " - " + str(self.right)
+        return str(self.user)
 
 class ListRight(models.Model):
     PRETTY_NAME = "Liste des droits existants"

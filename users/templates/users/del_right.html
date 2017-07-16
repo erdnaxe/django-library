@@ -1,3 +1,4 @@
+{% extends "users/sidebar.html" %}
 {% comment %}
 Re2o est un logiciel d'administration développé initiallement au rezometz. Il
 se veut agnostique au réseau considéré, de manière à être installable en
@@ -22,27 +23,36 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 {% endcomment %}
 
+{% load bootstrap3 %}
+
+{% block title %}Création et modification d'utilisateur{% endblock %}
+
+
+{% block content %}
+
+<h1>Gestion des droits</h1>
+
+<form class="form" method="post">
+    {% csrf_token %}
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Clef</th>
-                <th>Propriétaire</th>
-                <th>Commentaire</th>
-                <th></th>
+                {% for key, values in userform.items %}
+                <th>{{ key }}</th>
+                {% endfor %}
             </tr>
         </thead>
-        {% for clef in clef_list %}
-        <tr>
-            <td>{{ clef.nom }}</td>
-	    <td>{{ clef.proprio }}</td>
-	    <td>{{ clef.commentaire }}</td>
-            <td class="text-right">
-                {% include 'buttons/edit.html' with href='users:edit-clef' id=clef.id %}
-                {% if is_bureau %}
-                {% include 'buttons/suppr.html' with href='users:del-clef' id=clef.id %}
-                {% endif %}
-                {% include 'buttons/history.html' with href='users:history' name='clef' id=clef.id %}
-            </td>
-        </tr>
-        {% endfor %}
+            <tr>
+            {% for key, values in userform.items %}
+            {% bootstrap_form_errors values %}
+            <th>{{ values.rights }}</th>
+            {% endfor %}
+            </tr>
     </table>
+    {% bootstrap_button "Modifier" button_type="submit" icon="star" %}
+</form>
+
+  <br />
+  <br />
+  <br />
+{% endblock %}

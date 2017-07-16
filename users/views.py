@@ -40,9 +40,10 @@ from django.db import transaction
 from reversion.models import Version
 from reversion import revisions as reversion
 from users.forms import DelListRightForm, NewListRightForm, ListRightForm, RightForm, DelRightForm
-from users.forms import InfoForm, BaseInfoForm, StateForm, ClefForm, AdhesionForm 
+from users.forms import InfoForm, BaseInfoForm, StateForm, ClefForm, BaseClefForm, AdhesionForm 
 from users.models import User, Request, ListRight, Right, Clef, Adhesion
 from users.forms import PassForm, ResetPasswordForm
+from users.decorators import user_is_in_campus
 from media.models import Emprunt
 
 from med.settings import REQ_EXPIRE_STR, EMAIL_FROM, ASSO_NAME, ASSO_EMAIL, SITE_NAME, PAGINATION_NUMBER
@@ -248,16 +249,19 @@ def add_right(request, userid):
 @permission_required('bureau')
 def del_right(request):
     """ Supprimer un droit à un user, need droit bureau """
-    user_right_list = DelRightForm(request.POST or None)
-    if user_right_list.is_valid():
-        right_del = user_right_list.cleaned_data['rights']
-        with transaction.atomic(), reversion.create_revision():
-            reversion.set_user(request.user)
-            reversion.set_comment("Retrait des droit %s" % ','.join(str(deleted_right) for deleted_right in right_del))
-            right_del.delete()
-        messages.success(request, "Droit retiré avec succès")
-        return redirect("/users/")
-    return form({'userform': user_right_list}, 'users/user.html', request)
+    user_right_list = dict()
+    for right in ListRight.objects.all():
+        user_right_list[right]= DelRightForm(right, request.POST or None)
+    for keys, right_item in user_right_list.items():
+        if right_item.is_valid():
+            right_del = right_item.cleaned_data['rights']
+            with transaction.atomic(), reversion.create_revision():
+                reversion.set_user(request.user)
+                reversion.set_comment("Retrait des droit %s" % ','.join(str(deleted_right) for deleted_right in right_del))
+                right_del.delete()
+            messages.success(request, "Droit retiré avec succès")
+            return redirect("/users/")
+    return form({'userform': user_right_list}, 'users/del_right.html', request)
 
 @login_required
 @permission_required('perm')
@@ -279,19 +283,22 @@ def add_clef(request):
         return redirect("/users/index_clef/")
     return form({'userform': clef}, 'users/user.html', request)
 
-@login_required
-@permission_required('bureau')
+@user_is_in_campus
 def edit_clef(request, clefid):
     try:
         clef_instance = Clef.objects.get(pk=clefid)
     except Clef.DoesNotExist:
         messages.error(request, u"Entrée inexistante" )
         return redirect("/users/index_clef/")
-    clef = ClefForm(request.POST or None, instance=clef_instance)
+    if request.user.has_perms(('bureau',)):   
+        clef = ClefForm(request.POST or None, instance=clef_instance)
+    else:
+        clef = BaseClefForm(request.POST or None, instance=clef_instance)
     if clef.is_valid():
         with transaction.atomic(), reversion.create_revision():
             clef.save()
-            reversion.set_user(request.user)
+            if request.user.is_authenticated:
+                reversion.set_user(request.user)
             reversion.set_comment("Champs modifié(s) : %s" % ', '.join(field for field in clef.changed_data))
         messages.success(request, "Clef modifié")
         return redirect("/users/index_clef/")
@@ -313,11 +320,10 @@ def del_clef(request, clefid):
         return redirect("/users/index_clef")
     return form({'objet': clef_instance, 'objet_name': 'clef'}, 'users/delete.html', request)
 
-@login_required
+@user_is_in_campus
 def index_clef(request):
     clef_list = Clef.objects.all().order_by('nom')
     return render(request, 'users/index_clef.html', {'clef_list':clef_list})
-
 
 @login_required
 @permission_required('bureau')
@@ -405,10 +411,19 @@ def index_ajour(request):
         users_list = paginator.page(paginator.num_pages)
     return render(request, 'users/index.html', {'users_list': users_list})
 
-@login_required
+@user_is_in_campus
 def history(request, object, id):
     """ Affichage de l'historique : (acl, argument)
     user : self, userid"""
+    if object == 'clef':
+        try:
+             object_instance = Clef.objects.get(pk=id)
+        except Clef.DoesNotExist:
+             messages.error(request, "Utilisateur inexistant")
+             return redirect("/users/")
+    elif not request.user.is_authenticated:
+        messages.error(request, "Permission denied")
+        return redirect("/users/")
     if object == 'user':
         try:
              object_instance = User.objects.get(pk=id)

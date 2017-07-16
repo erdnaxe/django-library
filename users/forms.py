@@ -145,6 +145,12 @@ class ClefForm(ModelForm):
         model = Clef
         fields = '__all__'
 
+class BaseClefForm(ClefForm):
+    class Meta(ClefForm.Meta):
+         fields = [
+            'commentaire',
+        ]
+
 class AdhesionForm(ModelForm):
     adherent = forms.ModelMultipleChoiceField(User.objects.all(), widget=forms.CheckboxSelectMultiple, required=False)
 
@@ -164,8 +170,11 @@ class RightForm(ModelForm):
 
 
 class DelRightForm(Form):
-    rights = forms.ModelMultipleChoiceField(queryset=Right.objects.all(), label="Droits actuels",  widget=forms.CheckboxSelectMultiple)
+    rights = forms.ModelMultipleChoiceField(queryset=Right.objects.all(),  widget=forms.CheckboxSelectMultiple)
 
+    def __init__(self, right, *args, **kwargs):
+        super(DelRightForm, self).__init__(*args, **kwargs)
+        self.fields['rights'].queryset = Right.objects.filter(right=right)
 
 class ListRightForm(ModelForm):
     class Meta:
