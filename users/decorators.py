@@ -26,6 +26,7 @@
 
 
 from django.core.exceptions import PermissionDenied
+from django.shortcuts import redirect
 from med.settings import AUTHORIZED_IP_RANGE, AUTHORIZED_IP6_RANGE
 import ipaddress
 
@@ -34,7 +35,7 @@ def user_is_in_campus(function):
         if not request.user.is_authenticated:
             remote_ip = get_ip(request)
             if not ipaddress.ip_address(remote_ip) in ipaddress.ip_network(AUTHORIZED_IP_RANGE) and not ipaddress.ip_address(remote_ip) in ipaddress.ip_network(AUTHORIZED_IP6_RANGE):
-                raise PermissionDenied
+                return redirect("/")
         return function(request, *args, **kwargs)
     wrap.__doc__ = function.__doc__
     wrap.__name__ = function.__name__
