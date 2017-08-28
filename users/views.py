@@ -290,10 +290,7 @@ def edit_clef(request, clefid):
     except Clef.DoesNotExist:
         messages.error(request, u"Entrée inexistante" )
         return redirect("/users/index_clef/")
-    if request.user.has_perms(('bureau',)):   
         clef = ClefForm(request.POST or None, instance=clef_instance)
-    else:
-        clef = BaseClefForm(request.POST or None, instance=clef_instance)
     if clef.is_valid():
         with transaction.atomic(), reversion.create_revision():
             clef.save()
