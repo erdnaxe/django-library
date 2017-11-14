@@ -82,7 +82,7 @@ class User(AbstractBaseUser):
 
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
-    email = models.EmailField(null=True, blank=True)
+    email = models.EmailField()
     telephone = models.CharField(max_length=15, null=True, blank=True)
     adresse = models.CharField(max_length=255, null=True, blank=True)
     maxemprunt = models.IntegerField(default=MAX_EMPRUNT, help_text="Maximum d'emprunts autorisés") 
