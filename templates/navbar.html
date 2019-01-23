@@ -1,0 +1,64 @@
+<nav class="navbar navbar-dark shadow bg-dark navbar-expand-lg">
+    <a class="navbar-brand" href="{% url "index" %}">Méd</a>
+
+    <ul class="navbar-nav mr-auto">
+        <li>
+            <a class="nav-link active" href="{% url "media:index" %}">
+                <span class="oi oi-book"></span>
+                Media
+            </a>
+        </li>
+        {% if is_perm %}
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url "users:index" %}">
+                    <span class="oi oi-person"></span>
+                    Utilisateurs
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url "logs:index" %}">
+                    <span class="oi oi-bar-chart"></span>
+                    Statistiques
+                </a>
+            </li>
+        {% else %}
+            <li class="nav-item">
+                <a class="nav-link active" href="{% url "users:profile" %}">
+                    <span class="oi oi-person"></span>
+                    Mon profil
+                </a>
+            </li>
+        {% endif %}
+        {% if request.user.is_authenticated %}
+            <li>
+                <a class="nav-link active" href="{% url 'logout' %}">
+                    <span class="oi oi-account-logout"></span>
+                    Déconnexion
+                </a>
+            </li>
+        {% else %}
+            <li>
+                <a class="nav-link active" href="{% url 'login' %}">
+                    <span class="oi oi-account-login"></span>
+                    Connexion
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+
+    <form action="{% url "search:search" %}" method="POST" class="form-inline" role="search">
+        {% csrf_token %}
+        <div class="input-group">
+            <input class="form-control" type="search" placeholder="Recherche" aria-label="Recherche"
+                   name="search_field">
+            <div class="input-group-append" id="button-addon4">
+                <button class="btn btn-primary" type="submit">
+                    <span class="oi oi-magnifying-glass"></span>
+                </button>
+                <a href="{% url "search:searchp" %}" class="btn btn-secondary" role="button">
+                    <span class="oi oi-ellipses"></span>
+                </a>
+            </div>
+        </div>
+    </form>
+</nav>

@@ -1,8 +1,9 @@
 import os
 
+from django.contrib.messages import constants as messages
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -14,7 +15,6 @@ SECRET_KEY = '+9*v^ww%sea&$#45uyuldikymgcijrq6&vp@y8s97%&3@vzvli'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -67,11 +67,9 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'med.wsgi.application'
 
-
 # Django crispy forms
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
@@ -82,7 +80,6 @@ DATABASES = {
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -102,7 +99,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
 
@@ -120,7 +116,6 @@ LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),
 ]
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
@@ -129,7 +124,6 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-
 
 # Emails
 
@@ -152,10 +146,15 @@ SESSION_COOKIE_SECURE = False
 # eg: ADMINS = [('pseudo', 'mymail@something.org')]
 ADMINS = []
 
+# Use message tags for Bootstrap 4
 
-
-
-
+MESSAGE_TAGS = {
+    messages.DEBUG: 'alert-info',
+    messages.INFO: 'alert-info',
+    messages.SUCCESS: 'alert-success',
+    messages.WARNING: 'alert-warning',
+    messages.ERROR: 'alert-danger',
+}
 
 ### Under this comment it is code from re2o
 
@@ -172,10 +171,10 @@ LOGIN_REDIRECT_URL = '/'
 
 # django-bootstrap3 config dictionnary
 BOOTSTRAP3 = {
-            'jquery_url': '/static/js/jquery-2.2.4.min.js',
-            'base_url': '/static/bootstrap/',
-            'include_jquery': True,
-        }
+    'jquery_url': '/static/js/jquery-2.2.4.min.js',
+    'base_url': '/static/bootstrap/',
+    'include_jquery': True,
+}
 BOOTSTRAP_BASE_URL = '/static/bootstrap/'
 
 PAGINATION_NUMBER = 25
@@ -197,8 +196,8 @@ SEARCH_RESULT = 15
 
 # Décision radius à prendre
 RADIUS_VLAN_DECISION = {
-    'VLAN_NOK' : 42,
-    'VLAN_OK' : 69,
+    'VLAN_NOK': 42,
+    'VLAN_OK': 69,
 }
 
 MAX_EMPRUNT = 5

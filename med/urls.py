@@ -11,12 +11,12 @@ admin.site.site_header = _('Med administration')
 admin.site.site_title = _('Med Admin')
 
 urlpatterns = [
-    url(r'^$', index),
-    url('^logout/', auth_views.LogoutView.as_view(), {'next_page': '/'}),
     url('^', include('django.contrib.auth.urls')),
-    url(r'^admin/', admin.site.urls),
-    url(r'^users/', include('users.urls')),
-    url(r'^media/', include('media.urls')),
-    url(r'^search/', include('search.urls')),
-    url(r'^logs/', include('logs.urls')),
+    path('logout/', auth_views.LogoutView.as_view(), {'next_page': '/'}),
+    path('admin/', admin.site.urls),
+    path('users/', include('users.urls')),
+    path('media/', include('media.urls')),
+    path('search/', include('search.urls')),
+    path('logs/', include('logs.urls')),
+    path('', index, name="index"),
 ]

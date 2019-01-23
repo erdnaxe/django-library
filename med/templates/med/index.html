@@ -1,18 +1,14 @@
 {% extends "med/sidebar.html" %}
 
-{% load bootstrap3 %}
-{% load staticfiles %}
-
 {% block title %}Accueil{% endblock %}
 
 {% block content %}
-    <h1>Bienvenue sur {{ site_name }}, notre base de données.</h1>
+    <h1>Bienvenue sur la base de données de la médiathèque de l'ENS Paris-Saclay</h1>
 
-    <h1>Welcome to procrastination heaven ! </h1>
+    <p class="lead">
+        <span class="text-muted">Welcome to procrastination haven !</span>
+        À quoi sert ce site ? Comment adhérer ? Bonjour voilà ?
+    </p>
 
-    <center>
-        <div class="thumbnail">
-            <img src="/static/logo/logo.png" alt="logo">
-        </div>
-    </center>
+    <img src="/static/logo/splash.png" class="img-fluid mt-4" alt="logo">
 {% endblock %}
