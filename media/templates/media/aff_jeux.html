@@ -1,44 +1,20 @@
-{% comment %}
-Re2o est un logiciel d'administration développé initiallement au rezometz. Il
-se veut agnostique au réseau considéré, de manière à être installable en
-quelques clics.
-
-Copyright © 2017  Gabriel Détraz
-Copyright © 2017  Goulven Kermarec
-Copyright © 2017  Augustin Lemesle
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-{% endcomment %}
-
 {% if jeux_list.paginator %}
-{% include "pagination.html" with list=jeux_list %} 
+    {% include "pagination.html" with list=jeux_list %}
 {% endif %}
 
-    <table class="table table-striped">
-        <thead>
-            <tr>
-	    <th>Nom</th>
-	    <th>Proprietaire</th>
- 	    <th>Durée</th>
- 	    <th>Joueurs min</th>
- 	    <th>Joueurs max</th>
- 	    <th>Comment</th>
-            <th></th>
-            </tr>
-        </thead>
-        {% for jeu in jeux_list %}
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th>Nom</th>
+        <th>Proprietaire</th>
+        <th>Durée</th>
+        <th>Joueurs min</th>
+        <th>Joueurs max</th>
+        <th>Comment</th>
+        <th></th>
+    </tr>
+    </thead>
+    {% for jeu in jeux_list %}
         <tr>
             <td>{{ jeu.nom }}</td>
             <td>{{ jeu.proprietaire }}</td>
@@ -46,9 +22,13 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             <td>{{ jeu.nombre_joueurs_min }}</td>
             <td>{{ jeu.nombre_joueurs_max }}</td>
             <td>{{ jeu.comment }}</td>
-            <td>{% if is_perm %}{% include 'buttons/edit.html' with href='media:edit-jeu' id=jeu.id %}
-            {% include 'buttons/suppr.html' with href='media:del-jeu' id=jeu.id %}{% endif %}
-            {% include 'buttons/history.html' with href='media:history' name='jeu' id=jeu.id %}</td>
+            <td>
+                {% if is_perm %}
+                    {% include 'buttons/edit.html' with href='media:edit-jeu' id=jeu.id %}
+                    {% include 'buttons/suppr.html' with href='media:del-jeu' id=jeu.id %}
+                {% endif %}
+                {% include 'buttons/history.html' with href='media:history' name='jeu' id=jeu.id %}
+            </td>
         </tr>
-        {% endfor %}
-    </table>
+    {% endfor %}
+</table>

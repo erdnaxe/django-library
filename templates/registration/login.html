@@ -1,30 +1,19 @@
 {% extends "base.html" %}
 
-{% load bootstrap3 %}
+{% load crispy_forms_tags %}
 
 {% block title %}Login{% endblock %}
 
 {% block content %}
-    {% if form.errors %}
-        <p>Your username and password didn't match. Please try again.</p>
-    {% endif %}
-
-    {% if next %}
-        {% if user.is_authenticated %}
-            <p>Your account doesn't have access to this page. To proceed,
-                please login with an account that has access.</p>
-        {% else %}
-            <p>Please login to see this page.</p>
-        {% endif %}
-    {% endif %}
-
-    <p>
     <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
-        {% bootstrap_form form %}
-        {% bootstrap_button "Login" button_type="submit" icon="log-in" %}
-        <input type="hidden" name="next" value="{{ next }}"/>
-    </form></p>
-    <p><a class="btn btn-warning btn-sm" role="button" href="{% url 'users:reset-password' %}"> Mot de passe oublié
-        ?</a></p>
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-success">
+            <span class="oi oi-account-login"></span>
+            Login
+        </button>
+    </form>
+    <a class="small font-italic" role="button" href="{% url 'users:reset-password' %}">
+        Mot de passe oublié ?
+    </a>
 {% endblock %}
