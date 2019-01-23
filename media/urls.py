@@ -24,6 +24,7 @@ from django.conf.urls import url
 
 from . import views
 
+app_name = 'media'
 urlpatterns = [
     url(r'^add_auteur/$', views.add_auteur, name='add-auteur'),
     url(r'^edit_auteur/(?P<auteurid>[0-9]+)$', views.edit_auteur, name='edit-auteur'),

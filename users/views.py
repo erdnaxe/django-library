@@ -34,7 +34,7 @@ from django.db.models import Max, ProtectedError
 from django.db import IntegrityError
 from django.core.mail import send_mail
 from django.utils import timezone
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db import transaction
 
 from reversion.models import Version
