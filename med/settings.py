@@ -116,6 +116,10 @@ USE_L10N = True
 
 USE_TZ = True
 
+LOCALE_PATHS = [
+    os.path.join(BASE_DIR, 'locale'),
+]
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -177,21 +181,9 @@ BOOTSTRAP_BASE_URL = '/static/bootstrap/'
 PAGINATION_NUMBER = 25
 PAGINATION_LARGE_NUMBER = 8
 
-# Security settings
-SECURE_CONTENT_TYPE_NOSNIFF = True
-SECURE_BROWSER_XSS_FILTER = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_HTTPONLY = True
-X_FRAME_OPTIONS = 'DENY'
-SESSION_COOKIE_AGE = 60 * 60 * 3
-
 # Association information
 
-SITE_NAME = "Re2o.rez"
-
-# Main extension used in asso
-MAIN_EXTENSION = ".rez"
+SITE_NAME = "Med"
 
 LOGO_PATH = "static_files/logo.png"
 
