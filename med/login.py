@@ -1,17 +1,10 @@
-# -*- coding: utf-8 -*-
-# Module d'authentification
-# David Sinquin, Gabriel Détraz, Goulven Kermarec
-
-
-import hashlib
 import binascii
+import hashlib
 import os
-from base64 import encodestring
-from base64 import decodestring
+from base64 import b64decode, b64encode
 from collections import OrderedDict
 
 from django.contrib.auth import hashers
-
 
 ALGO_NAME = "{SSHA}"
 ALGO_LEN = len(ALGO_NAME + "$")
@@ -22,10 +15,11 @@ def makeSecret(password):
     salt = os.urandom(4)
     h = hashlib.sha1(password.encode())
     h.update(salt)
-    return ALGO_NAME + "$" + encodestring(h.digest() + salt).decode()[:-1]
+    return ALGO_NAME + "$" + b64encode(h.digest() + salt).decode()[:-1]
+
 
 def checkPassword(challenge_password, password):
-    challenge_bytes = decodestring(challenge_password[ALGO_LEN:].encode())
+    challenge_bytes = b64decode(challenge_password[ALGO_LEN:].encode())
     digest = challenge_bytes[:DIGEST_LEN]
     salt = challenge_bytes[DIGEST_LEN:]
     hr = hashlib.sha1(password.encode())
@@ -36,6 +30,7 @@ def checkPassword(challenge_password, password):
     for i, j in zip(digest, hr.digest()):
         valid_password &= i == j
     return valid_password
+
 
 class SSHAPasswordHasher(hashers.BasePasswordHasher):
     """
@@ -66,12 +61,12 @@ class SSHAPasswordHasher(hashers.BasePasswordHasher):
         """
         assert encoded.startswith(self.algorithm)
         hash = encoded[ALGO_LEN:]
-        hash = binascii.hexlify(decodestring(hash.encode())).decode()
+        hash = binascii.hexlify(b64decode(hash.encode())).decode()
         return OrderedDict([
             ('algorithm', self.algorithm),
             ('iterations', 0),
-            ('salt', hashers.mask_hash(hash[2*DIGEST_LEN:], show=2)),
-            ('hash', hashers.mask_hash(hash[:2*DIGEST_LEN])),
+            ('salt', hashers.mask_hash(hash[2 * DIGEST_LEN:], show=2)),
+            ('hash', hashers.mask_hash(hash[:2 * DIGEST_LEN])),
         ])
 
     def harden_runtime(self, password, encoded):
@@ -81,4 +76,3 @@ class SSHAPasswordHasher(hashers.BasePasswordHasher):
         As we are not using multiple iterations the method is pretty useless
         """
         pass
-

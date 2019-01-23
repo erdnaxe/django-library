@@ -1,58 +1,35 @@
-# Re2o est un logiciel d'administration développé initiallement au rezometz. Il
-# se veut agnostique au réseau considéré, de manière à être installable en
-# quelques clics.
-#
-# Copyright © 2017  Gabriel Détraz
-# Copyright © 2017  Goulven Kermarec
-# Copyright © 2017  Augustin Lemesle
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along
-# with this program; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-
-# App de gestion des users pour med
-# Goulven Kermarec, Gabriel Détraz, Lemesle Augustin
-# Gplv2
-from django.shortcuts import get_object_or_404, render, redirect
-from django.template.context_processors import csrf
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.template import Context, RequestContext, loader
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.signals import user_logged_in
-from django.db.models import Max, ProtectedError
-from django.db import IntegrityError
 from django.core.mail import send_mail
-from django.utils import timezone
-from django.urls import reverse
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db import IntegrityError
 from django.db import transaction
-
-from reversion.models import Version
+from django.db.models import ProtectedError
+from django.shortcuts import get_object_or_404, render, redirect
+from django.template import loader
+from django.template.context_processors import csrf
+from django.urls import reverse
+from django.utils import timezone
 from reversion import revisions as reversion
-from users.forms import DelListRightForm, NewListRightForm, ListRightForm, RightForm, DelRightForm
-from users.forms import InfoForm, BaseInfoForm, StateForm, ClefForm, BaseClefForm, AdhesionForm 
-from users.models import User, Request, ListRight, Right, Clef, Adhesion
-from users.forms import PassForm, ResetPasswordForm
-from users.decorators import user_is_in_campus
-from media.models import Emprunt
+from reversion.models import Version
 
-from med.settings import REQ_EXPIRE_STR, EMAIL_FROM, ASSO_NAME, ASSO_EMAIL, SITE_NAME, PAGINATION_NUMBER
+from med.settings import REQ_EXPIRE_STR, DEFAULT_FROM_EMAIL, \
+    SITE_NAME, PAGINATION_NUMBER
+from media.models import Emprunt
+from users.decorators import user_is_in_campus
+from users.forms import DelListRightForm, NewListRightForm, ListRightForm, \
+    RightForm, DelRightForm
+from users.forms import InfoForm, BaseInfoForm, StateForm, ClefForm, \
+    AdhesionForm
+from users.forms import PassForm, ResetPasswordForm
+from users.models import User, Request, ListRight, Right, Clef, Adhesion
 
 
 def form(ctx, template, request):
     c = ctx
     c.update(csrf(request))
     return render(request, template, c)
+
 
 def password_change_action(u_form, user, request, req=False):
     """ Fonction qui effectue le changeemnt de mdp bdd"""
@@ -69,20 +46,21 @@ def password_change_action(u_form, user, request, req=False):
         return redirect("/")
     return redirect("/users/profil/" + str(user.id))
 
+
 def reset_passwd_mail(req, request):
     """ Prend en argument un request, envoie un mail de réinitialisation de mot de pass """
     t = loader.get_template('users/email_passwd_request')
     c = {
-      'name': str(req.user.name) + ' ' + str(req.user.surname),
-      'asso': ASSO_NAME,
-      'asso_mail': ASSO_EMAIL,
-      'site_name': SITE_NAME,
-      'url': request.build_absolute_uri(
-       reverse('users:process', kwargs={'token': req.token})),
-       'expire_in': REQ_EXPIRE_STR,
+        'name': str(req.user.name) + ' ' + str(req.user.surname),
+        'asso': ASSO_NAME,
+        'asso_mail': ASSO_EMAIL,
+        'site_name': SITE_NAME,
+        'url': request.build_absolute_uri(
+            reverse('users:process', kwargs={'token': req.token})),
+        'expire_in': REQ_EXPIRE_STR,
     }
     send_mail('Votre compte %s' % SITE_NAME, t.render(c),
-    EMAIL_FROM, [req.user.email], fail_silently=False)
+              DEFAULT_FROM_EMAIL, [req.user.email], fail_silently=False)
     return
 
 
@@ -101,9 +79,11 @@ def new_user(request):
         req.user = user
         req.save()
         reset_passwd_mail(req, request)
-        messages.success(request, "L'utilisateur %s a été crée, un mail pour l'initialisation du mot de passe a été envoyé" % user.pseudo)
+        messages.success(request,
+                         "L'utilisateur %s a été crée, un mail pour l'initialisation du mot de passe a été envoyé" % user.pseudo)
         return redirect("/users/profil/" + str(user.id))
     return form({'userform': user}, 'users/user.html', request)
+
 
 @login_required
 def edit_info(request, userid):
@@ -114,7 +94,8 @@ def edit_info(request, userid):
         messages.error(request, "Utilisateur inexistant")
         return redirect("/users/")
     if not request.user.has_perms(('bureau',)) and user != request.user:
-        messages.error(request, "Vous ne pouvez pas modifier un autre user que vous sans droit admin")
+        messages.error(request,
+                       "Vous ne pouvez pas modifier un autre user que vous sans droit admin")
         return redirect("/users/profil/" + str(request.user.id))
     if not request.user.has_perms(('bureau',)):
         user = BaseInfoForm(request.POST or None, instance=user)
@@ -124,10 +105,12 @@ def edit_info(request, userid):
         with transaction.atomic(), reversion.create_revision():
             user.save()
             reversion.set_user(request.user)
-            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(field for field in user.changed_data))
+            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(
+                field for field in user.changed_data))
         messages.success(request, "L'user a bien été modifié")
         return redirect("/users/profil/" + userid)
     return form({'userform': user}, 'users/user.html', request)
+
 
 @login_required
 @permission_required('bureau')
@@ -143,10 +126,12 @@ def state(request, userid):
         with transaction.atomic(), reversion.create_revision():
             state.save()
             reversion.set_user(request.user)
-            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(field for field in state.changed_data))
+            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(
+                field for field in state.changed_data))
         messages.success(request, "Etat changé avec succès")
         return redirect("/users/profil/" + userid)
     return form({'userform': state}, 'users/user.html', request)
+
 
 @login_required
 def password(request, userid):
@@ -159,12 +144,14 @@ def password(request, userid):
         messages.error(request, "Utilisateur inexistant")
         return redirect("/users/")
     if not request.user.has_perms(('bureau',)) and user != request.user:
-        messages.error(request, "Vous ne pouvez pas modifier un autre user que vous sans droit admin")
+        messages.error(request,
+                       "Vous ne pouvez pas modifier un autre user que vous sans droit admin")
         return redirect("/users/profil/" + str(request.user.id))
     u_form = PassForm(request.POST or None)
     if u_form.is_valid():
         return password_change_action(u_form, user, request)
     return form({'userform': u_form}, 'users/user.html', request)
+
 
 @login_required
 @permission_required('bureau')
@@ -181,6 +168,7 @@ def add_listright(request):
         return redirect("/users/index_listright/")
     return form({'userform': listright}, 'users/user.html', request)
 
+
 @login_required
 @permission_required('bureau')
 def edit_listright(request, listrightid):
@@ -188,17 +176,19 @@ def edit_listright(request, listrightid):
     try:
         listright_instance = ListRight.objects.get(pk=listrightid)
     except ListRight.DoesNotExist:
-        messages.error(request, u"Entrée inexistante" )
+        messages.error(request, u"Entrée inexistante")
         return redirect("/users/")
     listright = ListRightForm(request.POST or None, instance=listright_instance)
     if listright.is_valid():
         with transaction.atomic(), reversion.create_revision():
             listright.save()
             reversion.set_user(request.user)
-            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(field for field in listright.changed_data))
+            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(
+                field for field in listright.changed_data))
         messages.success(request, "Droit modifié")
         return redirect("/users/index_listright/")
     return form({'userform': listright}, 'users/user.html', request)
+
 
 @login_required
 @permission_required('bureau')
@@ -220,6 +210,7 @@ def del_listright(request):
                         vous ne pouvez pas le supprimer" % listright_del)
         return redirect("/users/index_listright/")
     return form({'userform': listright}, 'users/user.html', request)
+
 
 @login_required
 @permission_required('bureau')
@@ -245,30 +236,35 @@ def add_right(request, userid):
         return redirect("/users/profil/" + userid)
     return form({'userform': right}, 'users/user.html', request)
 
+
 @login_required
 @permission_required('bureau')
 def del_right(request):
     """ Supprimer un droit à un user, need droit bureau """
     user_right_list = dict()
     for right in ListRight.objects.all():
-        user_right_list[right]= DelRightForm(right, request.POST or None)
+        user_right_list[right] = DelRightForm(right, request.POST or None)
     for keys, right_item in user_right_list.items():
         if right_item.is_valid():
             right_del = right_item.cleaned_data['rights']
             with transaction.atomic(), reversion.create_revision():
                 reversion.set_user(request.user)
-                reversion.set_comment("Retrait des droit %s" % ','.join(str(deleted_right) for deleted_right in right_del))
+                reversion.set_comment("Retrait des droit %s" % ','.join(
+                    str(deleted_right) for deleted_right in right_del))
                 right_del.delete()
             messages.success(request, "Droit retiré avec succès")
             return redirect("/users/")
     return form({'userform': user_right_list}, 'users/del_right.html', request)
+
 
 @login_required
 @permission_required('perm')
 def index_listright(request):
     """ Affiche l'ensemble des droits , need droit perm """
     listright_list = ListRight.objects.order_by('listright')
-    return render(request, 'users/index_listright.html', {'listright_list':listright_list})
+    return render(request, 'users/index_listright.html',
+                  {'listright_list': listright_list})
+
 
 @login_required
 @permission_required('bureau')
@@ -283,12 +279,13 @@ def add_clef(request):
         return redirect("/users/index_clef/")
     return form({'userform': clef}, 'users/user.html', request)
 
+
 @user_is_in_campus
 def edit_clef(request, clefid):
     try:
         clef_instance = Clef.objects.get(pk=clefid)
     except Clef.DoesNotExist:
-        messages.error(request, u"Entrée inexistante" )
+        messages.error(request, u"Entrée inexistante")
         return redirect("/users/index_clef/")
     clef = ClefForm(request.POST or None, instance=clef_instance)
     if clef.is_valid():
@@ -296,10 +293,12 @@ def edit_clef(request, clefid):
             clef.save()
             if request.user.is_authenticated:
                 reversion.set_user(request.user)
-            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(field for field in clef.changed_data))
+            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(
+                field for field in clef.changed_data))
         messages.success(request, "Clef modifié")
         return redirect("/users/index_clef/")
     return form({'userform': clef}, 'users/user.html', request)
+
 
 @login_required
 @permission_required('bureau')
@@ -307,7 +306,7 @@ def del_clef(request, clefid):
     try:
         clef_instance = Clef.objects.get(pk=clefid)
     except Clef.DoesNotExist:
-        messages.error(request, u"Entrée inexistante" )
+        messages.error(request, u"Entrée inexistante")
         return redirect("/users/index_clef/")
     if request.method == "POST":
         with transaction.atomic(), reversion.create_revision():
@@ -315,12 +314,15 @@ def del_clef(request, clefid):
             reversion.set_user(request.user)
             messages.success(request, "La clef a été détruite")
         return redirect("/users/index_clef")
-    return form({'objet': clef_instance, 'objet_name': 'clef'}, 'users/delete.html', request)
+    return form({'objet': clef_instance, 'objet_name': 'clef'},
+                'users/delete.html', request)
+
 
 @user_is_in_campus
 def index_clef(request):
     clef_list = Clef.objects.all().order_by('nom')
-    return render(request, 'users/index_clef.html', {'clef_list':clef_list})
+    return render(request, 'users/index_clef.html', {'clef_list': clef_list})
+
 
 @login_required
 @permission_required('bureau')
@@ -335,23 +337,26 @@ def add_adhesion(request):
         return redirect("/users/index_adhesion/")
     return form({'userform': adhesion}, 'users/user.html', request)
 
+
 @login_required
 @permission_required('bureau')
 def edit_adhesion(request, adhesionid):
     try:
         adhesion_instance = Adhesion.objects.get(pk=adhesionid)
     except Adhesion.DoesNotExist:
-        messages.error(request, u"Entrée inexistante" )
+        messages.error(request, u"Entrée inexistante")
         return redirect("/users/index_adhesion/")
     adhesion = AdhesionForm(request.POST or None, instance=adhesion_instance)
     if adhesion.is_valid():
         with transaction.atomic(), reversion.create_revision():
             adhesion.save()
             reversion.set_user(request.user)
-            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(field for field in adhesion.changed_data))
+            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(
+                field for field in adhesion.changed_data))
         messages.success(request, "Adhesion modifiée")
         return redirect("/users/index_adhesion/")
     return form({'userform': adhesion}, 'users/user.html', request)
+
 
 @login_required
 @permission_required('bureau')
@@ -359,7 +364,7 @@ def del_adhesion(request, adhesionid):
     try:
         adhesion_instance = Adhesion.objects.get(pk=adhesionid)
     except Adhesion.DoesNotExist:
-        messages.error(request, u"Entrée inexistante" )
+        messages.error(request, u"Entrée inexistante")
         return redirect("/users/index_adhesion/")
     if request.method == "POST":
         with transaction.atomic(), reversion.create_revision():
@@ -367,12 +372,16 @@ def del_adhesion(request, adhesionid):
             reversion.set_user(request.user)
             messages.success(request, "La adhesion a été détruit")
         return redirect("/users/index_adhesion")
-    return form({'objet': adhesion_instance, 'objet_name': 'adhesion'}, 'users/delete.html', request)
+    return form({'objet': adhesion_instance, 'objet_name': 'adhesion'},
+                'users/delete.html', request)
+
 
 @login_required
 def index_adhesion(request):
     adhesion_list = Adhesion.objects.all()
-    return render(request, 'users/index_adhesion.html', {'adhesion_list':adhesion_list})
+    return render(request, 'users/index_adhesion.html',
+                  {'adhesion_list': adhesion_list})
+
 
 @login_required
 @permission_required('perm')
@@ -391,11 +400,13 @@ def index(request):
         users_list = paginator.page(paginator.num_pages)
     return render(request, 'users/index.html', {'users_list': users_list})
 
+
 @login_required
 @permission_required('perm')
 def index_ajour(request):
     """ Affiche l'ensemble des users, need droit admin """
-    users_list = Adhesion.objects.all().order_by('annee_debut').reverse().first().adherent.all().order_by('name')
+    users_list = Adhesion.objects.all().order_by(
+        'annee_debut').reverse().first().adherent.all().order_by('name')
     paginator = Paginator(users_list, PAGINATION_NUMBER)
     page = request.GET.get('page')
     try:
@@ -408,46 +419,49 @@ def index_ajour(request):
         users_list = paginator.page(paginator.num_pages)
     return render(request, 'users/index.html', {'users_list': users_list})
 
+
 @user_is_in_campus
 def history(request, object, id):
     """ Affichage de l'historique : (acl, argument)
     user : self, userid"""
     if object == 'clef':
         try:
-             object_instance = Clef.objects.get(pk=id)
+            object_instance = Clef.objects.get(pk=id)
         except Clef.DoesNotExist:
-             messages.error(request, "Utilisateur inexistant")
-             return redirect("/users/")
+            messages.error(request, "Utilisateur inexistant")
+            return redirect("/users/")
     elif not request.user.is_authenticated:
         messages.error(request, "Permission denied")
         return redirect("/users/")
     if object == 'user':
         try:
-             object_instance = User.objects.get(pk=id)
+            object_instance = User.objects.get(pk=id)
         except User.DoesNotExist:
-             messages.error(request, "Utilisateur inexistant")
-             return redirect("/users/")
-        if not request.user.has_perms(('perm',)) and object_instance != request.user:
-             messages.error(request, "Vous ne pouvez pas afficher l'historique d'un autre user que vous sans droit admin")
-             return redirect("/users/profil/" + str(request.user.id))
+            messages.error(request, "Utilisateur inexistant")
+            return redirect("/users/")
+        if not request.user.has_perms(
+                ('perm',)) and object_instance != request.user:
+            messages.error(request,
+                           "Vous ne pouvez pas afficher l'historique d'un autre user que vous sans droit admin")
+            return redirect("/users/profil/" + str(request.user.id))
     elif object == 'clef':
         try:
-             object_instance = Clef.objects.get(pk=id)
+            object_instance = Clef.objects.get(pk=id)
         except Clef.DoesNotExist:
-             messages.error(request, "Utilisateur inexistant")
-             return redirect("/users/")
+            messages.error(request, "Utilisateur inexistant")
+            return redirect("/users/")
     elif object == 'adhesion':
         try:
-             object_instance = Adhesion.objects.get(pk=id)
+            object_instance = Adhesion.objects.get(pk=id)
         except Adhesion.DoesNotExist:
-             messages.error(request, "Utilisateur inexistant")
-             return redirect("/users/")
+            messages.error(request, "Utilisateur inexistant")
+            return redirect("/users/")
     elif object == 'listright':
         try:
-             object_instance = ListRight.objects.get(pk=id)
+            object_instance = ListRight.objects.get(pk=id)
         except ListRight.DoesNotExist:
-             messages.error(request, "Droit inexistant")
-             return redirect("/users/")
+            messages.error(request, "Droit inexistant")
+            return redirect("/users/")
     else:
         messages.error(request, "Objet  inconnu")
         return redirect("/users/")
@@ -462,11 +476,14 @@ def history(request, object, id):
     except EmptyPage:
         # If page is out of range (e.g. 9999), deliver last page of results.
         reversions = paginator.page(paginator.num_pages)
-    return render(request, 'med/history.html', {'reversions': reversions, 'object': object_instance})
+    return render(request, 'med/history.html',
+                  {'reversions': reversions, 'object': object_instance})
+
 
 @login_required
 def mon_profil(request):
     return redirect("/users/profil/" + str(request.user.id))
+
 
 @login_required
 def profil(request, userid):
@@ -476,7 +493,8 @@ def profil(request, userid):
         messages.error(request, "Utilisateur inexistant")
         return redirect("/users/")
     if not request.user.has_perms(('perm',)) and users != request.user:
-        messages.error(request, "Vous ne pouvez pas afficher un autre user que vous sans droit perm")
+        messages.error(request,
+                       "Vous ne pouvez pas afficher un autre user que vous sans droit perm")
         return redirect("/users/profil/" + str(request.user.id))
     emprunts_list = Emprunt.objects.filter(user=users)
     list_droits = Right.objects.filter(user=users)
@@ -486,9 +504,10 @@ def profil(request, userid):
         {
             'user': users,
             'emprunts_list': emprunts_list,
-            'list_droits': list_droits,  
+            'list_droits': list_droits,
         }
     )
+
 
 @login_required
 @permission_required('bureau')
@@ -506,13 +525,14 @@ def adherer(request, userid):
         reversion.set_comment("Adhesion de %s" % users)
     messages.success(request, "Adhesion effectuee")
     return redirect("/users/profil/" + userid)
- 
+
 
 def reset_password(request):
     userform = ResetPasswordForm(request.POST or None)
     if userform.is_valid():
         try:
-            user = User.objects.get(pseudo=userform.cleaned_data['pseudo'],email=userform.cleaned_data['email'])
+            user = User.objects.get(pseudo=userform.cleaned_data['pseudo'],
+                                    email=userform.cleaned_data['email'])
         except User.DoesNotExist:
             messages.error(request, "Cet utilisateur n'existe pas")
             return form({'userform': userform}, 'users/user.html', request)
@@ -521,9 +541,11 @@ def reset_password(request):
         req.user = user
         req.save()
         reset_passwd_mail(req, request)
-        messages.success(request, "Un mail pour l'initialisation du mot de passe a été envoyé")
+        messages.success(request,
+                         "Un mail pour l'initialisation du mot de passe a été envoyé")
         redirect("/")
     return form({'userform': userform}, 'users/user.html', request)
+
 
 def process(request, token):
     valid_reqs = Request.objects.filter(expires_at__gt=timezone.now())
@@ -536,6 +558,7 @@ def process(request, token):
     else:
         messages.error(request, "Entrée incorrecte, contactez un admin")
         redirect("/")
+
 
 def process_passwd(request, req):
     u_form = PassForm(request.POST or None)

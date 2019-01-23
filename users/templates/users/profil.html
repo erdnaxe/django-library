@@ -1,27 +1,4 @@
 {% extends "users/sidebar.html" %}
-{% comment %}
-Re2o est un logiciel d'administration développé initiallement au rezometz. Il
-se veut agnostique au réseau considéré, de manière à être installable en
-quelques clics.
-
-Copyright © 2017  Gabriel Détraz
-Copyright © 2017  Goulven Kermarec
-Copyright © 2017  Augustin Lemesle
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License along
-with this program; if not, write to the Free Software Foundation, Inc.,
-51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-{% endcomment %}
 
 {% load bootstrap3 %}
 
@@ -39,14 +16,14 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             Changer le mot de passe
         </a>
         {% if is_bureau %}
-        <a class="btn btn-primary btn-sm" role="button" href="{% url 'users:state' user.id %}">
-            <i class="glyphicon glyphicon-flash"></i>
-            Changer le statut
-        </a>
-        <a class="btn btn-primary btn-sm" role="button" href="{% url 'users:add-right' user.id %}">
-            <i class="glyphicon glyphicon-ok"></i>
-            Ajouter un droit
-        </a>
+            <a class="btn btn-primary btn-sm" role="button" href="{% url 'users:state' user.id %}">
+                <i class="glyphicon glyphicon-flash"></i>
+                Changer le statut
+            </a>
+            <a class="btn btn-primary btn-sm" role="button" href="{% url 'users:add-right' user.id %}">
+                <i class="glyphicon glyphicon-ok"></i>
+                Ajouter un droit
+            </a>
         {% endif %}
         <a class="btn btn-info btn-sm" role="button" href="{% url 'users:history' 'user' user.id %}">
             <i class="glyphicon glyphicon-time"></i>
@@ -54,7 +31,7 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         </a>
     </div>
     <p>
-        <br />
+        <br/>
     </p>
     <table class="table table-striped">
         <tr>
@@ -86,19 +63,20 @@ with this program; if not, write to the Free Software Foundation, Inc.,
             <td>{{ user.maxemprunt }}</td>
             <th>Droits</th>
             {% if list_droits %}
-            <td>{% for droit in list_droits %}{{ droit.right }}{% if list_droits|length != forloop.counter %}  - {% endif %} {% endfor %}</td>
+                <td>{% for droit in list_droits %}{{ droit.right }}{% if list_droits|length != forloop.counter %}  -
+                {% endif %} {% endfor %}</td>
             {% else %}
-            <td>Aucun</td>
+                <td>Aucun</td>
             {% endif %}
         </tr>
-        <tr> 
-           <th>Statut</th>
+        <tr>
+            <th>Statut</th>
             {% if user.state == 0 %}
-            <td><font color="green">Actif</font></td>
+                <td><font color="green">Actif</font></td>
             {% elif user.state == 1 %}
-            <td><font color="red">Désactivé</font></td>
+                <td><font color="red">Désactivé</font></td>
             {% else %}
-            <td><font color="orange">Archivé</font></td>
+                <td><font color="orange">Archivé</font></td>
             {% endif %}
             <th>Dernière connexion</th>
             <td>{{ user.last_login }}</td>
@@ -106,27 +84,26 @@ with this program; if not, write to the Free Software Foundation, Inc.,
         <tr>
             <th>Adherent pour l'année en cours</th>
             {% if user.is_adherent %}
-            <td><font color="green">Oui</font></td>
+                <td><font color="green">Oui</font></td>
             {% else %}
-            <td><font color="red">Non</font></td>
+                <td><font color="red">Non</font></td>
             {% endif %}
             {% if not user.is_adherent and is_bureau %}
-            <th></th>
-            <td><a class="btn btn-primary btn-sm" role="button" href="{% url 'users:adherer' user.id %}"><i class="glyphicon glyphicon-flag"></i> Adhérer</a></td>
+                <th></th>
+                <td><a class="btn btn-primary btn-sm" role="button" href="{% url 'users:adherer' user.id %}"><i
+                        class="glyphicon glyphicon-flag"></i> Adhérer</a></td>
             {% endif %}
-        </tr> 
+        </tr>
     </table>
     <h2>Emprunts</h2>
     {% if is_perm or is_bureau %}
-    <h4><a class="btn btn-primary btn-sm" role="button" href="{% url 'media:add-emprunt' user.id %}"><i class="glyphicon glyphicon-flag"></i> Ajouter</a></h4>
+        <h4><a class="btn btn-primary btn-sm" role="button" href="{% url 'media:add-emprunt' user.id %}"><i
+                class="glyphicon glyphicon-flag"></i> Ajouter</a></h4>
     {% endif %}
     {% if emprunts_list %}
-    {% include "media/aff_emprunts.html" with emprunts_list=emprunts_list %}
+        {% include "media/aff_emprunts.html" with emprunts_list=emprunts_list %}
     {% else %}
-    <p>Aucun emprunt</p>
+        <p>Aucun emprunt</p>
     {% endif %}
-    <br />
-    <br />
-    <br />
 {% endblock %}
 

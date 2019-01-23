@@ -1,43 +1,16 @@
-# Re2o est un logiciel d'administration développé initiallement au rezometz. Il
-# se veut agnostique au réseau considéré, de manière à être installable en
-# quelques clics.
-#
-# Copyright © 2017  Gabriel Détraz
-# Copyright © 2017  Goulven Kermarec
-# Copyright © 2017  Augustin Lemesle
-#
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
-# (at your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along
-# with this program; if not, write to the Free Software Foundation, Inc.,
-# 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+import datetime
+import uuid
 
+from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
-from django.db.models import Q
-from django.db.models.signals import post_save, post_delete
-from django.dispatch import receiver
-from django.utils.functional import cached_property
-
+from django.utils import timezone
 
 from med.settings import MAX_EMPRUNT, REQ_EXPIRE_HRS
-import re, uuid
-import datetime
-
-from django.utils import timezone
-from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
-import subprocess
 
 
 class UserManager(BaseUserManager):
-    def _create_user(self, pseudo, name, surname, email, password=None, su=False):
+    def _create_user(self, pseudo, name, surname, email, password=None,
+                     su=False):
         if not pseudo:
             raise ValueError('Users must have an username')
 
@@ -75,22 +48,25 @@ class User(AbstractBaseUser):
     STATE_DISABLED = 1
     STATE_ARCHIVE = 2
     STATES = (
-            (0, 'STATE_ACTIVE'),
-            (1, 'STATE_DISABLED'),
-            (2, 'STATE_ARCHIVE'),
-            )
+        (0, 'STATE_ACTIVE'),
+        (1, 'STATE_DISABLED'),
+        (2, 'STATE_ARCHIVE'),
+    )
 
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
     email = models.EmailField()
     telephone = models.CharField(max_length=15, null=True, blank=True)
     adresse = models.CharField(max_length=255, null=True, blank=True)
-    maxemprunt = models.IntegerField(default=MAX_EMPRUNT, help_text="Maximum d'emprunts autorisés") 
+    maxemprunt = models.IntegerField(default=MAX_EMPRUNT,
+                                     help_text="Maximum d'emprunts autorisés")
     state = models.IntegerField(choices=STATES, default=STATE_ACTIVE)
-    pseudo = models.CharField(max_length=32, unique=True, help_text="Doit contenir uniquement des lettres, chiffres, ou tirets. ")
-    comment = models.CharField(help_text="Commentaire, promo", max_length=255, blank=True)
+    pseudo = models.CharField(max_length=32, unique=True,
+                              help_text="Doit contenir uniquement des lettres, "
+                                        "chiffres, ou tirets. ")
+    comment = models.CharField(help_text="Commentaire, promo", max_length=255,
+                               blank=True)
     registered = models.DateTimeField(auto_now_add=True)
-
 
     USERNAME_FIELD = 'pseudo'
     REQUIRED_FIELDS = ['name', 'surname', 'email']
@@ -138,7 +114,8 @@ class User(AbstractBaseUser):
         return True
 
     def has_right(self, right):
-        return Right.objects.filter(user=self).filter(right=ListRight.objects.get(listright=right)).exists()
+        return Right.objects.filter(user=self).filter(
+            right=ListRight.objects.get(listright=right)).exists()
 
     def has_module_perms(self, app_label):
         # Simplest version again
@@ -146,20 +123,22 @@ class User(AbstractBaseUser):
 
     @property
     def is_adherent(self):
-        return self in Adhesion.objects.all().order_by('annee_debut').reverse().first().adherent.all()
+        return self in Adhesion.objects.all().order_by(
+            'annee_debut').reverse().first().adherent.all()
 
     def get_admin_right(self):
         admin, created = ListRight.objects.get_or_create(listright="admin")
-        return admin 
+        return admin
 
     def make_admin(self):
         """ Make User admin """
         user_admin_right = Right(user=self, right=self.get_admin_right())
         user_admin_right.save()
- 
+
     def un_admin(self):
         try:
-            user_right = Right.objects.get(user=self,right=self.get_admin_right())
+            user_right = Right.objects.get(user=self,
+                                           right=self.get_admin_right())
         except Right.DoesNotExist:
             return
         user_right.delete()
@@ -184,40 +163,44 @@ class Request(models.Model):
     def save(self):
         if not self.expires_at:
             self.expires_at = timezone.now() \
-                + datetime.timedelta(hours=REQ_EXPIRE_HRS)
+                              + datetime.timedelta(hours=REQ_EXPIRE_HRS)
         if not self.token:
             self.token = str(uuid.uuid4()).replace('-', '')  # remove hyphens
         super(Request, self).save()
 
+
 class Right(models.Model):
     PRETTY_NAME = "Droits affectés à des users"
- 
+
     user = models.ForeignKey('User', on_delete=models.PROTECT)
     right = models.ForeignKey('ListRight', on_delete=models.PROTECT)
- 
+
     class Meta:
         unique_together = ("user", "right")
- 
+
     def __str__(self):
         return str(self.user)
+
 
 class ListRight(models.Model):
     PRETTY_NAME = "Liste des droits existants"
 
     listright = models.CharField(max_length=255, unique=True)
-    details = models.CharField(help_text="Description", max_length=255, blank=True)
- 
+    details = models.CharField(help_text="Description", max_length=255,
+                               blank=True)
+
     def __str__(self):
         return self.listright
 
+
 class Clef(models.Model):
     nom = models.CharField(max_length=255, unique=True)
-    proprio = models.ForeignKey('User', on_delete=models.PROTECT, blank=True, null=True)
+    proprio = models.ForeignKey('User', on_delete=models.PROTECT, blank=True,
+                                null=True)
     commentaire = models.CharField(max_length=255, null=True, blank=True)
+
 
 class Adhesion(models.Model):
     annee_debut = models.IntegerField(unique=True)
     annee_fin = models.IntegerField(unique=True)
     adherent = models.ManyToManyField('User', blank=True)
-
-
