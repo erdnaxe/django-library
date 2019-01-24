@@ -30,7 +30,13 @@
         </main>
 
         {# Left sidebar #}
-        {% include "sidebar.html" %}
+        <nav class="col-lg-2 bg-light sidebar shadow order-lg-1">
+            {# Let pages put content here #}
+            {% block sidebar_nav %}{% endblock %}
+
+            {# Other sidebar content #}
+            {% include "sidebar.html" with sidebar_nav=sidebar_nav %}
+        </nav>
     </div>
 </div>
 </body>
