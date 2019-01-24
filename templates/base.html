@@ -28,51 +28,9 @@
 
             {% block content %}{% endblock %}
         </main>
-        <nav class="col-lg-2 bg-light sidebar shadow order-lg-1">
-            {% block sidebar %}{% endblock %}
 
-            {% if request_user.is_authenticated %}
-                <div class="card mt-3 border-success">
-                    <h5 class="card-header">{{ request_user.name }} {{ request_user.surname }}</h5>
-                    <div class="card-body">
-                        <dl>
-                            <dt>Pseudo</dt>
-                            <dd>{{ request_user.pseudo }}</dd>
-                        </dl>
-                        <div class="card-text text-center">
-                            <a href="{% url "users:profile" %}" class="btn btn-outline-success mb-2">
-                                <span class="oi oi-person"></span>
-                                Mon profil
-                            </a>
-                            <a href="{% url 'logout' %}" class="btn btn-outline-secondary">
-                                <span class="oi oi-account-logout"></span>
-                                Se déconnecter
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            {% else %}
-                <div class="card mt-3 border-warning">
-                    <div class="card-body text-center">
-                        <p class="card-text">
-                            Vous n'êtes pas authentifié·e.
-                        </p>
-                        <a href="{% url 'login' %}" class="btn btn-outline-success">
-                            <span class="oi oi-account-login"></span>
-                            S'authentifier
-                        </a>
-                    </div>
-                </div>
-            {% endif %}
-
-            <footer class="footer mt-auto py-3">
-                <div class="container">
-                    <span class="text-muted">
-                        Méd 2019 &mdash; Codé avec <span class="oi oi-heart"></span> par des médeux fous
-                    </span>
-                </div>
-            </footer>
-        </nav>
+        {# Left sidebar #}
+        {% include "sidebar.html" %}
     </div>
 </div>
 </body>
