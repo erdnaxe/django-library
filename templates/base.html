@@ -33,12 +33,12 @@
 
             {% if request_user.is_authenticated %}
                 <div class="card mt-3 border-success">
-                    <h4 class="card-header">{{ request_user.name }} {{ request_user.surname }}</h4>
+                    <h5 class="card-header">{{ request_user.name }} {{ request_user.surname }}</h5>
                     <div class="card-body">
-                        <h5 class="card-title">Pseudo</h5>
-                        <p class="card-text">
-                            {{ request_user.pseudo }}
-                        </p>
+                        <dl>
+                            <dt>Pseudo</dt>
+                            <dd>{{ request_user.pseudo }}</dd>
+                        </dl>
                         <div class="card-text text-center">
                             <a href="{% url "users:profile" %}" class="btn btn-outline-success mb-2">
                                 <span class="oi oi-person"></span>
