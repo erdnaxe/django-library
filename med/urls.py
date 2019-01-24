@@ -7,7 +7,7 @@ from django.urls import include, path
 from .views import index
 
 # Customize Django Admin site
-admin.site.site_header = _('Med administration')
+admin.site.site_header = _('Med database administration')
 admin.site.site_title = _('Med Admin')
 
 urlpatterns = [

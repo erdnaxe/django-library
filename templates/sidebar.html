@@ -1,3 +1,5 @@
+{% load i18n %}
+
 <nav class="col-lg-2 bg-light sidebar shadow order-lg-1">
     {# Let pages put content here #}
     {% block sidebar %}{% endblock %}
@@ -14,11 +16,11 @@
                 <div class="card-text text-center">
                     <a href="{% url "users:profile" %}" class="btn btn-outline-success mb-2">
                         <span class="oi oi-person"></span>
-                        Mon profil
+                        {% trans "My profile" %}
                     </a>
                     <a href="{% url 'logout' %}" class="btn btn-outline-secondary">
                         <span class="oi oi-account-logout"></span>
-                        Se déconnecter
+                        {% trans "Log out" %}
                     </a>
                 </div>
             </div>
@@ -27,11 +29,11 @@
         <div class="card mt-3 border-warning">
             <div class="card-body text-center">
                 <p class="card-text">
-                    Vous n'êtes pas authentifié·e.
+                    {% trans "You are not log in yet." %}
                 </p>
                 <a href="{% url 'login' %}" class="btn btn-outline-success">
                     <span class="oi oi-account-login"></span>
-                    S'authentifier
+                    {% trans "Log in" %}
                 </a>
             </div>
         </div>

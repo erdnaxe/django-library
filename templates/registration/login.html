@@ -1,19 +1,21 @@
 {% extends "base.html" %}
 
+{% load i18n %}
 {% load crispy_forms_tags %}
 
-{% block title %}Login{% endblock %}
+{% block title %}{% trans "User authentication" %}{% endblock %}
 
 {% block content %}
+    <h2>{% trans "User authentication" %}</h2>
     <form method="post" action="{% url 'login' %}">
         {% csrf_token %}
         {{ form|crispy }}
         <button type="submit" class="btn btn-success">
             <span class="oi oi-account-login"></span>
-            Login
+            {% trans "Log in" %}
         </button>
     </form>
     <a class="small font-italic" role="button" href="{% url 'users:reset-password' %}">
-        Mot de passe oublié ?
+        {% trans "Forgotten password ?" %}
     </a>
 {% endblock %}

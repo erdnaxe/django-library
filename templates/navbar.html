@@ -1,31 +1,35 @@
+{% load i18n %}
+
 <nav class="navbar navbar-dark shadow bg-dark navbar-expand-lg">
+    {# Name of the website #}
     <a class="navbar-brand" href="{% url "index" %}">Méd</a>
 
+    {# Site navigation #}
     <ul class="navbar-nav mr-auto">
         <li>
             <a class="nav-link active" href="{% url "media:index" %}">
                 <span class="oi oi-book"></span>
-                Media
+                {% trans "Media" %}
             </a>
         </li>
         {% if is_perm %}
             <li class="nav-item">
                 <a class="nav-link active" href="{% url "users:index" %}">
                     <span class="oi oi-person"></span>
-                    Utilisateurs
+                    {% trans "Users" %}
                 </a>
             </li>
             <li class="nav-item">
                 <a class="nav-link active" href="{% url "logs:index" %}">
                     <span class="oi oi-bar-chart"></span>
-                    Statistiques
+                    {% trans "Stats" %}
                 </a>
             </li>
         {% else %}
             <li class="nav-item">
                 <a class="nav-link active" href="{% url "users:profile" %}">
                     <span class="oi oi-person"></span>
-                    Mon profil
+                    {% trans "My profile" %}
                 </a>
             </li>
         {% endif %}
@@ -33,24 +37,25 @@
             <li>
                 <a class="nav-link active" href="{% url 'logout' %}">
                     <span class="oi oi-account-logout"></span>
-                    Déconnexion
+                    {% trans "Log out" %}
                 </a>
             </li>
         {% else %}
             <li>
                 <a class="nav-link active" href="{% url 'login' %}">
                     <span class="oi oi-account-login"></span>
-                    Connexion
+                    {% trans "Log in" %}
                 </a>
             </li>
         {% endif %}
     </ul>
 
+    {# Search form #}
     <form action="{% url "search:search" %}" method="POST" class="form-inline" role="search">
         {% csrf_token %}
         <div class="input-group">
-            <input class="form-control" type="search" placeholder="Recherche" aria-label="Recherche"
-                   name="search_field">
+            <input class="form-control" type="search" placeholder="{% trans "Search" %}"
+                   aria-label="{% trans "Search" %}" name="search_field">
             <div class="input-group-append" id="button-addon4">
                 <button class="btn btn-primary" type="submit">
                     <span class="oi oi-magnifying-glass"></span>
