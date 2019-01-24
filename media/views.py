@@ -1,10 +1,12 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction
 from django.shortcuts import render, redirect
 from django.template.context_processors import csrf
 from django.utils import timezone
+from django.views import generic
 from reversion import revisions as reversion
 from reversion.models import Version
 
@@ -37,9 +39,9 @@ def add_auteur(request):
 
 @login_required
 @permission_required('perm')
-def edit_auteur(request, auteurid):
+def edit_auteur(request, pk):
     try:
-        auteur_instance = Auteur.objects.get(pk=auteurid)
+        auteur_instance = Auteur.objects.get(pk=pk)
     except Auteur.DoesNotExist:
         messages.error(request, u"Entrée inexistante")
         return redirect("/media/index_auteurs/")
@@ -58,11 +60,11 @@ def edit_auteur(request, auteurid):
 
 @login_required
 @permission_required('perm')
-def del_auteur(request, auteurid):
+def del_auteur(request, pk):
     try:
-        auteur_instance = Auteur.objects.get(pk=auteurid)
+        auteur_instance = Auteur.objects.get(pk=pk)
     except Auteur.DoesNotExist:
-        messages.error(request, u"Entrée inexistante")
+        messages.error(request, "Entrée inexistante")
         return redirect("/media/index_auteurs/")
     if request.method == "POST":
         with transaction.atomic(), reversion.create_revision():
@@ -91,9 +93,9 @@ def add_media(request):
 
 @login_required
 @permission_required('perm')
-def edit_media(request, mediaid):
+def edit_media(request, pk):
     try:
-        media_instance = Media.objects.get(pk=mediaid)
+        media_instance = Media.objects.get(pk=pk)
     except Media.DoesNotExist:
         messages.error(request, u"Entrée inexistante")
         return redirect("/media/index_medias/")
@@ -112,9 +114,9 @@ def edit_media(request, mediaid):
 
 @login_required
 @permission_required('perm')
-def del_media(request, mediaid):
+def del_media(request, pk):
     try:
-        media_instance = Media.objects.get(pk=mediaid)
+        media_instance = Media.objects.get(pk=pk)
     except Media.DoesNotExist:
         messages.error(request, u"Entrée inexistante")
         return redirect("/media/index_medias/")
@@ -145,9 +147,9 @@ def add_jeu(request):
 
 @login_required
 @permission_required('perm')
-def edit_jeu(request, jeuid):
+def edit_jeu(request, pk):
     try:
-        jeu_instance = Jeu.objects.get(pk=jeuid)
+        jeu_instance = Jeu.objects.get(pk=pk)
     except Jeu.DoesNotExist:
         messages.error(request, u"Entrée inexistante")
         return redirect("/media/index_jeux/")
@@ -166,9 +168,9 @@ def edit_jeu(request, jeuid):
 
 @login_required
 @permission_required('perm')
-def del_jeu(request, jeuid):
+def del_jeu(request, pk):
     try:
-        jeu_instance = Jeu.objects.get(pk=jeuid)
+        jeu_instance = Jeu.objects.get(pk=pk)
     except Jeu.DoesNotExist:
         messages.error(request, u"Entrée inexistante")
         return redirect("/media/index_jeux/")
@@ -214,9 +216,9 @@ def add_emprunt(request, userid):
 
 @login_required
 @permission_required('perm')
-def edit_emprunt(request, empruntid):
+def edit_emprunt(request, pk):
     try:
-        emprunt_instance = Emprunt.objects.get(pk=empruntid)
+        emprunt_instance = Emprunt.objects.get(pk=pk)
     except Emprunt.DoesNotExist:
         messages.error(request, u"Entrée inexistante")
         return redirect("/media/index_emprunts/")
@@ -235,9 +237,9 @@ def edit_emprunt(request, empruntid):
 
 @login_required
 @permission_required('perm')
-def retour_emprunt(request, empruntid):
+def retour_emprunt(request, pk):
     try:
-        emprunt_instance = Emprunt.objects.get(pk=empruntid)
+        emprunt_instance = Emprunt.objects.get(pk=pk)
     except Emprunt.DoesNotExist:
         messages.error(request, u"Entrée inexistante")
         return redirect("/media/index_emprunts/")
@@ -252,9 +254,9 @@ def retour_emprunt(request, empruntid):
 
 @login_required
 @permission_required('perm')
-def del_emprunt(request, empruntid):
+def del_emprunt(request, pk):
     try:
-        emprunt_instance = Emprunt.objects.get(pk=empruntid)
+        emprunt_instance = Emprunt.objects.get(pk=pk)
     except Emprunt.DoesNotExist:
         messages.error(request, u"Entrée inexistante")
         return redirect("/media/index_emprunts/")
@@ -268,54 +270,26 @@ def del_emprunt(request, empruntid):
                 'media/delete.html', request)
 
 
-@login_required
-def index_jeux(request):
-    jeux_list = Jeu.objects.all()
-    paginator = Paginator(jeux_list, PAGINATION_NUMBER)
-    page = request.GET.get('page')
-    try:
-        jeux_list = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        jeux_list = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        jeux_list = paginator.page(paginator.num_pages)
-    return render(request, 'media/index_jeux.html', {'jeux_list': jeux_list})
+class IndexGames(LoginRequiredMixin, generic.ListView):
+    model = Jeu
+    paginate_by = PAGINATION_NUMBER
+    context_object_name = 'jeux_list'
+    template_name = 'media/index_jeux.html'
 
 
-@login_required
-def index_auteurs(request):
-    auteurs_list = Auteur.objects.all().order_by('nom')
-    paginator = Paginator(auteurs_list, PAGINATION_NUMBER)
-    page = request.GET.get('page')
-    try:
-        auteurs_list = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        auteurs_list = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        auteurs_list = paginator.page(paginator.num_pages)
-    return render(request, 'media/index_auteurs.html',
-                  {'auteurs_list': auteurs_list})
+class IndexAuthors(LoginRequiredMixin, generic.ListView):
+    model = Auteur
+    queryset = Auteur.objects.all().order_by('nom')
+    paginate_by = PAGINATION_NUMBER
+    context_object_name = 'auteurs_list'
+    template_name = 'media/index_auteurs.html'
 
 
-@login_required
-def index_medias(request):
-    medias_list = Media.objects.all()
-    paginator = Paginator(medias_list, PAGINATION_NUMBER)
-    page = request.GET.get('page')
-    try:
-        medias_list = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        medias_list = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        medias_list = paginator.page(paginator.num_pages)
-    return render(request, 'media/index_medias.html',
-                  {'medias_list': medias_list})
+class IndexMedia(LoginRequiredMixin, generic.ListView):
+    model = Media
+    paginate_by = PAGINATION_NUMBER
+    context_object_name = 'medias_list'
+    template_name = 'media/index_medias.html'
 
 
 @login_required
@@ -340,28 +314,28 @@ def index(request):
 
 
 @login_required
-def history(request, object, id):
+def history(request, object, pk):
     if object == 'auteur':
         try:
-            object_instance = Auteur.objects.get(pk=id)
+            object_instance = Auteur.objects.get(pk=pk)
         except Auteur.DoesNotExist:
             messages.error(request, "Auteur inexistant")
             return redirect("/media/index_auteurs")
     elif object == 'media':
         try:
-            object_instance = Media.objects.get(pk=id)
+            object_instance = Media.objects.get(pk=pk)
         except Media.DoesNotExist:
             messages.error(request, "Media inexistant")
             return redirect("/media/index_medias")
     elif object == 'emprunt':
         try:
-            object_instance = Emprunt.objects.get(pk=id)
+            object_instance = Emprunt.objects.get(pk=pk)
         except Emprunt.DoesNotExist:
             messages.error(request, "Emprunt inexistant")
             return redirect("/media/index_emprunts")
     elif object == 'jeu':
         try:
-            object_instance = Jeu.objects.get(pk=id)
+            object_instance = Jeu.objects.get(pk=pk)
         except Jeu.DoesNotExist:
             messages.error(request, "Jeu inexistant")
             return redirect("/media/index_jeux")
