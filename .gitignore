@@ -40,9 +40,3 @@ venv.bak/
 
 # Django statics
 static_files/
-static/logo/
-
-# re2o specific
-settings_local.py
-re2o.png
-media/
