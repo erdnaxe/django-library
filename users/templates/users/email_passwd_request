@@ -1,7 +1,8 @@
 Bonjour {{ name }},
 
 Vous trouverez ci-dessous une url permetant d'initialiser ou de reinitialiser votre
-compte {{ site_name }}. Celui-ci vous permet de gérer l'ensemble de vos emprunts,
+compte sur la base de données de la médiathèque.
+Celui-ci vous permet de gérer l'ensemble de vos emprunts,
 consulter les ouvrages disponibles, et les services proposés par la {{ asso }}.
 
     {{ url }}

@@ -1,13 +1,13 @@
 {% load i18n %}
 
 {# Card for user profile #}
-{% if request_user.is_authenticated %}
+{% if user.is_authenticated %}
     <div class="card mt-3 border-success">
-        <h5 class="card-header">{{ request_user.name }} {{ request_user.surname }}</h5>
+        <h5 class="card-header">{{ user.name }} {{ user.surname }}</h5>
         <div class="card-body">
             <dl>
                 <dt>Pseudo</dt>
-                <dd>{{ request_user.pseudo }}</dd>
+                <dd>{{ user.pseudo }}</dd>
             </dl>
             <div class="card-text text-center">
                 <a href="{% url "users:profile" %}" class="btn btn-outline-success mb-2">
