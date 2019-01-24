@@ -31,7 +31,8 @@ def add_auteur(request):
             reversion.set_comment("Création")
         messages.success(request, "L'auteur a été ajouté")
         return redirect("/media/index_auteurs/")
-    return form({'mediaform': auteur}, 'media/media.html', request)
+    return form({"title": "Création d'un auteur", "form": auteur},
+                "media/form.html", request)
 
 
 @login_required
@@ -51,7 +52,8 @@ def edit_auteur(request, auteurid):
                 field for field in auteur.changed_data))
         messages.success(request, "Auteur modifié")
         return redirect("/media/index_auteurs/")
-    return form({'mediaform': auteur}, 'media/media.html', request)
+    return form({"title": "Modification d'un auteur", "form": auteur},
+                "media/form.html", request)
 
 
 @login_required
@@ -83,7 +85,8 @@ def add_media(request):
             reversion.set_comment("Création")
         messages.success(request, "Le media a été ajouté")
         return redirect("/media/index_medias/")
-    return form({'mediaform': media}, 'media/media.html', request)
+    return form({"title": "Ajout d'un média", "form": media},
+                "media/form.html", request)
 
 
 @login_required
@@ -103,7 +106,8 @@ def edit_media(request, mediaid):
                 field for field in media.changed_data))
         messages.success(request, "Media modifié")
         return redirect("/media/index_medias/")
-    return form({'mediaform': media}, 'media/media.html', request)
+    return form({"title": "Modification d'un média", "form": media},
+                "media/form.html", request)
 
 
 @login_required
@@ -135,7 +139,8 @@ def add_jeu(request):
             reversion.set_comment("Création")
         messages.success(request, "Le jeu a été ajouté")
         return redirect("/media/index_jeux/")
-    return form({'mediaform': jeu}, 'media/media.html', request)
+    return form({"title": "Création d'un jeu", "form": jeu}, "media/form.html",
+                request)
 
 
 @login_required
@@ -155,7 +160,8 @@ def edit_jeu(request, jeuid):
                 field for field in jeu.changed_data))
         messages.success(request, "Media modifié")
         return redirect("/media/index_jeux/")
-    return form({'mediaform': jeu}, 'media/media.html', request)
+    return form({"title": "Modification d'un jeu", "form": jeu},
+                "media/form.html", request)
 
 
 @login_required
@@ -202,7 +208,8 @@ def add_emprunt(request, userid):
             reversion.set_comment("Création")
         messages.success(request, "Le emprunt a été ajouté")
         return redirect("/media/index_emprunts/")
-    return form({'mediaform': emprunt}, 'media/media.html', request)
+    return form({"title": "Ajout d'un emprunt", "form": emprunt},
+                "media/form.html", request)
 
 
 @login_required
@@ -222,7 +229,8 @@ def edit_emprunt(request, empruntid):
                 field for field in emprunt.changed_data))
         messages.success(request, "Emprunt modifié")
         return redirect("/media/index_emprunts/")
-    return form({'mediaform': emprunt}, 'media/media.html', request)
+    return form({"title": "Modification d'un emprunt", "form": emprunt},
+                "media/form.html", request)
 
 
 @login_required
