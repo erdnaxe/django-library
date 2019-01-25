@@ -1,8 +1,8 @@
 from django.conf.urls import url
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
-from django.utils.translation import gettext_lazy as _
 from django.urls import include, path
+from django.utils.translation import gettext_lazy as _
 
 from .views import index
 

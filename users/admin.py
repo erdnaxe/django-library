@@ -21,12 +21,12 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 from django.contrib import admin
-from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.models import Group
 from reversion.admin import VersionAdmin
 
-from .models import User, Right, Adhesion, ListRight, Clef, Request
 from .forms import UserChangeForm, UserCreationForm
+from .models import User, Right, Adhesion, ListRight, Clef, Request
 
 
 class UserAdmin(admin.ModelAdmin):

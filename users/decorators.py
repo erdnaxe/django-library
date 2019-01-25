@@ -25,10 +25,12 @@
 # Gplv2
 
 
-from django.core.exceptions import PermissionDenied
-from django.shortcuts import redirect
-from med.settings import AUTHORIZED_IP_RANGE, AUTHORIZED_IP6_RANGE
 import ipaddress
+
+from django.shortcuts import redirect
+
+from med.settings import AUTHORIZED_IP_RANGE, AUTHORIZED_IP6_RANGE
+
 
 def user_is_in_campus(function):
     def wrap(request, *args, **kwargs):

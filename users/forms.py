@@ -24,12 +24,12 @@
 
 
 from django import forms
-from django.forms import ModelForm, Form
 from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core.validators import MinLengthValidator
-from django.utils import timezone
+from django.forms import ModelForm, Form
 
-from .models import Adhesion, Clef, ListRight, Right, Request, User
+from .models import Adhesion, Clef, ListRight, Right, User
+
 
 class PassForm(forms.Form):
     passwd1 = forms.CharField(label=u'Nouveau mot de passe', max_length=255, validators=[MinLengthValidator(8)], widget=forms.PasswordInput)

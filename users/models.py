@@ -160,7 +160,7 @@ class Request(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
     expires_at = models.DateTimeField()
 
-    def save(self):
+    def save(self, **kwargs):
         if not self.expires_at:
             self.expires_at = timezone.now() \
                               + datetime.timedelta(hours=REQ_EXPIRE_HRS)

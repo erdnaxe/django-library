@@ -70,11 +70,11 @@
         <tr>
             <th>Statut</th>
             {% if user.state == 0 %}
-                <td><font color="green">Actif</font></td>
+                <td><span class="badge badge-success">Actif</span></td>
             {% elif user.state == 1 %}
-                <td><font color="red">Désactivé</font></td>
+                <td><span class="badge badge-danger">Désactivé</span></td>
             {% else %}
-                <td><font color="orange">Archivé</font></td>
+                <td><span class="badge badge-warning">Archivé</span></td>
             {% endif %}
             <th>Dernière connexion</th>
             <td>{{ user.last_login }}</td>
@@ -82,9 +82,9 @@
         <tr>
             <th>Adherent pour l'année en cours</th>
             {% if user.is_adherent %}
-                <td><font color="green">Oui</font></td>
+                <td><span class="badge badge-success">Oui</span></td>
             {% else %}
-                <td><font color="red">Non</font></td>
+                <td><span class="badge badge-danger">Non</span></td>
             {% endif %}
             {% if not user.is_adherent and is_bureau %}
                 <th></th>
