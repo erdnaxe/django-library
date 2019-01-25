@@ -26,7 +26,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
-    'bootstrap3',
     'users',
     'med',
     'media',
@@ -172,14 +171,6 @@ PASSWORD_HASHERS = (
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
-
-# django-bootstrap3 config dictionnary
-BOOTSTRAP3 = {
-    'jquery_url': '/static/js/jquery-2.2.4.min.js',
-    'base_url': '/static/bootstrap/',
-    'include_jquery': True,
-}
-BOOTSTRAP_BASE_URL = '/static/bootstrap/'
 
 PAGINATION_NUMBER = 25
 PAGINATION_LARGE_NUMBER = 8

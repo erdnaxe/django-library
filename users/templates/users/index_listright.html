@@ -1,14 +1,18 @@
 {% extends "users/sidebar.html" %}
 
-{% load bootstrap3 %}
-
 {% block title %}Utilisateurs{% endblock %}
 
 {% block content %}
-  <h2>Liste des droits</h2>
-  {% if is_bureau %}
-  <a class="btn btn-primary btn-sm" role="button" href="{% url 'users:add-listright'  %}"><i class="glyphicon glyphicon-plus"></i> Ajouter un droit ou groupe</a>
-  <a class="btn btn-danger btn-sm" role="button" href="{% url 'users:del-listright'  %}"><i class="glyphicon glyphicon-trash"></i> Supprimer un ou plusieurs droits/groupes</a>
-  {% endif %}
-  {%  include "users/aff_listright.html" with  listright_list=listright_list %}
+    <h2>Liste des droits</h2>
+    {% if is_bureau %}
+        <a class="btn btn-primary btn-sm" role="button" href="{% url 'users:add-listright' %}">
+            <i class="glyphicon glyphicon-plus"></i>
+            Ajouter un droit ou groupe
+        </a>
+        <a class="btn btn-danger btn-sm" role="button" href="{% url 'users:del-listright' %}">
+            <i class="glyphicon glyphicon-trash"></i>
+            Supprimer un ou plusieurs droits/groupes
+        </a>
+    {% endif %}
+    {% include "users/aff_listright.html" with  listright_list=listright_list %}
 {% endblock %}

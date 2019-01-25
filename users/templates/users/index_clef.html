@@ -1,13 +1,14 @@
 {% extends "users/sidebar.html" %}
 
-{% load bootstrap3 %}
-
 {% block title %}Clef{% endblock %}
 
 {% block content %}
-  <h2>Liste des clef</h2>
-  {% if is_bureau %}
-  <a class="btn btn-primary btn-sm" role="button" href="{% url 'users:add-clef'  %}"><i class="glyphicon glyphicon-plus"></i> Ajouter une clef</a>
-  {% endif %}
-  {%  include "users/aff_clef.html" with  clef_list=clef_list %}
+    <h2>Liste des clef</h2>
+    {% if is_bureau %}
+        <a class="btn btn-primary btn-sm" role="button" href="{% url 'users:add-clef' %}">
+            <i class="glyphicon glyphicon-plus"></i>
+            Ajouter une clef
+        </a>
+    {% endif %}
+    {% include "users/aff_clef.html" with  clef_list=clef_list %}
 {% endblock %}
