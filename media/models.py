@@ -8,6 +8,9 @@ class Auteur(models.Model):
     def __str__(self):
         return self.nom
 
+    class Meta:
+        ordering = ['-nom']
+
 
 class Media(models.Model):
     titre = models.CharField(max_length=255)
@@ -16,6 +19,9 @@ class Media(models.Model):
 
     def __str__(self):
         return str(self.titre) + ' - ' + str(self.auteur.all().first())
+
+    class Meta:
+        ordering = ['-titre']
 
 
 class Emprunt(models.Model):
@@ -34,6 +40,9 @@ class Emprunt(models.Model):
 
     def __str__(self):
         return str(self.media) + str(self.user)
+
+    class Meta:
+        ordering = ['-date_emprunt']
 
 
 class Jeu(models.Model):
@@ -55,3 +64,6 @@ class Jeu(models.Model):
 
     def __str__(self):
         return str(self.nom)
+
+    class Meta:
+        ordering = ['-nom']
