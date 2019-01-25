@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-24 09:06+0100\n"
+"POT-Creation-Date: 2019-01-25 17:18+0100\n"
 "PO-Revision-Date: 2019-01-24 08:55+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -20,6 +20,18 @@ msgstr "Administration de la base de données de la Médiathèque"
 msgid "Med Admin"
 msgstr "Méd Admin"
 
+#: search/templates/search/advanced_search.html:6
+#: search/templates/search/advanced_search.html:9
+msgid "Advanced search"
+msgstr "Recherche avancée"
+
+#: search/templates/search/advanced_search.html:15
+#: search/templates/search/search.html:6 search/templates/search/search.html:9
+#: search/templates/search/search.html:15 templates/navbar.html:57
+#: templates/navbar.html:58
+msgid "Search"
+msgstr "Recherche"
+
 #: templates/navbar.html:12
 msgid "Media"
 msgstr "Média"
@@ -32,22 +44,18 @@ msgstr "Utilisateurs"
 msgid "Stats"
 msgstr "Statistiques"
 
-#: templates/navbar.html:32 templates/sidebar.html:19
+#: templates/navbar.html:32 templates/sidebar.html:15
 msgid "My profile"
 msgstr "Mon profil"
 
-#: templates/navbar.html:40 templates/sidebar.html:23
+#: templates/navbar.html:40 templates/sidebar.html:19
 msgid "Log out"
 msgstr "Déconnexion"
 
 #: templates/navbar.html:47 templates/registration/login.html:15
-#: templates/sidebar.html:36
+#: templates/sidebar.html:32
 msgid "Log in"
 msgstr "Connexion"
-
-#: templates/navbar.html:57 templates/navbar.html:58
-msgid "Search"
-msgstr "Recherche"
 
 #: templates/pagination.html:10
 msgid "First"
@@ -73,6 +81,6 @@ msgstr "Authentification utilisateur"
 msgid "Forgotten password ?"
 msgstr "Mot de passe oublié ?"
 
-#: templates/sidebar.html:32
+#: templates/sidebar.html:28
 msgid "You are not log in yet."
 msgstr "Vous n'êtes pas authentifié·e."
