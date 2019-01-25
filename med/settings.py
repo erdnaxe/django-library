@@ -156,14 +156,18 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
-### Under this comment it is code from re2o
-
 # Auth definition
+# SSHA password hashed is from re2o and *shouldn't* be here
+# but some accounts were already created with this hasher
+# so it's defined here for compatibility purposes
 
 PASSWORD_HASHERS = (
-    'med.login.SSHAPasswordHasher',
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'med.login.SSHAPasswordHasher',
 )
+
+
+### Under this comment it is code from re2o
 
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/login/'
