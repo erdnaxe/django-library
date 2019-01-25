@@ -160,6 +160,11 @@ MESSAGE_TAGS = {
 
 # Auth definition
 
+PASSWORD_HASHERS = (
+    'med.login.SSHAPasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+)
+
 AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
