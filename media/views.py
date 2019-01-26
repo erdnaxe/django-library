@@ -5,8 +5,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction
 from django.shortcuts import render, redirect
 from django.template.context_processors import csrf
+from django.urls import reverse
 from django.utils import timezone
-from django.views import generic
+from django_tables2 import SingleTableView
 from reversion import revisions as reversion
 from reversion.models import Version
 
@@ -14,6 +15,7 @@ from med.settings import PAGINATION_NUMBER
 from users.models import User
 from .forms import AuteurForm, MediaForm, JeuForm, EmpruntForm, EditEmpruntForm
 from .models import Auteur, Media, Jeu, Emprunt
+from .tables import AuthorTable, MediaTable, GamesTable
 
 
 def form(ctx, template, request):
@@ -270,26 +272,42 @@ def del_emprunt(request, pk):
                 'media/delete.html', request)
 
 
-class IndexGames(LoginRequiredMixin, generic.ListView):
+class Index(LoginRequiredMixin, SingleTableView):
+    paginate_by = PAGINATION_NUMBER
+    template_name = 'media/index.html'
+    # TODO find better defaults
     model = Jeu
-    paginate_by = PAGINATION_NUMBER
-    context_object_name = 'jeux_list'
-    template_name = 'media/index_jeux.html'
+    title = 'Index des jeux'
+    add_link = 'media:add-jeu'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # TODO find a way to have proper plural
+        context['name'] = self.model._meta.model_name  # Get model name
+        context['title'] = self.title
+        context['add_link'] = reverse(self.add_link)
+        return context
 
 
-class IndexAuthors(LoginRequiredMixin, generic.ListView):
+class IndexAuthors(Index):
     model = Auteur
-    queryset = Auteur.objects.all().order_by('nom')
-    paginate_by = PAGINATION_NUMBER
-    context_object_name = 'auteurs_list'
-    template_name = 'media/index_auteurs.html'
+    table_class = AuthorTable
+    title = 'Index des auteurs'
+    add_link = 'media:add-auteur'
 
 
-class IndexMedia(LoginRequiredMixin, generic.ListView):
+class IndexMedia(Index):
     model = Media
-    paginate_by = PAGINATION_NUMBER
-    context_object_name = 'medias_list'
-    template_name = 'media/index_medias.html'
+    table_class = MediaTable
+    title = 'Index des media'
+    add_link = 'media:add-media'
+
+
+class IndexGames(Index):
+    model = Jeu
+    table_class = GamesTable
+    title = 'Index des jeux'
+    add_link = 'media:add-jeu'
 
 
 @login_required

@@ -1,0 +1,14 @@
+{# TODO name=name for object type #}
+{% if is_perm %}
+    <a class="btn btn-primary btn-sm" role="button" title="{{ desc|default:"Éditer" }}"
+       href="{% url 'media:edit-jeu' record.id %}">
+        <span class="oi oi-pencil"></span>
+    </a>
+    <a class="btn btn-danger btn-sm" role="button" href="{% url 'media:del-jeu' record.id %}"
+       title="{{ desc|default:"Supprimer" }}">
+        <span class="oi oi-trash"></span>
+    </a>
+{% endif %}
+<a class="btn btn-info btn-sm" role="button" title="Historique" href="{% url 'media:history' record.id %}">
+    <span class="oi oi-timer"></span>
+</a>

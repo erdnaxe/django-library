@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
+    'django_tables2',
     'users',
     'med',
     'media',
@@ -57,8 +58,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.request',  # From re2o
-                'med.context_processors.context_user',  # From re2o
+                'med.context_processors.context_user',  # Custom context
             ],
         },
     },
@@ -172,7 +172,7 @@ AUTH_USER_MODEL = 'users.User'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
 
-PAGINATION_NUMBER = 25
+PAGINATION_NUMBER = 10  # TODO 25
 PAGINATION_LARGE_NUMBER = 8
 
 # Association information

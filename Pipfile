@@ -7,6 +7,7 @@ name = "pypi"
 django = "*"
 django-crispy-forms = "*"
 django-reversion = "*"
+"django-tables2" = "*"
 
 [dev-packages]
 

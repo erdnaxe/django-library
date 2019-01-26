@@ -1,0 +1,16 @@
+{% extends "media/base.html" %}
+
+{% load render_table from django_tables2 %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    <h2>{{ title }}</h2>
+    {% if is_perm %}
+        <a class="btn btn-success btn-sm mb-4" role="button" href="{{ add_link }}">
+            <span class="oi oi-plus"></span>
+            Ajouter un {{ name }}
+        </a>
+    {% endif %}
+    {% render_table table %}
+{% endblock %}
