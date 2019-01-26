@@ -17,7 +17,6 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -66,12 +65,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'med.wsgi.application'
 
 # Django crispy forms
-
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
@@ -81,7 +78,6 @@ DATABASES = {
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
-
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -99,24 +95,15 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.8/topics/i18n/
-
 LANGUAGE_CODE = 'fr-fr'
-
 TIME_ZONE = 'Europe/Paris'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
-LOCALE_PATHS = [
-    os.path.join(BASE_DIR, 'locale'),
-]
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale'), ]
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
-
 STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [
@@ -124,7 +111,6 @@ STATICFILES_DIRS = [
 ]
 
 # Emails
-
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_USE_SSL = False
@@ -132,7 +118,6 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 # EMAIL_PORT = 25
 # EMAIL_HOST_USER = 'change_me'
 # EMAIL_HOST_PASSWORD = 'change_me'
-
 DEFAULT_FROM_EMAIL = 'webmaster@localhost'
 SERVER_EMAIL = 'root@localhost'
 
@@ -145,7 +130,6 @@ SESSION_COOKIE_SECURE = False
 ADMINS = []
 
 # Use message tags for Bootstrap 4
-
 MESSAGE_TAGS = {
     messages.DEBUG: 'alert-info',
     messages.INFO: 'alert-info',
@@ -158,28 +142,21 @@ MESSAGE_TAGS = {
 # SSHA password hashed is from re2o and *shouldn't* be here
 # but some accounts were already created with this hasher
 # so it's defined here for compatibility purposes
-
 PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
     'med.ssha_login.SSHAPasswordHasher',
 )
 
+# Django login
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
 
 ### Under this comment it is code from re2o
 
 AUTH_USER_MODEL = 'users.User'
-LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
 
 PAGINATION_NUMBER = 10  # TODO 25
 PAGINATION_LARGE_NUMBER = 8
-
-# Association information
-
-SITE_NAME = "Med"
-
-LOGO_PATH = "static_files/logo.png"
 
 # Number of hours a token remains valid after having been created.
 # Numeric and string versions should have the same meaning.
@@ -187,8 +164,6 @@ REQ_EXPIRE_HRS = 48
 REQ_EXPIRE_STR = '48 heures'
 
 # Affchage des résultats
-SEARCH_RESULT = 15
-
 MAX_EMPRUNT = 5
 
 AUTHORIZED_IP_RANGE = '0.0.0.0/0'

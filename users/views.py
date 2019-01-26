@@ -13,8 +13,7 @@ from django.utils import timezone
 from reversion import revisions as reversion
 from reversion.models import Version
 
-from med.settings import REQ_EXPIRE_STR, DEFAULT_FROM_EMAIL, \
-    SITE_NAME, PAGINATION_NUMBER
+from med.settings import REQ_EXPIRE_STR, DEFAULT_FROM_EMAIL, PAGINATION_NUMBER
 from media.models import Emprunt
 from users.decorators import user_is_in_campus
 from users.forms import DelListRightForm, NewListRightForm, ListRightForm, \
@@ -59,7 +58,7 @@ def reset_passwd_mail(req, request):
             reverse('users:process', kwargs={'token': req.token})),
         'expire_in': REQ_EXPIRE_STR,
     }
-    send_mail('Votre compte %s' % SITE_NAME, t.render(c),
+    send_mail('Votre compte Med', t.render(c),
               DEFAULT_FROM_EMAIL, [req.user.email], fail_silently=False)
     return
 
