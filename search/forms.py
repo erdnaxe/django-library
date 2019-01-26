@@ -1,5 +1,7 @@
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 from django import forms
-from django.forms import Form
+from django.utils.translation import gettext_lazy as _
 
 CHOICES = (
     ('0', 'Actifs'),
@@ -15,14 +17,19 @@ CHOICES2 = (
 )
 
 
-class SearchForm(Form):
+class SearchForm(forms.Form):
     search_field = forms.CharField(
         label='Search',
         max_length=100
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', _('Search')))
 
-class SearchFormPlus(Form):
+
+class AdvancedSearchForm(SearchForm):
     search_field = forms.CharField(
         label='Search',
         max_length=100,
@@ -47,7 +54,13 @@ class SearchFormPlus(Form):
         input_formats=['%d/%m/%Y']
     )
     date_fin = forms.DateField(
-        required=False, help_text='DD/MM/YYYY',
+        required=False,
+        help_text='DD/MM/YYYY',
         input_formats=['%d/%m/%Y'],
         label="Date de fin"
     )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.add_input(Submit('submit', _('Search')))

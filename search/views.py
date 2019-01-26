@@ -2,10 +2,11 @@ from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.shortcuts import render
 from django.template.context_processors import csrf
+from django.utils.translation import gettext_lazy as _
 
 from med.settings import SEARCH_DISPLAY_PAGE
 from media.models import Media, Jeu, Emprunt
-from search.forms import SearchForm, SearchFormPlus
+from search.forms import SearchForm, AdvancedSearchForm
 from users.models import User
 
 
@@ -86,17 +87,16 @@ def search(request):
     search_form = SearchForm(request.POST or None)
     if search_form.is_valid():
         return form(search_result(search_form, False, request),
-                    'search/index.html',
-                    request)
-    return form({'search_form': search_form}, 'search/search.html', request)
+                    'search/index.html', request)
+    return form({'title': _('Search'), 'form': search_form},
+                'search/form.html', request)
 
 
 @login_required
 def advanced_search(request):
-    search_form = SearchFormPlus(request.POST or None)
+    search_form = AdvancedSearchForm(request.POST or None)
     if search_form.is_valid():
         return form(search_result(search_form, True, request),
-                    'search/index.html',
-                    request)
-    return form({'search_form': search_form}, 'search/advanced_search.html',
-                request)
+                    'search/index.html', request)
+    return form({'title': _('Advanced search'), 'form': search_form},
+                'search/form.html', request)
