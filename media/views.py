@@ -204,6 +204,7 @@ def retour_emprunt(request, pk):
 
 # TODO PermissionRequiredMixin when permissions work
 class Index(SingleTableView):
+    """Parent class to all index pages"""
     paginate_by = PAGINATION_NUMBER
     template_name = 'media/index.html'
     # TODO find better defaults
@@ -222,6 +223,7 @@ class Index(SingleTableView):
 
 # TODO PermissionRequiredMixin when permissions work
 class Delete(RevisionMixin, DeleteView):
+    """Parent class to all object deletion"""
     template_name = 'media/delete.html'
 
 
