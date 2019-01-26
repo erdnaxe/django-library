@@ -1,13 +1,16 @@
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Submit
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction
 from django.shortcuts import render, redirect
 from django.template.context_processors import csrf
-from django.urls import reverse
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.utils import timezone
-from django.views.generic.edit import DeleteView
+from django.utils.translation import gettext_lazy as _
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django_tables2 import SingleTableView
 from reversion import revisions as reversion
 from reversion.models import Version
@@ -15,7 +18,7 @@ from reversion.views import RevisionMixin
 
 from med.settings import PAGINATION_NUMBER
 from users.models import User
-from .forms import AuteurForm, MediaForm, JeuForm, EmpruntForm, EditEmpruntForm
+from .forms import EmpruntForm, EditEmpruntForm
 from .models import Auteur, Media, Jeu, Emprunt
 from .tables import AuthorTable, MediaTable, GamesTable
 
@@ -24,114 +27,6 @@ def form(ctx, template, request):
     c = ctx
     c.update(csrf(request))
     return render(request, template, c)
-
-
-@login_required
-@permission_required('perm')
-def add_auteur(request):
-    auteur = AuteurForm(request.POST or None)
-    if auteur.is_valid():
-        with transaction.atomic(), reversion.create_revision():
-            auteur.save()
-            reversion.set_user(request.user)
-            reversion.set_comment("Création")
-        messages.success(request, "L'auteur a été ajouté")
-        return redirect("/media/index_auteurs/")
-    return form({"title": "Création d'un auteur", "form": auteur},
-                "media/form.html", request)
-
-
-@login_required
-@permission_required('perm')
-def edit_auteur(request, pk):
-    try:
-        auteur_instance = Auteur.objects.get(pk=pk)
-    except Auteur.DoesNotExist:
-        messages.error(request, u"Entrée inexistante")
-        return redirect("/media/index_auteurs/")
-    auteur = AuteurForm(request.POST or None, instance=auteur_instance)
-    if auteur.is_valid():
-        with transaction.atomic(), reversion.create_revision():
-            auteur.save()
-            reversion.set_user(request.user)
-            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(
-                field for field in auteur.changed_data))
-        messages.success(request, "Auteur modifié")
-        return redirect("/media/index_auteurs/")
-    return form({"title": "Modification d'un auteur", "form": auteur},
-                "media/form.html", request)
-
-
-@login_required
-@permission_required('perm')
-def add_media(request):
-    media = MediaForm(request.POST or None)
-    if media.is_valid():
-        with transaction.atomic(), reversion.create_revision():
-            media.save()
-            reversion.set_user(request.user)
-            reversion.set_comment("Création")
-        messages.success(request, "Le media a été ajouté")
-        return redirect("/media/index_medias/")
-    return form({"title": "Ajout d'un média", "form": media},
-                "media/form.html", request)
-
-
-@login_required
-@permission_required('perm')
-def edit_media(request, pk):
-    try:
-        media_instance = Media.objects.get(pk=pk)
-    except Media.DoesNotExist:
-        messages.error(request, u"Entrée inexistante")
-        return redirect("/media/index_medias/")
-    media = MediaForm(request.POST or None, instance=media_instance)
-    if media.is_valid():
-        with transaction.atomic(), reversion.create_revision():
-            media.save()
-            reversion.set_user(request.user)
-            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(
-                field for field in media.changed_data))
-        messages.success(request, "Media modifié")
-        return redirect("/media/index_medias/")
-    return form({"title": "Modification d'un média", "form": media},
-                "media/form.html", request)
-
-
-@login_required
-@permission_required('perm')
-def add_jeu(request):
-    jeu = JeuForm(request.POST or None)
-    if jeu.is_valid():
-        with transaction.atomic(), reversion.create_revision():
-            jeu.save()
-            reversion.set_user(request.user)
-            reversion.set_comment("Création")
-        messages.success(request, "Le jeu a été ajouté")
-        return redirect("/media/index_jeux/")
-    return form({"title": "Création d'un jeu", "form": jeu}, "media/form.html",
-                request)
-
-
-@login_required
-@permission_required('perm')
-def edit_jeu(request, pk):
-    try:
-        jeu_instance = Jeu.objects.get(pk=pk)
-    except Jeu.DoesNotExist:
-        messages.error(request, u"Entrée inexistante")
-        return redirect("/media/index_jeux/")
-    jeu = JeuForm(request.POST or None, instance=jeu_instance)
-    if jeu.is_valid():
-        with transaction.atomic(), reversion.create_revision():
-            jeu.save()
-            reversion.set_user(request.user)
-            reversion.set_comment("Champs modifié(s) : %s" % ', '.join(
-                field for field in jeu.changed_data))
-        messages.success(request, "Media modifié")
-        return redirect("/media/index_jeux/")
-    return form({"title": "Modification d'un jeu", "form": jeu},
-                "media/form.html", request)
 
 
 @login_required
@@ -222,9 +117,48 @@ class Index(SingleTableView):
 
 
 # TODO PermissionRequiredMixin when permissions work
-class Delete(RevisionMixin, DeleteView):
+class Create(RevisionMixin, SuccessMessageMixin, CreateView):
+    """Parent class to all object creation"""
+    template_name = 'media/form.html'
+    success_message = _('Object successfully created')
+
+    def get_form(self, form_class=None):
+        creation_form = super().get_form(form_class)
+        creation_form.helper = FormHelper()
+        creation_form.helper.add_input(
+            Submit('submit', _('Create'), css_class='btn-success'))
+        return creation_form
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _('Creation')
+        return context
+
+
+# TODO PermissionRequiredMixin when permissions work
+class Update(RevisionMixin, SuccessMessageMixin, UpdateView):
+    """Parent class to all object creation"""
+    template_name = 'media/form.html'
+    success_message = _('Object successfully edited')
+
+    def get_form(self, form_class=None):
+        creation_form = super().get_form(form_class)
+        creation_form.helper = FormHelper()
+        creation_form.helper.add_input(
+            Submit('submit', _('Edit'), css_class='btn-primary'))
+        return creation_form
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _('Edition')
+        return context
+
+
+# TODO PermissionRequiredMixin when permissions work
+class Delete(RevisionMixin, SuccessMessageMixin, DeleteView):
     """Parent class to all object deletion"""
     template_name = 'media/delete.html'
+    success_message = _('Object successfully deleted')
 
 
 class BorrowedMediaDelete(Delete):
@@ -240,6 +174,20 @@ class AuthorsIndex(Index):
     permission_required = 'auteur.view'
 
 
+class AuthorsCreate(Create):
+    model = Auteur
+    success_url = reverse_lazy('media:index-auteurs')
+    permission_required = 'auteur.add'
+    fields = ('nom',)
+
+
+class AuthorsUpdate(Update):
+    model = Auteur
+    success_url = reverse_lazy('media:index-auteurs')
+    permission_required = 'auteur.edit'
+    fields = ('nom',)
+
+
 class AuthorsDelete(Delete):
     model = Auteur
     success_url = reverse_lazy('media:index-auteurs')
@@ -253,6 +201,20 @@ class MediaIndex(Index):
     permission_required = 'media.view'
 
 
+class MediaCreate(Create):
+    model = Media
+    success_url = reverse_lazy('media:index-medias')
+    permission_required = 'media.add'
+    fields = ('titre', 'auteur', 'cote')
+
+
+class MediaUpdate(Update):
+    model = Media
+    success_url = reverse_lazy('media:index-medias')
+    permission_required = 'media.edit'
+    fields = ('titre', 'auteur', 'cote')
+
+
 class MediaDelete(Delete):
     model = Media
     success_url = reverse_lazy('media:index-medias')
@@ -264,6 +226,22 @@ class GamesIndex(Index):
     table_class = GamesTable
     add_link = 'media:add-jeu'
     permission_required = 'jeu.view'
+
+
+class GamesCreate(Create):
+    model = Jeu
+    success_url = reverse_lazy('media:index-jeux')
+    permission_required = 'jeu.add'
+    fields = ('nom', 'proprietaire', 'duree', 'nombre_joueurs_min',
+              'nombre_joueurs_max', 'comment')
+
+
+class GamesUpdate(Update):
+    model = Jeu
+    success_url = reverse_lazy('media:index-jeux')
+    permission_required = 'jeu.edit'
+    fields = ('nom', 'proprietaire', 'duree', 'nombre_joueurs_min',
+              'nombre_joueurs_max', 'comment')
 
 
 class GamesDelete(Delete):
