@@ -1,3 +1,8 @@
+"""
+This is a deprecated hash algorithm that is no longer used for new accounts
+It's here only for compatibility purposes
+"""
+
 import binascii
 import hashlib
 import os

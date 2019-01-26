@@ -161,7 +161,7 @@ MESSAGE_TAGS = {
 
 PASSWORD_HASHERS = (
     'django.contrib.auth.hashers.PBKDF2PasswordHasher',
-    'med.login.SSHAPasswordHasher',
+    'med.ssha_login.SSHAPasswordHasher',
 )
 
 
