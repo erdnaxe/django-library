@@ -1,12 +1,15 @@
 {% extends "media/base.html" %}
 
-{% block title %}Création et modification de media{% endblock %}
+{% load i18n %}
+
+{% block title %}{% trans "Confirm deletion" %}{% endblock %}
 
 {% block content %}
     <form class="form" method="post">
         {% csrf_token %}
-        <h4>Attention, voulez-vous vraiment supprimer cet objet {{ objet_name }} ( {{ objet }} ) ?</h4>
-        <button type="submit" class="btn btn-success">
+        <h1>Attention, voulez-vous vraiment supprimer « {{ object }} » ?</h1>
+        <button type="submit" class="btn btn-danger">
+            <span class="oi oi-trash"></span>
             Confirmer
         </button>
     </form>

@@ -5,10 +5,13 @@ from django.db import transaction
 from django.shortcuts import render, redirect
 from django.template.context_processors import csrf
 from django.urls import reverse
+from django.urls import reverse_lazy
 from django.utils import timezone
+from django.views.generic.edit import DeleteView
 from django_tables2 import SingleTableView
 from reversion import revisions as reversion
 from reversion.models import Version
+from reversion.views import RevisionMixin
 
 from med.settings import PAGINATION_NUMBER
 from users.models import User
@@ -61,24 +64,6 @@ def edit_auteur(request, pk):
 
 @login_required
 @permission_required('perm')
-def del_auteur(request, pk):
-    try:
-        auteur_instance = Auteur.objects.get(pk=pk)
-    except Auteur.DoesNotExist:
-        messages.error(request, "Entrée inexistante")
-        return redirect("/media/index_auteurs/")
-    if request.method == "POST":
-        with transaction.atomic(), reversion.create_revision():
-            auteur_instance.delete()
-            reversion.set_user(request.user)
-            messages.success(request, "L'auteur a été détruit")
-        return redirect("/media/index_auteurs")
-    return form({'objet': auteur_instance, 'objet_name': 'auteur'},
-                'media/delete.html', request)
-
-
-@login_required
-@permission_required('perm')
 def add_media(request):
     media = MediaForm(request.POST or None)
     if media.is_valid():
@@ -115,24 +100,6 @@ def edit_media(request, pk):
 
 @login_required
 @permission_required('perm')
-def del_media(request, pk):
-    try:
-        media_instance = Media.objects.get(pk=pk)
-    except Media.DoesNotExist:
-        messages.error(request, u"Entrée inexistante")
-        return redirect("/media/index_medias/")
-    if request.method == "POST":
-        with transaction.atomic(), reversion.create_revision():
-            media_instance.delete()
-            reversion.set_user(request.user)
-            messages.success(request, "Le media a été détruit")
-        return redirect("/media/index_medias")
-    return form({'objet': media_instance, 'objet_name': 'media'},
-                'media/delete.html', request)
-
-
-@login_required
-@permission_required('perm')
 def add_jeu(request):
     jeu = JeuForm(request.POST or None)
     if jeu.is_valid():
@@ -165,24 +132,6 @@ def edit_jeu(request, pk):
         return redirect("/media/index_jeux/")
     return form({"title": "Modification d'un jeu", "form": jeu},
                 "media/form.html", request)
-
-
-@login_required
-@permission_required('perm')
-def del_jeu(request, pk):
-    try:
-        jeu_instance = Jeu.objects.get(pk=pk)
-    except Jeu.DoesNotExist:
-        messages.error(request, u"Entrée inexistante")
-        return redirect("/media/index_jeux/")
-    if request.method == "POST":
-        with transaction.atomic(), reversion.create_revision():
-            jeu_instance.delete()
-            reversion.set_user(request.user)
-            messages.success(request, "Le jeu a été détruit")
-        return redirect("/media/index_jeux")
-    return form({'objet': jeu_instance, 'objet_name': 'jeu'},
-                'media/delete.html', request)
 
 
 @login_required
@@ -253,24 +202,6 @@ def retour_emprunt(request, pk):
     return redirect("/media/index_emprunts/")
 
 
-@login_required
-@permission_required('perm')
-def del_emprunt(request, pk):
-    try:
-        emprunt_instance = Emprunt.objects.get(pk=pk)
-    except Emprunt.DoesNotExist:
-        messages.error(request, u"Entrée inexistante")
-        return redirect("/media/index_emprunts/")
-    if request.method == "POST":
-        with transaction.atomic(), reversion.create_revision():
-            emprunt_instance.delete()
-            reversion.set_user(request.user)
-            messages.success(request, "L'emprunt a été détruit")
-        return redirect("/media/index_emprunts")
-    return form({'objet': emprunt_instance, 'objet_name': 'emprunt'},
-                'media/delete.html', request)
-
-
 # TODO PermissionRequiredMixin when permissions work
 class Index(SingleTableView):
     paginate_by = PAGINATION_NUMBER
@@ -289,25 +220,54 @@ class Index(SingleTableView):
         return context
 
 
-class IndexAuthors(Index):
+# TODO PermissionRequiredMixin when permissions work
+class Delete(RevisionMixin, DeleteView):
+    template_name = 'media/delete.html'
+
+
+class BorrowedMediaDelete(Delete):
+    model = Emprunt
+    success_url = reverse_lazy('media:index')
+    permission_required = 'emprunt.delete'
+
+
+class AuthorsIndex(Index):
     model = Auteur
     table_class = AuthorTable
     add_link = 'media:add-auteur'
     permission_required = 'auteur.view'
 
 
-class IndexMedia(Index):
+class AuthorsDelete(Delete):
+    model = Auteur
+    success_url = reverse_lazy('media:index-auteurs')
+    permission_required = 'auteur.delete'
+
+
+class MediaIndex(Index):
     model = Media
     table_class = MediaTable
     add_link = 'media:add-media'
     permission_required = 'media.view'
 
 
-class IndexGames(Index):
+class MediaDelete(Delete):
+    model = Media
+    success_url = reverse_lazy('media:index-medias')
+    permission_required = 'media.delete'
+
+
+class GamesIndex(Index):
     model = Jeu
     table_class = GamesTable
     add_link = 'media:add-jeu'
     permission_required = 'jeu.view'
+
+
+class GamesDelete(Delete):
+    model = Jeu
+    success_url = reverse_lazy('media:index-jeux')
+    permission_required = 'jeu.delete'
 
 
 @login_required
