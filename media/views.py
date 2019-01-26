@@ -1,6 +1,5 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction
 from django.shortcuts import render, redirect
@@ -278,14 +277,14 @@ class Index(SingleTableView):
     template_name = 'media/index.html'
     # TODO find better defaults
     model = Jeu
-    title = 'Index des jeux'
     add_link = 'media:add-jeu'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         # TODO find a way to have proper plural
         context['name'] = self.model._meta.model_name  # Get model name
-        context['title'] = self.title
+        context['title'] = 'Index des ' \
+                           + self.model._meta.verbose_name_plural.title()
         context['add_link'] = reverse(self.add_link)
         return context
 
@@ -293,7 +292,6 @@ class Index(SingleTableView):
 class IndexAuthors(Index):
     model = Auteur
     table_class = AuthorTable
-    title = 'Index des auteurs'
     add_link = 'media:add-auteur'
     permission_required = 'auteur.view'
 
@@ -301,7 +299,6 @@ class IndexAuthors(Index):
 class IndexMedia(Index):
     model = Media
     table_class = MediaTable
-    title = 'Index des media'
     add_link = 'media:add-media'
     permission_required = 'media.view'
 
@@ -309,7 +306,6 @@ class IndexMedia(Index):
 class IndexGames(Index):
     model = Jeu
     table_class = GamesTable
-    title = 'Index des jeux'
     add_link = 'media:add-jeu'
     permission_required = 'jeu.view'
 
