@@ -99,7 +99,8 @@ class Emprunt(models.Model):
             ("add", "Can add a borrowed media"),
             ("change", "Can edit a borrowed media"),
             ("delete", "Can delete a borrowed media"),
-            ("view", "Can view a borrowed media"),
+            ("my_view", "Can view his borrowed media"),
+            ("view", "Can view all borrowed media"),
         )
         verbose_name = _('borrowed media')
         verbose_name_plural = _('borrowed media')

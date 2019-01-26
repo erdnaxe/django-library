@@ -58,7 +58,6 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'med.context_processors.context_user',  # Custom context
             ],
         },
     },
@@ -181,19 +180,13 @@ SITE_NAME = "Med"
 
 LOGO_PATH = "static_files/logo.png"
 
-# Number of hours a token remains valid after having been created.  Numeric and string
-# versions should have the same meaning.
+# Number of hours a token remains valid after having been created.
+# Numeric and string versions should have the same meaning.
 REQ_EXPIRE_HRS = 48
 REQ_EXPIRE_STR = '48 heures'
 
 # Affchage des résultats
 SEARCH_RESULT = 15
-
-# Décision radius à prendre
-RADIUS_VLAN_DECISION = {
-    'VLAN_NOK': 42,
-    'VLAN_OK': 69,
-}
 
 MAX_EMPRUNT = 5
 

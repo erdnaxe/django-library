@@ -2,9 +2,13 @@
 
 {% block sidebar_nav %}
     <div class="card list-group mt-3 border-info">
-        <a class="list-group-item list-group-item-action" href="{% url "media:index" %}">
+        <a class="list-group-item list-group-item-action" href="{% url "media:my-borrowed-media-index" %}">
             <span class="oi oi-list"></span>
-            Emprunts
+            Mes emprunts
+        </a>
+        <a class="list-group-item list-group-item-action" href="{% url "media:all-borrowed-media-index" %}">
+            <span class="oi oi-list"></span>
+            Tous les emprunts
         </a>
         <a class="list-group-item list-group-item-action" href="{% url "media:index-auteurs" %}">
             <span class="oi oi-people"></span>

@@ -14,10 +14,11 @@ class BaseTable(tables.Table):
         attrs = {'class': 'table table-striped'}
 
 
-class BorrowedTable(BaseTable):
+class BorrowedMediaTable(BaseTable):
     class Meta(BaseTable.Meta):
         model = Emprunt
-        fields = ('media', 'user', 'date_emprunt', 'permanencier_emprunt')
+        fields = ('media', 'user', 'date_emprunt', 'permanencier_emprunt',
+                  'date_rendu', 'permanencier_rendu')
 
 
 class AuthorTable(BaseTable):

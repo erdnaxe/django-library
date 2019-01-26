@@ -25,7 +25,10 @@ urlpatterns = [
     path('media/<int:pk>/del/', views.MediaDelete.as_view(), name='del-media'),
     path('media/<int:pk>/history/', views.history,
          {'object': 'media'}, name='history'),
-    path('emprunts/', views.index, name='index'),
+    path('', views.MyBorrowedMediaIndex.as_view(),
+         name='my-borrowed-media-index'),
+    path('emprunts/', views.AllBorrowedMediaIndex.as_view(),
+         name='all-borrowed-media-index'),
     path('emprunts/add/<int:userid>', views.add_emprunt, name='add-emprunt'),
     path('emprunts/<int:pk>/retour/', views.retour_emprunt,
          name='retour-emprunt'),
@@ -34,5 +37,4 @@ urlpatterns = [
          name='del-emprunt'),
     path('emprunts/<int:pk>/history/', views.history,
          {'object': 'emprunt'}, name='history'),
-    path('', views.index, name='index'),
 ]

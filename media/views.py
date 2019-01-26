@@ -20,7 +20,72 @@ from med.settings import PAGINATION_NUMBER
 from users.models import User
 from .forms import EmpruntForm, EditEmpruntForm
 from .models import Auteur, Media, Jeu, Emprunt
-from .tables import AuthorTable, MediaTable, GamesTable
+from .tables import BorrowedMediaTable, AuthorTable, MediaTable, GamesTable
+
+
+# TODO PermissionRequiredMixin when permissions work
+class Index(SingleTableView):
+    """Parent class to all index pages"""
+    paginate_by = PAGINATION_NUMBER
+    template_name = 'media/index.html'
+    # TODO find better defaults
+    model = Jeu
+    add_link = 'media:add-jeu'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        # TODO find a way to have proper plural
+        context['name'] = self.model._meta.model_name  # Get model name
+        context['title'] = 'Index des ' \
+                           + self.model._meta.verbose_name_plural.title()
+        if self.add_link:
+            context['add_link'] = reverse(self.add_link)
+        return context
+
+
+# TODO PermissionRequiredMixin when permissions work
+class Create(RevisionMixin, SuccessMessageMixin, CreateView):
+    """Parent class to all object creation"""
+    template_name = 'media/form.html'
+    success_message = _('Object successfully created')
+
+    def get_form(self, form_class=None):
+        creation_form = super().get_form(form_class)
+        creation_form.helper = FormHelper()
+        creation_form.helper.add_input(
+            Submit('submit', _('Create'), css_class='btn-success'))
+        return creation_form
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _('Creation')
+        return context
+
+
+# TODO PermissionRequiredMixin when permissions work
+class Update(RevisionMixin, SuccessMessageMixin, UpdateView):
+    """Parent class to all object creation"""
+    template_name = 'media/form.html'
+    success_message = _('Object successfully edited')
+
+    def get_form(self, form_class=None):
+        creation_form = super().get_form(form_class)
+        creation_form.helper = FormHelper()
+        creation_form.helper.add_input(
+            Submit('submit', _('Edit'), css_class='btn-primary'))
+        return creation_form
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = _('Edition')
+        return context
+
+
+# TODO PermissionRequiredMixin when permissions work
+class Delete(RevisionMixin, SuccessMessageMixin, DeleteView):
+    """Parent class to all object deletion"""
+    template_name = 'media/delete.html'
+    success_message = _('Object successfully deleted')
 
 
 def form(ctx, template, request):
@@ -97,73 +162,24 @@ def retour_emprunt(request, pk):
     return redirect("/media/index_emprunts/")
 
 
-# TODO PermissionRequiredMixin when permissions work
-class Index(SingleTableView):
-    """Parent class to all index pages"""
-    paginate_by = PAGINATION_NUMBER
-    template_name = 'media/index.html'
-    # TODO find better defaults
-    model = Jeu
-    add_link = 'media:add-jeu'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        # TODO find a way to have proper plural
-        context['name'] = self.model._meta.model_name  # Get model name
-        context['title'] = 'Index des ' \
-                           + self.model._meta.verbose_name_plural.title()
-        context['add_link'] = reverse(self.add_link)
-        return context
+class AllBorrowedMediaIndex(Index):
+    model = Emprunt
+    table_class = BorrowedMediaTable
+    add_link = ''
+    permission_required = 'emprunt.view'
 
 
-# TODO PermissionRequiredMixin when permissions work
-class Create(RevisionMixin, SuccessMessageMixin, CreateView):
-    """Parent class to all object creation"""
-    template_name = 'media/form.html'
-    success_message = _('Object successfully created')
-
-    def get_form(self, form_class=None):
-        creation_form = super().get_form(form_class)
-        creation_form.helper = FormHelper()
-        creation_form.helper.add_input(
-            Submit('submit', _('Create'), css_class='btn-success'))
-        return creation_form
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = _('Creation')
-        return context
-
-
-# TODO PermissionRequiredMixin when permissions work
-class Update(RevisionMixin, SuccessMessageMixin, UpdateView):
-    """Parent class to all object creation"""
-    template_name = 'media/form.html'
-    success_message = _('Object successfully edited')
-
-    def get_form(self, form_class=None):
-        creation_form = super().get_form(form_class)
-        creation_form.helper = FormHelper()
-        creation_form.helper.add_input(
-            Submit('submit', _('Edit'), css_class='btn-primary'))
-        return creation_form
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = _('Edition')
-        return context
-
-
-# TODO PermissionRequiredMixin when permissions work
-class Delete(RevisionMixin, SuccessMessageMixin, DeleteView):
-    """Parent class to all object deletion"""
-    template_name = 'media/delete.html'
-    success_message = _('Object successfully deleted')
+# TODO : filter queryset Emprunt.objects.filter(user=request.user)
+class MyBorrowedMediaIndex(Index):
+    model = Emprunt
+    table_class = BorrowedMediaTable
+    add_link = ''
+    permission_required = 'emprunt.my_view'
 
 
 class BorrowedMediaDelete(Delete):
     model = Emprunt
-    success_url = reverse_lazy('media:index')
+    success_url = reverse_lazy('media:my-borrowed-media-index')
     permission_required = 'emprunt.delete'
 
 
@@ -248,27 +264,6 @@ class GamesDelete(Delete):
     model = Jeu
     success_url = reverse_lazy('media:index-jeux')
     permission_required = 'jeu.delete'
-
-
-@login_required
-def index(request):
-    if request.user.has_perms(['perm']):
-        emprunts_list = Emprunt.objects.all()
-    else:
-        emprunts_list = Emprunt.objects.filter(user=request.user)
-    paginator = Paginator(emprunts_list.order_by('date_emprunt').reverse(),
-                          PAGINATION_NUMBER)
-    page = request.GET.get('page')
-    try:
-        emprunts_list = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        emprunts_list = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        emprunts_list = paginator.page(paginator.num_pages)
-    return render(request, 'media/index_emprunts.html',
-                  {'emprunts_list': emprunts_list})
 
 
 @login_required

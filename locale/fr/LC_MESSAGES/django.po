@@ -18,11 +18,11 @@ msgstr "Logs"
 
 #: med/urls.py:10
 msgid "Med database administration"
-msgstr "Administration de la base de données de la Médiathèque"
+msgstr "Administration de la base de données de la Mediathèque"
 
 #: med/urls.py:11
 msgid "Med Admin"
-msgstr "Méd Admin"
+msgstr "Med Admin"
 
 #: media/apps.py:7 media/models.py:53 media/models.py:54 media/models.py:61
 msgid "media"
@@ -119,7 +119,7 @@ msgstr "Recherche avancée"
 
 #: templates/navbar.html:12
 msgid "Media"
-msgstr "Média"
+msgstr "Media"
 
 #: templates/navbar.html:19
 msgid "Users"
