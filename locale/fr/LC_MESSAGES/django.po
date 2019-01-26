@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-25 17:18+0100\n"
+"POT-Creation-Date: 2019-01-26 11:40+0100\n"
 "PO-Revision-Date: 2019-01-24 08:55+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -11,6 +11,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: logs/apps.py:7
+msgid "logs"
+msgstr "Logs"
 
 #: med/urls.py:10
 msgid "Med database administration"
@@ -20,17 +24,98 @@ msgstr "Administration de la base de données de la Médiathèque"
 msgid "Med Admin"
 msgstr "Méd Admin"
 
-#: search/templates/search/advanced_search.html:6
-#: search/templates/search/advanced_search.html:9
-msgid "Advanced search"
-msgstr "Recherche avancée"
+#: media/apps.py:7 media/models.py:53 media/models.py:54 media/models.py:61
+msgid "media"
+msgstr "média"
 
-#: search/templates/search/advanced_search.html:15
-#: search/templates/search/search.html:6 search/templates/search/search.html:9
-#: search/templates/search/search.html:15 templates/navbar.html:57
-#: templates/navbar.html:58
+#: media/models.py:10 media/models.py:119
+msgid "name"
+msgstr "nom"
+
+#: media/models.py:24 media/models.py:39
+msgid "author"
+msgstr "auteur"
+
+#: media/models.py:25
+msgid "authors"
+msgstr "auteurs"
+
+#: media/models.py:31
+msgid "title"
+msgstr "titre"
+
+#: media/models.py:35
+msgid "side title"
+msgstr "côte"
+
+#: media/models.py:66
+msgid "borrower"
+msgstr "emprunteur"
+
+#: media/models.py:70
+msgid "borrowed at"
+msgstr "emprunté le"
+
+#: media/models.py:76
+msgid "given back at"
+msgstr "rendu le"
+
+#: media/models.py:82
+msgid "borrowed with permanent"
+msgstr "emprunté avec le permanencier"
+
+#: media/models.py:90
+msgid "given back with permanent"
+msgstr "rendu avec le permanencier"
+
+#: media/models.py:104 media/models.py:105
+msgid "borrowed media"
+msgstr "Media emprunté"
+
+#: media/models.py:124
+msgid "owner"
+msgstr "propriétaire"
+
+#: media/models.py:129
+msgid "length"
+msgstr "durée"
+
+#: media/models.py:133
+msgid "minimum number of players"
+msgstr "nombre minimum de joueurs"
+
+#: media/models.py:137
+msgid "maximum number of players"
+msgstr "nombre maximum de joueurs"
+
+#: media/models.py:143
+msgid "comment"
+msgstr "commentaire"
+
+#: media/models.py:157
+msgid "game"
+msgstr "jeu"
+
+#: media/models.py:158
+msgid "games"
+msgstr "jeux"
+
+#: media/tables.py:8
+msgid "Actions"
+msgstr "Actions"
+
+#: search/apps.py:7
+msgid "search"
+msgstr "recherche"
+
+#: search/forms.py:29 search/forms.py:66 search/views.py:91
+#: templates/navbar.html:57 templates/navbar.html:58
 msgid "Search"
 msgstr "Recherche"
+
+#: search/views.py:101
+msgid "Advanced search"
+msgstr "Recherche avancée"
 
 #: templates/navbar.html:12
 msgid "Media"
@@ -84,3 +169,7 @@ msgstr "Mot de passe oublié ?"
 #: templates/sidebar.html:28
 msgid "You are not log in yet."
 msgstr "Vous n'êtes pas authentifié·e."
+
+#: users/apps.py:7
+msgid "users"
+msgstr "Utilisateurs"

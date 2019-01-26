@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction
 from django.shortcuts import render, redirect
@@ -272,7 +272,8 @@ def del_emprunt(request, pk):
                 'media/delete.html', request)
 
 
-class Index(LoginRequiredMixin, SingleTableView):
+# TODO PermissionRequiredMixin when permissions work
+class Index(SingleTableView):
     paginate_by = PAGINATION_NUMBER
     template_name = 'media/index.html'
     # TODO find better defaults
@@ -294,6 +295,7 @@ class IndexAuthors(Index):
     table_class = AuthorTable
     title = 'Index des auteurs'
     add_link = 'media:add-auteur'
+    permission_required = 'auteur.view'
 
 
 class IndexMedia(Index):
@@ -301,6 +303,7 @@ class IndexMedia(Index):
     table_class = MediaTable
     title = 'Index des media'
     add_link = 'media:add-media'
+    permission_required = 'media.view'
 
 
 class IndexGames(Index):
@@ -308,6 +311,7 @@ class IndexGames(Index):
     table_class = GamesTable
     title = 'Index des jeux'
     add_link = 'media:add-jeu'
+    permission_required = 'jeu.view'
 
 
 @login_required
