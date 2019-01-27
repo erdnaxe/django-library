@@ -15,12 +15,6 @@ class Auteur(models.Model):
 
     class Meta:
         ordering = ['-nom']
-        permissions = (
-            ("add", "Can add an author"),
-            ("change", "Can edit an author"),
-            ("delete", "Can delete an author"),
-            ("view", "Can view an author"),
-        )
         verbose_name = _('author')
         verbose_name_plural = _('authors')
 
@@ -44,12 +38,6 @@ class Media(models.Model):
 
     class Meta:
         ordering = ['-titre']
-        permissions = (
-            ("add", "Can add a media"),
-            ("change", "Can edit a media"),
-            ("delete", "Can delete a media"),
-            ("view", "Can view a media"),
-        )
         verbose_name = _('media')
         verbose_name_plural = _('media')
 
@@ -96,11 +84,7 @@ class Emprunt(models.Model):
     class Meta:
         ordering = ['-date_emprunt']
         permissions = (
-            ("add", "Can add a borrowed media"),
-            ("change", "Can edit a borrowed media"),
-            ("delete", "Can delete a borrowed media"),
             ("my_view", "Can view his borrowed media"),
-            ("view", "Can view all borrowed media"),
         )
         verbose_name = _('borrowed media')
         verbose_name_plural = _('borrowed media')
@@ -149,11 +133,5 @@ class Jeu(models.Model):
 
     class Meta:
         ordering = ['-nom']
-        permissions = (
-            ("add", "Can add a game"),
-            ("change", "Can edit a game"),
-            ("delete", "Can delete a game"),
-            ("view", "Can view a game"),
-        )
         verbose_name = _('game')
         verbose_name_plural = _('games')
