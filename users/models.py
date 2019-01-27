@@ -12,12 +12,6 @@ class User(AbstractUser):
         blank=True,
         verbose_name=_('phone'),
     )
-    address = models.CharField(
-        max_length=255,
-        null=True,
-        blank=True,
-        verbose_name=_('address'),
-    )
     max_borrowed = models.IntegerField(
         default=MAX_EMPRUNT,
         verbose_name=_('maximum simultaneous borrowed books'),
