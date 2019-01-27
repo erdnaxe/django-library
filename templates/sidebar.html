@@ -6,10 +6,10 @@
         <h5 class="card-header">{{ user.first_name }} {{ user.last_name }}</h5>
         <div class="card-body">
             <dl>
-                <dt>Pseudo</dt>
+                <dt>{% trans "Pseudo" %}</dt>
                 <dd>{{ user.username }}</dd>
 
-                <dt>Médeux depuis</dt>
+                <dt>{% trans "Member since" %}</dt>
                 <dd>{{ user.date_joined|date:"F Y" }}</dd>
             </dl>
             <div class="card-text text-center">
@@ -42,7 +42,7 @@
 <footer class="footer mt-auto py-3">
     <div class="container">
             <span class="text-muted">
-                Méd 2019 &mdash; Codé avec <span class="oi oi-heart"></span> par des médeux fous
+                {% trans "Med" %} 2019 &mdash; {% trans "Coded with" %} <span class="oi oi-heart"></span>
             </span>
     </div>
 </footer>

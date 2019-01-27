@@ -1,8 +1,8 @@
 {% load i18n %}
 
-<nav class="navbar navbar-dark shadow bg-dark navbar-expand-lg">
+<nav class="navbar navbar-dark py-1 shadow bg-dark navbar-expand">
     {# Name of the website #}
-    <a class="navbar-brand" href="{% url "index" %}">Méd</a>
+    <a class="navbar-brand" href="{% url "index" %}">{% trans "Med" %}</a>
 
     {# Site navigation #}
     <ul class="navbar-nav mr-auto">

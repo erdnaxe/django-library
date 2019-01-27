@@ -1,11 +1,12 @@
 {% load staticfiles %}
+{% load i18n %}
 
 <!doctype html>
 <html lang="fr">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Med : {% block title %}{% endblock %}</title>
+    <title>{% trans "Med" %} : {% block title %}{% endblock %}</title>
 
     {# CSS style #}
     <link rel="stylesheet" href="{% static "/css/bootstrap.min.css" %}">

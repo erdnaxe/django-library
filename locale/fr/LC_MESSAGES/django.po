@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-27 16:11+0100\n"
+"POT-Creation-Date: 2019-01-27 17:04+0100\n"
 "PO-Revision-Date: 2019-01-24 08:55+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -20,6 +20,12 @@ msgstr "Administration de la base de données de la Mediathèque"
 msgid "Med Admin"
 msgstr "Med Admin"
 
+#: templates/base.html:9 templates/navbar.html:5 templates/sidebar.html:45
+#, fuzzy
+#| msgid "Media"
+msgid "Med"
+msgstr "Media"
+
 #: templates/navbar.html:12
 msgid "Media"
 msgstr "Media"
@@ -32,16 +38,16 @@ msgstr "Utilisateurs"
 msgid "Stats"
 msgstr "Statistiques"
 
-#: templates/navbar.html:32 templates/sidebar.html:15
+#: templates/navbar.html:32 templates/sidebar.html:18
 msgid "My profile"
 msgstr "Mon profil"
 
-#: templates/navbar.html:40 templates/sidebar.html:19
+#: templates/navbar.html:40 templates/sidebar.html:22
 msgid "Log out"
 msgstr "Déconnexion"
 
 #: templates/navbar.html:47 templates/registration/login.html:15
-#: templates/sidebar.html:32
+#: templates/sidebar.html:35
 msgid "Log in"
 msgstr "Connexion"
 
@@ -76,16 +82,15 @@ msgstr "Mot de passe oublié ?"
 #: templates/registration/password_reset_complete.html:6
 #: templates/registration/password_reset_complete.html:9
 msgid "Password reset complete"
-msgstr ""
+msgstr "Réinitialisation du mot de passe effectuée"
 
 #: templates/registration/password_reset_complete.html:11
 msgid "Your password has been set.  You may go ahead and log in now."
 msgstr ""
+"Votre mot de passe a été changé. Vous pouvez maintenant vous connectez."
 
 #: templates/registration/password_reset_confirm.html:6
 #: templates/registration/password_reset_confirm.html:9
-#, fuzzy
-#| msgid "Forgotten password ?"
 msgid "Enter new password"
 msgstr "Mot de passe oublié ?"
 
@@ -134,6 +139,18 @@ msgstr ""
 msgid "Send me instructions!"
 msgstr "Envoyez moi les instructions !"
 
-#: templates/sidebar.html:28
+#: templates/sidebar.html:9
+msgid "Pseudo"
+msgstr "Pseudo"
+
+#: templates/sidebar.html:12
+msgid "Member since"
+msgstr "Médeux depuis"
+
+#: templates/sidebar.html:31
 msgid "You are not log in yet."
 msgstr "Vous n'êtes pas authentifié·e."
+
+#: templates/sidebar.html:45
+msgid "Coded with"
+msgstr "Codé avec"

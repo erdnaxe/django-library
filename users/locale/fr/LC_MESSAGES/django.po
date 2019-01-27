@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-27 16:11+0100\n"
+"POT-Creation-Date: 2019-01-27 17:04+0100\n"
 "PO-Revision-Date: 2019-01-27 08:56+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -20,39 +20,35 @@ msgstr "utilisateurs"
 msgid "phone"
 msgstr "téléphone"
 
-#: users/models.py:19
-msgid "address"
-msgstr "adresse"
-
-#: users/models.py:23
+#: users/models.py:17
 msgid "maximum simultaneous borrowed books"
 msgstr "nombre de livres empruntés en même temps"
 
-#: users/models.py:32
+#: users/models.py:26
 msgid "state"
 msgstr "état"
 
-#: users/models.py:37 users/models.py:66
+#: users/models.py:31 users/models.py:60
 msgid "comment"
 msgstr "commentaire"
 
-#: users/models.py:53
+#: users/models.py:47
 msgid "name"
 msgstr "nom"
 
-#: users/models.py:60
+#: users/models.py:54
 msgid "owner"
 msgstr "propriétaire"
 
-#: users/models.py:73
+#: users/models.py:67
 msgid "start at"
 msgstr "à partir de"
 
-#: users/models.py:77
+#: users/models.py:71
 msgid "end at"
 msgstr "jusqu'à"
 
-#: users/models.py:82
+#: users/models.py:76
 msgid "member"
 msgstr "membre"
 
