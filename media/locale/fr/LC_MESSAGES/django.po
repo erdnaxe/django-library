@@ -1,0 +1,125 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2019-01-27 08:49+0100\n"
+"PO-Revision-Date: 2019-01-27 08:46+0100\n"
+"Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
+"Language: FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: media/apps.py:7 media/models.py:41 media/models.py:42 media/models.py:49
+msgid "media"
+msgstr "média"
+
+#: media/models.py:10 media/models.py:104
+msgid "name"
+msgstr "nom"
+
+#: media/models.py:18 media/models.py:33
+msgid "author"
+msgstr "auteur"
+
+#: media/models.py:19
+msgid "authors"
+msgstr "auteurs"
+
+#: media/models.py:25
+msgid "title"
+msgstr "titre"
+
+#: media/models.py:29
+msgid "side title"
+msgstr "côte"
+
+#: media/models.py:54
+msgid "borrower"
+msgstr "emprunteur"
+
+#: media/models.py:58
+msgid "borrowed at"
+msgstr "emprunté le"
+
+#: media/models.py:64
+msgid "given back at"
+msgstr "rendu le"
+
+#: media/models.py:70
+msgid "borrowed with permanent"
+msgstr "emprunté avec le permanencier"
+
+#: media/models.py:78
+msgid "given back with permanent"
+msgstr "rendu avec le permanencier"
+
+#: media/models.py:89 media/models.py:90
+msgid "borrowed media"
+msgstr "media emprunté"
+
+#: media/models.py:109
+msgid "owner"
+msgstr "propriétaire"
+
+#: media/models.py:114
+msgid "length"
+msgstr "durée"
+
+#: media/models.py:118
+msgid "minimum number of players"
+msgstr "nombre minimum de joueurs"
+
+#: media/models.py:122
+msgid "maximum number of players"
+msgstr "nombre maximum de joueurs"
+
+#: media/models.py:128
+msgid "comment"
+msgstr "commentaire"
+
+#: media/models.py:136
+msgid "game"
+msgstr "jeu"
+
+#: media/models.py:137
+msgid "games"
+msgstr "jeux"
+
+#: media/tables.py:8
+msgid "Actions"
+msgstr "Actions"
+
+#: media/templates/media/delete.html:5
+msgid "Confirm deletion"
+msgstr "confirmer la suppression"
+
+#: media/views.py:50
+msgid "Object successfully created"
+msgstr "Objet créé avec succès"
+
+#: media/views.py:56
+msgid "Create"
+msgstr "Créer"
+
+#: media/views.py:61
+msgid "Creation"
+msgstr "Création"
+
+#: media/views.py:69
+msgid "Object successfully edited"
+msgstr "Objet édité avec succès"
+
+#: media/views.py:75
+msgid "Edit"
+msgstr "Editer"
+
+#: media/views.py:80
+msgid "Edition"
+msgstr "Edition"
+
+#: media/views.py:88
+msgid "Object successfully deleted"
+msgstr "Objet supprimé avec succès"
