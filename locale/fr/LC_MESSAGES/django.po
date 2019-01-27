@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-27 08:54+0100\n"
+"POT-Creation-Date: 2019-01-27 08:56+0100\n"
 "PO-Revision-Date: 2019-01-24 08:55+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -76,7 +76,3 @@ msgstr "Mot de passe oublié ?"
 #: templates/sidebar.html:28
 msgid "You are not log in yet."
 msgstr "Vous n'êtes pas authentifié·e."
-
-#: users/apps.py:7
-msgid "users"
-msgstr "utilisateurs"
