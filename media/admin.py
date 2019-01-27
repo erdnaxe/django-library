@@ -4,26 +4,29 @@ from reversion.admin import VersionAdmin
 from .models import Auteur, Emprunt, Media, Jeu
 
 
-@admin.register(Auteur)
-class AuteurAdmin(VersionAdmin):
-    list_display = ('nom',)
-
-
-@admin.register(Media)
-class MediaAdmin(VersionAdmin):
-    list_display = ('titre', 'cote')
-
-
 @admin.register(Emprunt)
-class EmpruntAdmin(VersionAdmin):
+class BorrowedMediaAdmin(VersionAdmin):
     list_display = (
         'media', 'user', 'date_emprunt', 'date_rendu', 'permanencier_emprunt',
         'permanencier_rendu')
 
 
+@admin.register(Auteur)
+class AuthorAdmin(VersionAdmin):
+    list_display = ('nom',)
+
+
+@admin.register(Media)
+class MediaAdmin(VersionAdmin):
+    list_display = ('titre', 'get_authors', 'cote')
+
+    @staticmethod
+    def get_authors(obj):
+        return "\n".join(p.nom for p in obj.auteur.all())
+
+
 @admin.register(Jeu)
-class JeuAdmin(VersionAdmin):
+class GamesAdmin(VersionAdmin):
     list_display = (
         'nom', 'proprietaire', 'duree', 'nombre_joueurs_min',
-        'nombre_joueurs_max',
-        'comment')
+        'nombre_joueurs_max', 'comment')
