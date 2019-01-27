@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-27 21:40+0100\n"
+"POT-Creation-Date: 2019-01-27 22:20+0100\n"
 "PO-Revision-Date: 2019-01-24 08:55+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -50,6 +50,7 @@ msgid "Log in"
 msgstr "Connexion"
 
 #: templates/navbar.html:58 templates/navbar.html:59
+#: templates/search/search.html:7 templates/search/search.html:14
 msgid "Search"
 msgstr "Recherche"
 
@@ -136,6 +137,10 @@ msgstr ""
 #: templates/registration/password_reset_form.html:17
 msgid "Send me instructions!"
 msgstr "Envoyez moi les instructions !"
+
+#: templates/search/search.html:19
+msgid "Results"
+msgstr "Résultats"
 
 #: templates/sidebar.html:9
 msgid "Pseudo"

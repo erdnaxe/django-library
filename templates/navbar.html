@@ -52,16 +52,16 @@
     </ul>
 
     {# Search form #}
-    <form action="{% url "search:search" %}" method="POST" class="form-inline" role="search">
+    <form action="{% url "haystack_search" %}" method="GET" class="form-inline" role="search">
         {% csrf_token %}
         <div class="input-group">
             <input class="form-control" type="search" placeholder="{% trans "Search" %}"
-                   aria-label="{% trans "Search" %}" name="search_field">
+                   aria-label="{% trans "Search" %}" name="q">
             <div class="input-group-append" id="button-addon4">
                 <button class="btn btn-primary" type="submit">
                     <span class="oi oi-magnifying-glass"></span>
                 </button>
-                <a href="{% url "search:advanced_search" %}" class="btn btn-secondary" role="button">
+                <a href="{% url "haystack_search" %}" class="btn btn-secondary" role="button">
                     <span class="oi oi-ellipses"></span>
                 </a>
             </div>

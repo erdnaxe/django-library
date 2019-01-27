@@ -27,9 +27,9 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_tables2',
     'reversion',
+    'haystack',
     'users.apps.UserConfig',
     'media.apps.MediaConfig',
-    'search.apps.SearchConfig',
     'logs.apps.LogsConfig'
 ]
 
@@ -150,21 +150,20 @@ PASSWORD_HASHERS = (
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 
-### Under this comment it is code from re2o
-
+# Custom user model
 AUTH_USER_MODEL = 'users.User'
 
-PAGINATION_NUMBER = 10  # TODO 25
-PAGINATION_LARGE_NUMBER = 8
+# Search Haystack
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+    },
+}
 
-# Number of hours a token remains valid after having been created.
-# Numeric and string versions should have the same meaning.
-REQ_EXPIRE_HRS = 48
-REQ_EXPIRE_STR = '48 heures'
+# Number of item per page
+PAGINATION_NUMBER = 10
 
+# OLD
 # Affchage des résultats
 MAX_EMPRUNT = 5
-
-AUTHORIZED_IP_RANGE = '0.0.0.0/0'
-AUTHORIZED_IP6_RANGE = '*'
 SEARCH_DISPLAY_PAGE = 10

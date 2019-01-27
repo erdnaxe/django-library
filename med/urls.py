@@ -12,7 +12,7 @@ urlpatterns = [
     path('accounts/', include('django.contrib.auth.urls')),
     path('users/', include('users.urls')),
     path('media/', include('media.urls')),
-    path('search/', include('search.urls')),
+    path('search/', include('haystack.urls')),
     path('logs/', include('logs.urls')),
     path('', TemplateView.as_view(template_name='index.html'), name="index"),
 ]
