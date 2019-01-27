@@ -16,15 +16,6 @@ class User(AbstractUser):
         default=MAX_EMPRUNT,
         verbose_name=_('maximum simultaneous borrowed books'),
     )
-    state = models.IntegerField(
-        choices=(
-            (0, 'STATE_ACTIVE'),
-            (1, 'STATE_DISABLED'),
-            (2, 'STATE_ARCHIVE'),
-        ),
-        default=0,
-        verbose_name=_('state'),
-    )
     comment = models.CharField(
         max_length=255,
         blank=True,

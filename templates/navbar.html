@@ -8,21 +8,29 @@
     <ul class="navbar-nav mr-auto">
         <li>
             <a class="nav-link active" href="{% url "media:my-borrowed-index" %}">
+                <span class="oi oi-list"></span>
+                {% trans "My borrowed media" %}
+            </a>
+        </li>
+        <li>
+            <a class="nav-link active" href="{% url "media:game-index" %}">
                 <span class="oi oi-book"></span>
-                {% trans "Media" %}
+                {% trans "Explore" %}
             </a>
         </li>
         {% if perms.users.view_user %}
             <li class="nav-item">
-                <a class="nav-link active" href="{% url "users:index" %}">
-                    <span class="oi oi-person"></span>
-                    {% trans "Users" %}
-                </a>
-            </li>
-            <li class="nav-item">
                 <a class="nav-link active" href="{% url "logs:index" %}">
                     <span class="oi oi-bar-chart"></span>
                     {% trans "Stats" %}
+                </a>
+            </li>
+        {% endif %}
+        {% if request.user.is_staff %}
+            <li>
+                <a class="nav-link active" href="{% url 'admin:index' %}">
+                    <span class="oi oi-wrench"></span>
+                    {% trans "Administration" %}
                 </a>
             </li>
         {% endif %}

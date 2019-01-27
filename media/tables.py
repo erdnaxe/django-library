@@ -1,14 +1,9 @@
 import django_tables2 as tables
-from django.utils.translation import gettext_lazy as _
 
 from .models import BorrowedMedia, Author, Media, Game
 
 
 class BaseTable(tables.Table):
-    actions = tables.TemplateColumn(verbose_name=_('Actions'),
-                                    template_name='media/action_column.html',
-                                    orderable=False)
-
     class Meta:
         template_name = 'django_tables2/bootstrap4.html'
         attrs = {'class': 'table table-striped'}

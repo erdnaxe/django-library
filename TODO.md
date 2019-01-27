@@ -6,7 +6,9 @@ Idée de Karnaj : avoir une API.
 
 Page de création/modification d'utilisateurs avec le groupe de permission.
 
-Archivage des utilisateurs.
+Envoyer un mail lors de la création d'un utilisateur.
+
+Lister les permanenciers pour les adhérents.
 
 Implémenter l'historique des objets selon :
 
