@@ -12,7 +12,11 @@ class ClefAdmin(VersionAdmin):
 
 @admin.register(Adhesion)
 class AdhesionAdmin(VersionAdmin):
-    list_display = ('start_at', 'end_at')
+    list_display = ('start_at', 'end_at', 'members_list')
+
+    @staticmethod
+    def members_list(obj):
+        return "\n".join(p.get_full_name() for p in obj.member.all())
 
 
 admin.site.register(User, UserAdmin)
