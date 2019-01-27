@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-27 08:56+0100\n"
+"POT-Creation-Date: 2019-01-27 16:11+0100\n"
 "PO-Revision-Date: 2019-01-24 08:55+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -72,6 +72,67 @@ msgstr "Authentification utilisateur"
 #: templates/registration/login.html:19
 msgid "Forgotten password ?"
 msgstr "Mot de passe oublié ?"
+
+#: templates/registration/password_reset_complete.html:6
+#: templates/registration/password_reset_complete.html:9
+msgid "Password reset complete"
+msgstr ""
+
+#: templates/registration/password_reset_complete.html:11
+msgid "Your password has been set.  You may go ahead and log in now."
+msgstr ""
+
+#: templates/registration/password_reset_confirm.html:6
+#: templates/registration/password_reset_confirm.html:9
+#, fuzzy
+#| msgid "Forgotten password ?"
+msgid "Enter new password"
+msgstr "Mot de passe oublié ?"
+
+#: templates/registration/password_reset_confirm.html:15
+msgid "Change my password"
+msgstr "Changer mon mot de passe"
+
+#: templates/registration/password_reset_done.html:6
+msgid "Email Sent"
+msgstr "Courriel envoyé"
+
+#: templates/registration/password_reset_done.html:9
+msgid "Check your inbox."
+msgstr "Vérifiez votre boîte de réception."
+
+#: templates/registration/password_reset_done.html:10
+msgid ""
+"We've emailed you instructions for setting your password, if an account "
+"exists with the email you entered. You should receive them shortly."
+msgstr ""
+"Nous vous avons envoyé des instructions pour changer votre mot de passe, si "
+"un compte existe avec ce mail. Vous devriez le recevoir bientôt."
+
+#: templates/registration/password_reset_done.html:11
+msgid ""
+"If you don't receive an email, please make sure you've entered the address "
+"you registered with, and check your spam folder."
+msgstr ""
+"Si vous ne recevez pas de mail, vérifiez que vous avez entré l'addresse avec "
+"laquelle vous vous êtes enregistrés, et vérifiez les spams."
+
+#: templates/registration/password_reset_form.html:6
+#: templates/registration/password_reset_form.html:9
+msgid "Forgot Your Password?"
+msgstr "Mot de passe oublié ?"
+
+#: templates/registration/password_reset_form.html:10
+msgid ""
+"Forgotten your password? Enter your email address below, and we'll email "
+"instructions for setting a new one."
+msgstr ""
+"Vous avez oublié votre mot de passe ? Entrez votre courriel ci-dessous et "
+"nous vous enverrons des instructions pour le réinitialiser."
+
+#: templates/registration/password_reset_form.html:17
+msgid "Send me instructions!"
+msgstr "Envoyez moi les instructions !"
 
 #: templates/sidebar.html:28
 msgid "You are not log in yet."

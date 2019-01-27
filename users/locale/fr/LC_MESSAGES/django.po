@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-27 08:56+0100\n"
+"POT-Creation-Date: 2019-01-27 16:11+0100\n"
 "PO-Revision-Date: 2019-01-27 08:56+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -15,3 +15,67 @@ msgstr ""
 #: users/apps.py:7
 msgid "users"
 msgstr "utilisateurs"
+
+#: users/models.py:13
+msgid "phone"
+msgstr "téléphone"
+
+#: users/models.py:19
+msgid "address"
+msgstr "adresse"
+
+#: users/models.py:23
+msgid "maximum simultaneous borrowed books"
+msgstr "nombre de livres empruntés en même temps"
+
+#: users/models.py:32
+msgid "state"
+msgstr "état"
+
+#: users/models.py:37 users/models.py:66
+msgid "comment"
+msgstr "commentaire"
+
+#: users/models.py:53
+msgid "name"
+msgstr "nom"
+
+#: users/models.py:60
+msgid "owner"
+msgstr "propriétaire"
+
+#: users/models.py:73
+msgid "start at"
+msgstr "à partir de"
+
+#: users/models.py:77
+msgid "end at"
+msgstr "jusqu'à"
+
+#: users/models.py:82
+msgid "member"
+msgstr "membre"
+
+#: users/views.py:229
+msgid "Object successfully created"
+msgstr "Objet créé avec succès"
+
+#: users/views.py:237
+msgid "Create"
+msgstr "Créer"
+
+#: users/views.py:242
+msgid "Creation"
+msgstr "Création"
+
+#: users/views.py:250
+msgid "Object successfully edited"
+msgstr "Objet édité avec succès"
+
+#: users/views.py:256
+msgid "Edit"
+msgstr "Éditer"
+
+#: users/views.py:261
+msgid "Edition"
+msgstr "Édition"

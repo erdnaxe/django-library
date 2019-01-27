@@ -87,7 +87,7 @@ class Emprunt(models.Model):
             ("my_view", "Can view his borrowed media"),
         )
         verbose_name = _('borrowed media')
-        verbose_name_plural = _('borrowed media')
+        verbose_name_plural = _('borrowed medias')
 
 
 class Jeu(models.Model):

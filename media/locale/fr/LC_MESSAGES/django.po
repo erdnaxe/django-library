@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-27 08:56+0100\n"
+"POT-Creation-Date: 2019-01-27 16:11+0100\n"
 "PO-Revision-Date: 2019-01-27 08:46+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -14,7 +14,7 @@ msgstr ""
 
 #: media/apps.py:7 media/models.py:41 media/models.py:42 media/models.py:49
 msgid "media"
-msgstr "média"
+msgstr "media"
 
 #: media/models.py:10 media/models.py:104
 msgid "name"
@@ -56,9 +56,13 @@ msgstr "emprunté avec le permanencier"
 msgid "given back with permanent"
 msgstr "rendu avec le permanencier"
 
-#: media/models.py:89 media/models.py:90
+#: media/models.py:89
 msgid "borrowed media"
 msgstr "media emprunté"
+
+#: media/models.py:90
+msgid "borrowed medias"
+msgstr "media empruntés"
 
 #: media/models.py:109
 msgid "owner"
