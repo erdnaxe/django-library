@@ -4,7 +4,6 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction
 from django.shortcuts import render, redirect
 from django.template.context_processors import csrf
@@ -14,13 +13,12 @@ from django.utils.translation import gettext_lazy as _
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django_tables2 import SingleTableView
 from reversion import revisions as reversion
-from reversion.models import Version
 from reversion.views import RevisionMixin
 
 from med.settings import PAGINATION_NUMBER
 from users.models import User
 from .forms import EmpruntForm, EditEmpruntForm
-from .models import Auteur, Media, Jeu, Emprunt
+from .models import Author, Media, Game, Emprunt
 from .tables import BorrowedMediaTable, AuthorTable, MediaTable, GamesTable
 
 
@@ -28,18 +26,19 @@ class Index(PermissionRequiredMixin, SingleTableView):
     """Parent class to all index pages"""
     paginate_by = PAGINATION_NUMBER
     template_name = 'media/index.html'
-    # TODO find better defaults
-    model = Jeu
-    add_link = 'media:add-jeu'
+    model = Game
+    add_link = False
+
+    def get_permission_required(self):
+        return self.model._meta.model_name + '.view',
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # TODO find a way to have proper plural
-        context['name'] = self.model._meta.model_name  # Get model name
-        context['title'] = 'Index des ' \
-                           + self.model._meta.verbose_name_plural.title()
-        if self.add_link:
-            context['add_link'] = reverse(self.add_link)
+        m = self.model._meta
+        context['name'] = str(m.verbose_name)
+        context['title'] = 'Index des ' + str(m.verbose_name_plural)
+        if self.add_link and self.request.user.has_perms(m.model_name + '.add'):
+            context['add_link'] = reverse('media:' + m.model_name + '-add')
         return context
 
 
@@ -48,6 +47,11 @@ class Create(PermissionRequiredMixin, RevisionMixin, SuccessMessageMixin,
     """Parent class to all object creation"""
     template_name = 'media/form.html'
     success_message = _('Object successfully created')
+    fields = '__all__'
+    model = Game
+
+    def get_permission_required(self):
+        return self.model._meta.model_name + '.add',
 
     def get_form(self, form_class=None):
         creation_form = super().get_form(form_class)
@@ -67,6 +71,11 @@ class Update(PermissionRequiredMixin, RevisionMixin, SuccessMessageMixin,
     """Parent class to all object creation"""
     template_name = 'media/form.html'
     success_message = _('Object successfully edited')
+    fields = '__all__'
+    model = Game
+
+    def get_permission_required(self):
+        return self.model._meta.model_name + '.edit',
 
     def get_form(self, form_class=None):
         creation_form = super().get_form(form_class)
@@ -86,6 +95,10 @@ class Delete(PermissionRequiredMixin, RevisionMixin, SuccessMessageMixin,
     """Parent class to all object deletion"""
     template_name = 'media/delete.html'
     success_message = _('Object successfully deleted')
+    model = Game
+
+    def get_permission_required(self):
+        return self.model._meta.model_name + '.delete',
 
 
 def form(ctx, template, request):
@@ -165,143 +178,88 @@ def retour_emprunt(request, pk):
 class AllBorrowedMediaIndex(Index):
     model = Emprunt
     table_class = BorrowedMediaTable
-    add_link = ''
-    permission_required = 'emprunt.view'
 
 
 # TODO : filter queryset Emprunt.objects.filter(user=request.user)
-class MyBorrowedMediaIndex(Index):
+class MyBorrowedMediaIndex(PermissionRequiredMixin, SingleTableView):
+    """Special list with only user's media"""
+    paginate_by = PAGINATION_NUMBER
+    template_name = 'media/index.html'
     model = Emprunt
     table_class = BorrowedMediaTable
-    add_link = ''
     permission_required = 'emprunt.my_view'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        m = self.model._meta
+        context['name'] = str(m.verbose_name)
+        context['title'] = 'Index de mes ' + str(m.verbose_name_plural)
+        return context
 
 
 class BorrowedMediaDelete(Delete):
     model = Emprunt
-    success_url = reverse_lazy('media:my-borrowed-media-index')
-    permission_required = 'emprunt.delete'
+    success_url = reverse_lazy('media:my-borrowed-index')
 
 
 class AuthorsIndex(Index):
-    model = Auteur
+    model = Author
     table_class = AuthorTable
-    add_link = 'media:add-auteur'
-    permission_required = 'auteur.view'
+    add_link = True
 
 
 class AuthorsCreate(Create):
-    model = Auteur
-    success_url = reverse_lazy('media:index-auteurs')
-    permission_required = 'auteur.add'
-    fields = ('nom',)
+    model = Author
+    success_url = reverse_lazy('media:author-index')
 
 
 class AuthorsUpdate(Update):
-    model = Auteur
-    success_url = reverse_lazy('media:index-auteurs')
-    permission_required = 'auteur.edit'
-    fields = ('nom',)
+    model = Author
+    success_url = reverse_lazy('media:author-index')
 
 
 class AuthorsDelete(Delete):
-    model = Auteur
-    success_url = reverse_lazy('media:index-auteurs')
-    permission_required = 'auteur.delete'
+    model = Author
+    success_url = reverse_lazy('media:author-index')
 
 
 class MediaIndex(Index):
     model = Media
     table_class = MediaTable
-    add_link = 'media:add-media'
-    permission_required = 'media.view'
+    add_link = True
 
 
 class MediaCreate(Create):
     model = Media
-    success_url = reverse_lazy('media:index-medias')
-    permission_required = 'media.add'
-    fields = ('titre', 'auteur', 'cote')
+    success_url = reverse_lazy('media:media-index')
 
 
 class MediaUpdate(Update):
     model = Media
-    success_url = reverse_lazy('media:index-medias')
-    permission_required = 'media.edit'
-    fields = ('titre', 'auteur', 'cote')
+    success_url = reverse_lazy('media:media-index')
 
 
 class MediaDelete(Delete):
     model = Media
-    success_url = reverse_lazy('media:index-medias')
-    permission_required = 'media.delete'
+    success_url = reverse_lazy('media:media-index')
 
 
 class GamesIndex(Index):
-    model = Jeu
+    model = Game
     table_class = GamesTable
-    add_link = 'media:add-jeu'
-    permission_required = 'jeu.view'
+    add_link = True
 
 
 class GamesCreate(Create):
-    model = Jeu
-    success_url = reverse_lazy('media:index-jeux')
-    permission_required = 'jeu.add'
-    fields = ('nom', 'proprietaire', 'duree', 'nombre_joueurs_min',
-              'nombre_joueurs_max', 'comment')
+    model = Game
+    success_url = reverse_lazy('media:game-index')
 
 
 class GamesUpdate(Update):
-    model = Jeu
-    success_url = reverse_lazy('media:index-jeux')
-    permission_required = 'jeu.edit'
-    fields = ('nom', 'proprietaire', 'duree', 'nombre_joueurs_min',
-              'nombre_joueurs_max', 'comment')
+    model = Game
+    success_url = reverse_lazy('media:game-index')
 
 
 class GamesDelete(Delete):
-    model = Jeu
-    success_url = reverse_lazy('media:index-jeux')
-    permission_required = 'jeu.delete'
-
-
-@login_required
-def history(request, object, pk):
-    if object == 'auteur':
-        try:
-            object_instance = Auteur.objects.get(pk=pk)
-        except Auteur.DoesNotExist:
-            messages.error(request, "Auteur inexistant")
-            return redirect("/media/index_auteurs")
-    elif object == 'media':
-        try:
-            object_instance = Media.objects.get(pk=pk)
-        except Media.DoesNotExist:
-            messages.error(request, "Media inexistant")
-            return redirect("/media/index_medias")
-    elif object == 'emprunt':
-        try:
-            object_instance = Emprunt.objects.get(pk=pk)
-        except Emprunt.DoesNotExist:
-            messages.error(request, "Emprunt inexistant")
-            return redirect("/media/index_emprunts")
-    elif object == 'jeu':
-        try:
-            object_instance = Jeu.objects.get(pk=pk)
-        except Jeu.DoesNotExist:
-            messages.error(request, "Jeu inexistant")
-            return redirect("/media/index_jeux")
-    reversions = Version.objects.get_for_object(object_instance)
-    paginator = Paginator(reversions, PAGINATION_NUMBER)
-    page = request.GET.get('page')
-    try:
-        reversions = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        reversions = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        reversions = paginator.page(paginator.num_pages)
-    return render(request, 'med/history.html',
-                  {'reversions': reversions, 'object': object_instance})
+    model = Game
+    success_url = reverse_lazy('media:game-index')

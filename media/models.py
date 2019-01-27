@@ -3,7 +3,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 
-class Auteur(models.Model):
+class Author(models.Model):
     nom = models.CharField(
         max_length=255,
         unique=True,
@@ -29,7 +29,7 @@ class Media(models.Model):
         verbose_name=_('side title'),
     )
     auteur = models.ManyToManyField(
-        'Auteur',
+        'Author',
         verbose_name=_('author'),
     )
 
@@ -90,7 +90,7 @@ class Emprunt(models.Model):
         verbose_name_plural = _('borrowed medias')
 
 
-class Jeu(models.Model):
+class Game(models.Model):
     DUREE = (
         ('-1h', '-1h'),
         ('1-2h', '1-2h'),

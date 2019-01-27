@@ -1,7 +1,7 @@
 import django_tables2 as tables
 from django.utils.translation import gettext_lazy as _
 
-from .models import Emprunt, Auteur, Media, Jeu
+from .models import Emprunt, Author, Media, Game
 
 
 class BaseTable(tables.Table):
@@ -23,7 +23,7 @@ class BorrowedMediaTable(BaseTable):
 
 class AuthorTable(BaseTable):
     class Meta(BaseTable.Meta):
-        model = Auteur
+        model = Author
         fields = ('nom',)
 
 
@@ -35,6 +35,6 @@ class MediaTable(BaseTable):
 
 class GamesTable(BaseTable):
     class Meta(BaseTable.Meta):
-        model = Jeu
+        model = Game
         fields = ('nom', 'proprietaire', 'duree', 'nombre_joueurs_min',
                   'nombre_joueurs_max', 'comment')

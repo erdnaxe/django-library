@@ -6,7 +6,7 @@
 
 {% block content %}
     <h2>{{ title }}</h2>
-    {% if is_perm %}
+    {% if add_link %}
         <a class="btn btn-success btn-sm mb-4" role="button" href="{{ add_link }}">
             <span class="oi oi-plus"></span>
             Ajouter un {{ name }}

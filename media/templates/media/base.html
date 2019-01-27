@@ -2,23 +2,23 @@
 
 {% block sidebar_nav %}
     <div class="card list-group mt-3 border-info">
-        <a class="list-group-item list-group-item-action" href="{% url "media:my-borrowed-media-index" %}">
+        <a class="list-group-item list-group-item-action" href="{% url "media:my-borrowed-index" %}">
             <span class="oi oi-list"></span>
             Mes emprunts
         </a>
-        <a class="list-group-item list-group-item-action" href="{% url "media:all-borrowed-media-index" %}">
+        <a class="list-group-item list-group-item-action" href="{% url "media:borrowed-index" %}">
             <span class="oi oi-list"></span>
             Tous les emprunts
         </a>
-        <a class="list-group-item list-group-item-action" href="{% url "media:index-auteurs" %}">
+        <a class="list-group-item list-group-item-action" href="{% url "media:author-index" %}">
             <span class="oi oi-people"></span>
             Auteurs
         </a>
-        <a class="list-group-item list-group-item-action" href="{% url "media:index-medias" %}">
+        <a class="list-group-item list-group-item-action" href="{% url "media:media-index" %}">
             <span class="oi oi-document"></span>
             Medias
         </a>
-        <a class="list-group-item list-group-item-action" href="{% url "media:index-jeux" %}">
+        <a class="list-group-item list-group-item-action" href="{% url "media:game-index" %}">
             <span class="oi oi-box"></span>
             Jeux
         </a>

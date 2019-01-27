@@ -5,7 +5,7 @@ from django.template.context_processors import csrf
 from django.utils.translation import gettext_lazy as _
 
 from med.settings import SEARCH_DISPLAY_PAGE
-from media.models import Media, Jeu, Emprunt
+from media.models import Media, Game, Emprunt
 from search.forms import SearchForm, AdvancedSearchForm
 from users.models import User
 
@@ -67,7 +67,7 @@ def search_result(search_form, type, request):
             recherche['medias_list'] = Media.objects.filter(
                 Q(auteur__nom__icontains=search) | Q(titre__icontains=search))
         if i == '3':
-            recherche['jeux_list'] = Jeu.objects.filter(
+            recherche['jeux_list'] = Game.objects.filter(
                 Q(nom__icontains=search) | Q(
                     proprietaire__pseudo__icontains=search) | Q(
                     proprietaire__name__icontains=search) | Q(
