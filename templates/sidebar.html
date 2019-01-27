@@ -9,8 +9,30 @@
                 <dt>{% trans "Pseudo" %}</dt>
                 <dd>{{ user.username }}</dd>
 
+                <dt>{% trans "E-mail" %}</dt>
+                <dd>{{ user.email }}</dd>
+
+                <dt>{% trans "Membership for current year" %}</dt>
+                <dd>
+                    {% if user.is_adherent %}
+                        <span class="badge badge-success">{% trans "Yes" %}</span>
+                    {% else %}
+                        <span class="badge badge-danger">{% trans "No" %}</span>
+                    {% endif %}
+                </dd>
+
                 <dt>{% trans "Member since" %}</dt>
                 <dd>{{ user.date_joined|date:"F Y" }}</dd>
+
+                {% if user.comment %}
+                    <dt>{% trans "Comment" %}</dt>
+                    <dd>{{ user.comment }}</dd>
+                {% endif %}
+
+                {% if user.phone %}
+                    <dt>{% trans "Phone" %}</dt>
+                    <dd>{{ user.phone }}</dd>
+                {% endif %}
             </dl>
             <div class="card-text text-center">
                 <a href="{% url 'logout' %}" class="btn btn-outline-secondary">

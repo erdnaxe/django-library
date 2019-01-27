@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-27 17:04+0100\n"
+"POT-Creation-Date: 2019-01-27 17:50+0100\n"
 "PO-Revision-Date: 2019-01-24 08:55+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -20,11 +20,9 @@ msgstr "Administration de la base de données de la Mediathèque"
 msgid "Med Admin"
 msgstr "Med Admin"
 
-#: templates/base.html:9 templates/navbar.html:5 templates/sidebar.html:45
-#, fuzzy
-#| msgid "Media"
+#: templates/base.html:9 templates/navbar.html:5 templates/sidebar.html:63
 msgid "Med"
-msgstr "Media"
+msgstr "Med"
 
 #: templates/navbar.html:12
 msgid "Media"
@@ -38,20 +36,16 @@ msgstr "Utilisateurs"
 msgid "Stats"
 msgstr "Statistiques"
 
-#: templates/navbar.html:32 templates/sidebar.html:18
-msgid "My profile"
-msgstr "Mon profil"
-
-#: templates/navbar.html:40 templates/sidebar.html:22
+#: templates/navbar.html:33 templates/sidebar.html:40
 msgid "Log out"
 msgstr "Déconnexion"
 
-#: templates/navbar.html:47 templates/registration/login.html:15
-#: templates/sidebar.html:35
+#: templates/navbar.html:40 templates/registration/login.html:15
+#: templates/sidebar.html:53
 msgid "Log in"
 msgstr "Connexion"
 
-#: templates/navbar.html:57 templates/navbar.html:58
+#: templates/navbar.html:50 templates/navbar.html:51
 msgid "Search"
 msgstr "Recherche"
 
@@ -144,13 +138,37 @@ msgid "Pseudo"
 msgstr "Pseudo"
 
 #: templates/sidebar.html:12
+msgid "E-mail"
+msgstr "E-mail"
+
+#: templates/sidebar.html:15
+msgid "Membership for current year"
+msgstr "Adhérent pour l'année en cours"
+
+#: templates/sidebar.html:18
+msgid "Yes"
+msgstr "Oui"
+
+#: templates/sidebar.html:20
+msgid "No"
+msgstr "Non"
+
+#: templates/sidebar.html:24
 msgid "Member since"
 msgstr "Médeux depuis"
 
-#: templates/sidebar.html:31
+#: templates/sidebar.html:28
+msgid "Comment"
+msgstr "Commentaire"
+
+#: templates/sidebar.html:33
+msgid "Phone"
+msgstr "Téléphone"
+
+#: templates/sidebar.html:49
 msgid "You are not log in yet."
 msgstr "Vous n'êtes pas authentifié·e."
 
-#: templates/sidebar.html:45
+#: templates/sidebar.html:63
 msgid "Coded with"
 msgstr "Codé avec"
