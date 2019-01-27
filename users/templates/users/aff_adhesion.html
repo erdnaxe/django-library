@@ -8,8 +8,8 @@
     </thead>
     {% for adhesion in adhesion_list %}
         <tr>
-            <td>{{ adhesion.annee_debut }}</td>
-            <td>{{ adhesion.annee_fin }}</td>
+            <td>{{ adhesion.start_at }}</td>
+            <td>{{ adhesion.end_at }}</td>
             <td class="text-right">
                 {% if is_bureau %}
                     {% include 'buttons/edit.html' with href='users:edit-adhesion' id=adhesion.id %}

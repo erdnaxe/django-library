@@ -1,25 +1,26 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.utils.translation import gettext_lazy as _
 
 from med.settings import MAX_EMPRUNT
 
 
 class User(AbstractUser):
-    PRETTY_NAME = "Utilisateurs"
-
-    telephone = models.CharField(
+    phone = models.CharField(
         max_length=15,
         null=True,
         blank=True,
+        verbose_name=_('phone'),
     )
-    adresse = models.CharField(
+    address = models.CharField(
         max_length=255,
         null=True,
         blank=True,
+        verbose_name=_('address'),
     )
-    maxemprunt = models.IntegerField(
+    max_borrowed = models.IntegerField(
         default=MAX_EMPRUNT,
-        help_text="Maximum d'emprunts autorisés",
+        verbose_name=_('maximum simultaneous borrowed books'),
     )
     state = models.IntegerField(
         choices=(
@@ -28,11 +29,12 @@ class User(AbstractUser):
             (2, 'STATE_ARCHIVE'),
         ),
         default=0,
+        verbose_name=_('state'),
     )
     comment = models.CharField(
-        help_text="Commentaire, promo",
         max_length=255,
         blank=True,
+        verbose_name=_('comment'),
     )
 
     # Require a valid name
@@ -41,37 +43,41 @@ class User(AbstractUser):
     @property
     def is_adherent(self):
         return self in Adhesion.objects.all().order_by(
-            'annee_debut').reverse().first().adherent.all()
-
-    def __str__(self):
-        return self.username
+            'start_at').reverse().first().adherent.all()
 
 
 class Clef(models.Model):
-    nom = models.CharField(
+    name = models.CharField(
         max_length=255,
         unique=True,
+        verbose_name=_('name'),
     )
-
-    proprio = models.ForeignKey(
+    owner = models.ForeignKey(
         'User',
         on_delete=models.PROTECT,
         blank=True,
         null=True,
+        verbose_name=_('owner'),
     )
-    commentaire = models.CharField(
-        max_length=255, null=True, blank=True
+    comment = models.CharField(
+        max_length=255,
+        null=True,
+        blank=True,
+        verbose_name=_('comment'),
     )
 
 
 class Adhesion(models.Model):
-    annee_debut = models.IntegerField(
+    start_at = models.IntegerField(
         unique=True,
+        verbose_name=_('start at'),
     )
-    annee_fin = models.IntegerField(
+    end_at = models.IntegerField(
         unique=True,
+        verbose_name=_('end at'),
     )
-    adherent = models.ManyToManyField(
+    member = models.ManyToManyField(
         'User',
         blank=True,
+        verbose_name=_('member'),
     )

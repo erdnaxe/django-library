@@ -7,12 +7,12 @@ from .models import User, Adhesion, Clef
 
 @admin.register(Clef)
 class ClefAdmin(VersionAdmin):
-    list_display = ('proprio', 'nom')
+    list_display = ('owner', 'name')
 
 
 @admin.register(Adhesion)
 class AdhesionAdmin(VersionAdmin):
-    list_display = ('annee_debut', 'annee_fin')
+    list_display = ('start_at', 'end_at')
 
 
 admin.site.register(User, UserAdmin)

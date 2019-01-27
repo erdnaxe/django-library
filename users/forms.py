@@ -12,8 +12,8 @@ class BaseInfoForm(ModelForm):
             'first_name',
             'last_name',
             'email',
-            'telephone',
-            'adresse',
+            'phone',
+            'address',
         ]
 
 
@@ -24,9 +24,9 @@ class InfoForm(BaseInfoForm):
             'first_name',
             'last_name',
             'email',
-            'telephone',
-            'adresse',
-            'maxemprunt',
+            'phone',
+            'address',
+            'max_borrowed',
         ]
 
 

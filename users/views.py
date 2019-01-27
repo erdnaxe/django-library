@@ -162,7 +162,7 @@ def index(request):
 def index_ajour(request):
     """ Affiche l'ensemble des users, need droit admin """
     users_list = Adhesion.objects.all().order_by(
-        'annee_debut').reverse().first().adherent.all().order_by('name')
+        'start_at').reverse().first().adherent.all().order_by('name')
     paginator = Paginator(users_list, PAGINATION_NUMBER)
     page = request.GET.get('page')
     try:
@@ -213,7 +213,7 @@ def adherer(request, userid):
     except User.DoesNotExist:
         messages.error(request, "Utilisateur inexistant")
         return redirect("/users/")
-    adh_annee = Adhesion.objects.all().order_by('annee_debut').reverse().first()
+    adh_annee = Adhesion.objects.all().order_by('start_at').reverse().first()
     with transaction.atomic(), reversion.create_revision():
         reversion.set_user(request.user)
         adh_annee.adherent.add(users)
