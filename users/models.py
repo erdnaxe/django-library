@@ -37,7 +37,7 @@ class User(AbstractUser):
     @property
     def is_adherent(self):
         return self in Adhesion.objects.all().order_by(
-            'start_at').reverse().first().adherent.all()
+            '-start_at').first().members.all()
 
 
 class Clef(models.Model):
@@ -70,8 +70,8 @@ class Adhesion(models.Model):
         unique=True,
         verbose_name=_('end at'),
     )
-    member = models.ManyToManyField(
+    members = models.ManyToManyField(
         'User',
         blank=True,
-        verbose_name=_('member'),
+        verbose_name=_('members'),
     )
