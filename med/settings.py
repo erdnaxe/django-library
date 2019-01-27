@@ -26,12 +26,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'crispy_forms',
     'django_tables2',
-    'users',
-    'med',
-    'media',
-    'search',
     'reversion',
-    'logs'
+    'users.apps.UserConfig',
+    'media.apps.MediaConfig',
+    'search.apps.SearchConfig',
+    'logs.apps.LogsConfig'
 ]
 
 MIDDLEWARE = [
