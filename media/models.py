@@ -42,7 +42,7 @@ class Media(models.Model):
         verbose_name_plural = _('media')
 
 
-class Emprunt(models.Model):
+class BorrowedMedia(models.Model):
     media = models.ForeignKey(
         'Media',
         on_delete=models.PROTECT,

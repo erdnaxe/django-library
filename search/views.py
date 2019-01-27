@@ -5,7 +5,7 @@ from django.template.context_processors import csrf
 from django.utils.translation import gettext_lazy as _
 
 from med.settings import SEARCH_DISPLAY_PAGE
-from media.models import Media, Game, Emprunt
+from media.models import Media, Game, BorrowedMedia
 from search.forms import SearchForm, AdvancedSearchForm
 from users.models import User
 
@@ -61,7 +61,7 @@ def search_result(search_form, type, request):
                     query_user_list & Q(id=request.user.id)).order_by('state',
                                                                       'surname')
         if i == '1':
-            recherche['emprunts_list'] = Emprunt.objects.filter(
+            recherche['emprunts_list'] = BorrowedMedia.objects.filter(
                 query & date_query).order_by('date_emprunt').reverse()
         if i == '2':
             recherche['medias_list'] = Media.objects.filter(

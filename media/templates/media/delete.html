@@ -5,9 +5,9 @@
 {% block title %}{% trans "Confirm deletion" %}{% endblock %}
 
 {% block content %}
+    <h2>Attention, voulez-vous vraiment supprimer « {{ object }} » ?</h2>
     <form class="form" method="post">
         {% csrf_token %}
-        <h1>Attention, voulez-vous vraiment supprimer « {{ object }} » ?</h1>
         <button type="submit" class="btn btn-danger">
             <span class="oi oi-trash"></span>
             Confirmer

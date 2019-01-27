@@ -1,26 +1,28 @@
 {% extends "base.html" %}
 
+{% load i18n %}
+
 {% block sidebar_nav %}
     <div class="card list-group mt-3 border-info">
         <a class="list-group-item list-group-item-action" href="{% url "media:my-borrowed-index" %}">
             <span class="oi oi-list"></span>
-            Mes emprunts
+            {% trans "My borrowed media" %}
         </a>
         <a class="list-group-item list-group-item-action" href="{% url "media:borrowed-index" %}">
             <span class="oi oi-list"></span>
-            Tous les emprunts
+            {% trans "All borrowed media" %}
         </a>
         <a class="list-group-item list-group-item-action" href="{% url "media:author-index" %}">
             <span class="oi oi-people"></span>
-            Auteurs
+            {% trans "Authors" %}
         </a>
         <a class="list-group-item list-group-item-action" href="{% url "media:media-index" %}">
             <span class="oi oi-document"></span>
-            Medias
+            {% trans "Media" %}
         </a>
         <a class="list-group-item list-group-item-action" href="{% url "media:game-index" %}">
             <span class="oi oi-box"></span>
-            Jeux
+            {% trans "Games" %}
         </a>
     </div>
 {% endblock %}

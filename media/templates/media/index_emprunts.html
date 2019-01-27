@@ -44,12 +44,12 @@
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="editionemprunt">
                             {% if is_perm %}
-                                <li><a href="{% url 'media:edit-emprunt' emprunt.id %}"><i
+                                <li><a href="{% url 'media:borrowed-edit' emprunt.id %}"><i
                                         class="glyphicon glyphicon-edit"></i> Editer</a></li>
-                                <li><a href="{% url 'media:del-emprunt' emprunt.id %}"><i
+                                <li><a href="{% url 'media:borrowed-del' emprunt.id %}"><i
                                         class="glyphicon glyphicon-trash"></i> Supprimer</a></li>
                             {% endif %}
-                            <li><a href="{% url 'media:history' 'emprunt' emprunt.id %}"><i
+                            <li><a href="{# {% url 'media:history' 'emprunt' emprunt.id %} #}"><i
                                     class="glyphicon glyphicon-time"></i> Historique</a></li>
                         </ul>
                     </div>

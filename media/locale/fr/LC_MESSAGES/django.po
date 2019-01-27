@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-27 17:50+0100\n"
+"POT-Creation-Date: 2019-01-27 19:31+0100\n"
 "PO-Revision-Date: 2019-01-27 08:46+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -96,34 +96,54 @@ msgstr "jeux"
 msgid "Actions"
 msgstr "Actions"
 
+#: media/templates/media/base.html:9
+msgid "My borrowed media"
+msgstr "Mes emprunts"
+
+#: media/templates/media/base.html:13
+msgid "All borrowed media"
+msgstr "Tous les emprunts"
+
+#: media/templates/media/base.html:17
+msgid "Authors"
+msgstr "Auteurs"
+
+#: media/templates/media/base.html:21
+msgid "Media"
+msgstr "Media"
+
+#: media/templates/media/base.html:25
+msgid "Games"
+msgstr "Jeux"
+
 #: media/templates/media/delete.html:5
 msgid "Confirm deletion"
-msgstr "confirmer la suppression"
+msgstr "Confirmer la suppression"
 
-#: media/views.py:50
+#: media/views.py:56
 msgid "Object successfully created"
 msgstr "Objet créé avec succès"
 
-#: media/views.py:56
+#: media/views.py:70
 msgid "Create"
 msgstr "Créer"
 
-#: media/views.py:61
+#: media/views.py:75
 msgid "Creation"
 msgstr "Création"
 
-#: media/views.py:69
+#: media/views.py:83
 msgid "Object successfully edited"
 msgstr "Objet édité avec succès"
 
-#: media/views.py:75
+#: media/views.py:97
 msgid "Edit"
 msgstr "Editer"
 
-#: media/views.py:80
+#: media/views.py:102
 msgid "Edition"
 msgstr "Edition"
 
-#: media/views.py:88
+#: media/views.py:110
 msgid "Object successfully deleted"
 msgstr "Objet supprimé avec succès"

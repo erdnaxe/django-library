@@ -2,7 +2,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django import forms
 
-from .models import Emprunt
+from .models import BorrowedMedia
 
 
 class EmpruntForm(forms.ModelForm):
@@ -12,7 +12,7 @@ class EmpruntForm(forms.ModelForm):
         self.helper.add_input(Submit('submit', 'Appliquer'))
 
     class Meta:
-        model = Emprunt
+        model = BorrowedMedia
         fields = ['media']
 
 
@@ -23,6 +23,6 @@ class EditEmpruntForm(forms.ModelForm):
         self.helper.add_input(Submit('submit', 'Appliquer'))
 
     class Meta:
-        model = Emprunt
+        model = BorrowedMedia
         fields = ['media', 'permanencier_emprunt', 'permanencier_rendu',
                   'date_rendu']

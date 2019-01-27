@@ -1,10 +1,10 @@
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
-from .models import Author, Emprunt, Media, Game
+from .models import Author, BorrowedMedia, Media, Game
 
 
-@admin.register(Emprunt)
+@admin.register(BorrowedMedia)
 class BorrowedMediaAdmin(VersionAdmin):
     list_display = (
         'media', 'user', 'date_emprunt', 'date_rendu', 'permanencier_emprunt',

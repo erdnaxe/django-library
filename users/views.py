@@ -15,7 +15,7 @@ from reversion import revisions as reversion
 from reversion.views import RevisionMixin
 
 from med.settings import PAGINATION_NUMBER
-from media.models import Emprunt
+from media.models import BorrowedMedia
 from users.forms import InfoForm, BaseInfoForm, StateForm
 from users.models import User, Clef, Adhesion
 
@@ -192,7 +192,7 @@ def profile(request, userid):
         messages.error(request,
                        "Vous ne pouvez pas afficher un autre user que vous sans droit perm")
         return redirect("/users/profile/" + str(request.user.id))
-    emprunts_list = Emprunt.objects.filter(user=users)
+    emprunts_list = BorrowedMedia.objects.filter(user=users)
     # list_droits = Right.objects.filter(user=users)
     return render(
         request,

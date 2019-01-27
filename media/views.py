@@ -18,7 +18,7 @@ from reversion.views import RevisionMixin
 from med.settings import PAGINATION_NUMBER
 from users.models import User
 from .forms import EmpruntForm, EditEmpruntForm
-from .models import Author, Media, Game, Emprunt
+from .models import Author, Media, Game, BorrowedMedia
 from .tables import BorrowedMediaTable, AuthorTable, MediaTable, GamesTable
 
 
@@ -27,7 +27,6 @@ class Index(PermissionRequiredMixin, SingleTableView):
     paginate_by = PAGINATION_NUMBER
     template_name = 'media/index.html'
     model = Game
-    add_link = False
 
     def get_permission_required(self):
         return self.model._meta.model_name + '.view',
@@ -35,10 +34,17 @@ class Index(PermissionRequiredMixin, SingleTableView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         m = self.model._meta
+        if self.request.user.has_perms(m.model_name + '.add'):
+            context['add_link'] = 'media:' + m.model_name + '-add'
+
+        if self.request.user.has_perms(m.model_name + '.edit'):
+            context['edit_link'] = 'media:' + m.model_name + '-edit'
+
+        if self.request.user.has_perms(m.model_name + '.del'):
+            context['del_link'] = 'media:' + m.model_name + '-del'
+
         context['name'] = str(m.verbose_name)
         context['title'] = 'Index des ' + str(m.verbose_name_plural)
-        if self.add_link and self.request.user.has_perms(m.model_name + '.add'):
-            context['add_link'] = reverse('media:' + m.model_name + '-add')
         return context
 
 
@@ -52,6 +58,9 @@ class Create(PermissionRequiredMixin, RevisionMixin, SuccessMessageMixin,
 
     def get_permission_required(self):
         return self.model._meta.model_name + '.add',
+
+    def get_success_url(self):
+        return reverse('media:' + self.model._meta.model_name + '-index')
 
     def get_form(self, form_class=None):
         creation_form = super().get_form(form_class)
@@ -77,6 +86,9 @@ class Update(PermissionRequiredMixin, RevisionMixin, SuccessMessageMixin,
     def get_permission_required(self):
         return self.model._meta.model_name + '.edit',
 
+    def get_success_url(self):
+        return reverse('media:' + self.model._meta.model_name + '-index')
+
     def get_form(self, form_class=None):
         creation_form = super().get_form(form_class)
         creation_form.helper = FormHelper()
@@ -100,6 +112,9 @@ class Delete(PermissionRequiredMixin, RevisionMixin, SuccessMessageMixin,
     def get_permission_required(self):
         return self.model._meta.model_name + '.delete',
 
+    def get_success_url(self):
+        return reverse('media:' + self.model._meta.model_name + '-index')
+
 
 def form(ctx, template, request):
     c = ctx
@@ -115,11 +130,12 @@ def add_emprunt(request, userid):
     except User.DoesNotExist:
         messages.error(request, u"Entrée inexistante")
         return redirect("/media/index_emprunts/")
-    emprunts_en_cours = Emprunt.objects.filter(date_rendu=None,
-                                               user=user).count()
+    emprunts_en_cours = BorrowedMedia.objects.filter(date_rendu=None,
+                                                     user=user).count()
     if emprunts_en_cours >= user.maxemprunt:
         messages.error(request,
-                       "Maximum d'emprunts atteint de l'user %s" % user.maxemprunt)
+                       "Maximum d'emprunts atteint"
+                       "de l'user %s" % user.maxemprunt)
         return redirect("/media/index_emprunts/")
     emprunt = EmpruntForm(request.POST or None)
     if emprunt.is_valid():
@@ -141,8 +157,8 @@ def add_emprunt(request, userid):
 @permission_required('perm')
 def edit_emprunt(request, pk):
     try:
-        emprunt_instance = Emprunt.objects.get(pk=pk)
-    except Emprunt.DoesNotExist:
+        emprunt_instance = BorrowedMedia.objects.get(pk=pk)
+    except BorrowedMedia.DoesNotExist:
         messages.error(request, u"Entrée inexistante")
         return redirect("/media/index_emprunts/")
     emprunt = EditEmpruntForm(request.POST or None, instance=emprunt_instance)
@@ -162,8 +178,8 @@ def edit_emprunt(request, pk):
 @permission_required('perm')
 def retour_emprunt(request, pk):
     try:
-        emprunt_instance = Emprunt.objects.get(pk=pk)
-    except Emprunt.DoesNotExist:
+        emprunt_instance = BorrowedMedia.objects.get(pk=pk)
+    except BorrowedMedia.DoesNotExist:
         messages.error(request, u"Entrée inexistante")
         return redirect("/media/index_emprunts/")
     with transaction.atomic(), reversion.create_revision():
@@ -175,19 +191,17 @@ def retour_emprunt(request, pk):
     return redirect("/media/index_emprunts/")
 
 
-class AllBorrowedMediaIndex(Index):
-    model = Emprunt
-    table_class = BorrowedMediaTable
-
-
-# TODO : filter queryset Emprunt.objects.filter(user=request.user)
 class MyBorrowedMediaIndex(PermissionRequiredMixin, SingleTableView):
     """Special list with only user's media"""
     paginate_by = PAGINATION_NUMBER
     template_name = 'media/index.html'
-    model = Emprunt
+    model = BorrowedMedia
     table_class = BorrowedMediaTable
     permission_required = 'emprunt.my_view'
+
+    def get_queryset(self):
+        """Filter here"""
+        return BorrowedMedia.objects.filter(user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -197,69 +211,81 @@ class MyBorrowedMediaIndex(PermissionRequiredMixin, SingleTableView):
         return context
 
 
+class AllBorrowedMediaIndex(PermissionRequiredMixin, SingleTableView):
+    paginate_by = PAGINATION_NUMBER
+    template_name = 'media/index.html'
+    model = BorrowedMedia
+    table_class = BorrowedMediaTable
+
+    def get_permission_required(self):
+        return self.model._meta.model_name + '.view',
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        m = self.model._meta
+
+        if self.request.user.has_perms(m.model_name + '.edit'):
+            context['edit_link'] = 'media:' + m.model_name + '-edit'
+
+        if self.request.user.has_perms(m.model_name + '.del'):
+            context['del_link'] = 'media:' + m.model_name + '-del'
+
+        context['name'] = str(m.verbose_name)
+        context['title'] = 'Index des ' + str(m.verbose_name_plural)
+        return context
+
+
 class BorrowedMediaDelete(Delete):
-    model = Emprunt
+    model = BorrowedMedia
     success_url = reverse_lazy('media:my-borrowed-index')
 
 
 class AuthorsIndex(Index):
     model = Author
     table_class = AuthorTable
-    add_link = True
 
 
 class AuthorsCreate(Create):
     model = Author
-    success_url = reverse_lazy('media:author-index')
 
 
 class AuthorsUpdate(Update):
     model = Author
-    success_url = reverse_lazy('media:author-index')
 
 
 class AuthorsDelete(Delete):
     model = Author
-    success_url = reverse_lazy('media:author-index')
 
 
 class MediaIndex(Index):
     model = Media
     table_class = MediaTable
-    add_link = True
 
 
 class MediaCreate(Create):
     model = Media
-    success_url = reverse_lazy('media:media-index')
 
 
 class MediaUpdate(Update):
     model = Media
-    success_url = reverse_lazy('media:media-index')
 
 
 class MediaDelete(Delete):
     model = Media
-    success_url = reverse_lazy('media:media-index')
 
 
 class GamesIndex(Index):
     model = Game
     table_class = GamesTable
-    add_link = True
 
 
 class GamesCreate(Create):
     model = Game
-    success_url = reverse_lazy('media:game-index')
 
 
 class GamesUpdate(Update):
     model = Game
-    success_url = reverse_lazy('media:game-index')
 
 
 class GamesDelete(Delete):
     model = Game
-    success_url = reverse_lazy('media:game-index')
