@@ -13,10 +13,6 @@
                 <dd>{{ user.date_joined|date:"F Y" }}</dd>
             </dl>
             <div class="card-text text-center">
-                <a href="{% url "users:profile" %}" class="btn btn-outline-success mb-2">
-                    <span class="oi oi-person"></span>
-                    {% trans "My profile" %}
-                </a>
                 <a href="{% url 'logout' %}" class="btn btn-outline-secondary">
                     <span class="oi oi-account-logout"></span>
                     {% trans "Log out" %}

@@ -9,7 +9,7 @@
             <i class="glyphicon glyphicon-edit"></i>
             Editer
         </a>
-        <a class="btn btn-primary btn-sm" role="button" href="{% url 'users:password' user.id %}">
+        <a class="btn btn-primary btn-sm" role="button" href="{% url 'password_change' %}">
             <i class="glyphicon glyphicon-lock"></i>
             Changer le mot de passe
         </a>
@@ -23,7 +23,7 @@
                 Ajouter un droit
             </a>
         {% endif %}
-        <a class="btn btn-info btn-sm" role="button" href="{% url 'users:history' 'user' user.id %}">
+        <a class="btn btn-info btn-sm" role="button" href="">
             <i class="glyphicon glyphicon-time"></i>
             Historique
         </a>
@@ -51,10 +51,8 @@
             <td>{{ user.registered }}</td>
         </tr>
         <tr>
-            <th>Adresse</th>
-            <td>{{ user.adresse }}</td>
             <th>Telephone</th>
-            <td>{{ user.telephone }}</td>
+            <td>{{ user.phone }}</td>
         </tr>
         <tr>
             <th>Emprunts maximums autorisés</th>

@@ -182,7 +182,7 @@ def mon_profil(request):
 
 
 @login_required
-def profil(request, userid):
+def profile(request, userid):
     try:
         users = User.objects.get(pk=userid)
     except User.DoesNotExist:
@@ -191,7 +191,7 @@ def profil(request, userid):
     if not request.user.has_perms(('perm',)) and users != request.user:
         messages.error(request,
                        "Vous ne pouvez pas afficher un autre user que vous sans droit perm")
-        return redirect("/users/profil/" + str(request.user.id))
+        return redirect("/users/profile/" + str(request.user.id))
     emprunts_list = Emprunt.objects.filter(user=users)
     # list_droits = Right.objects.filter(user=users)
     return render(

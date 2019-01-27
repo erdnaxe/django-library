@@ -12,7 +12,7 @@
                 {% trans "Media" %}
             </a>
         </li>
-        {% if is_perm %}
+        {% if perms.users.view_user %}
             <li class="nav-item">
                 <a class="nav-link active" href="{% url "users:index" %}">
                     <span class="oi oi-person"></span>
@@ -23,13 +23,6 @@
                 <a class="nav-link active" href="{% url "logs:index" %}">
                     <span class="oi oi-bar-chart"></span>
                     {% trans "Stats" %}
-                </a>
-            </li>
-        {% else %}
-            <li class="nav-item">
-                <a class="nav-link active" href="{% url "users:profile" %}">
-                    <span class="oi oi-person"></span>
-                    {% trans "My profile" %}
                 </a>
             </li>
         {% endif %}
