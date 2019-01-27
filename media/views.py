@@ -2,6 +2,7 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction
@@ -23,8 +24,7 @@ from .models import Auteur, Media, Jeu, Emprunt
 from .tables import BorrowedMediaTable, AuthorTable, MediaTable, GamesTable
 
 
-# TODO PermissionRequiredMixin when permissions work
-class Index(SingleTableView):
+class Index(PermissionRequiredMixin, SingleTableView):
     """Parent class to all index pages"""
     paginate_by = PAGINATION_NUMBER
     template_name = 'media/index.html'
@@ -43,8 +43,8 @@ class Index(SingleTableView):
         return context
 
 
-# TODO PermissionRequiredMixin when permissions work
-class Create(RevisionMixin, SuccessMessageMixin, CreateView):
+class Create(PermissionRequiredMixin, RevisionMixin, SuccessMessageMixin,
+             CreateView):
     """Parent class to all object creation"""
     template_name = 'media/form.html'
     success_message = _('Object successfully created')
@@ -62,8 +62,8 @@ class Create(RevisionMixin, SuccessMessageMixin, CreateView):
         return context
 
 
-# TODO PermissionRequiredMixin when permissions work
-class Update(RevisionMixin, SuccessMessageMixin, UpdateView):
+class Update(PermissionRequiredMixin, RevisionMixin, SuccessMessageMixin,
+             UpdateView):
     """Parent class to all object creation"""
     template_name = 'media/form.html'
     success_message = _('Object successfully edited')
@@ -81,8 +81,8 @@ class Update(RevisionMixin, SuccessMessageMixin, UpdateView):
         return context
 
 
-# TODO PermissionRequiredMixin when permissions work
-class Delete(RevisionMixin, SuccessMessageMixin, DeleteView):
+class Delete(PermissionRequiredMixin, RevisionMixin, SuccessMessageMixin,
+             DeleteView):
     """Parent class to all object deletion"""
     template_name = 'media/delete.html'
     success_message = _('Object successfully deleted')
