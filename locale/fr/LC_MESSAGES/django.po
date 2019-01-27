@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-27 08:49+0100\n"
+"POT-Creation-Date: 2019-01-27 08:52+0100\n"
 "PO-Revision-Date: 2019-01-24 08:55+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -23,19 +23,6 @@ msgstr "Administration de la base de données de la Mediathèque"
 #: med/urls.py:8
 msgid "Med Admin"
 msgstr "Med Admin"
-
-#: search/apps.py:7
-msgid "search"
-msgstr "recherche"
-
-#: search/forms.py:29 search/forms.py:66 search/views.py:91
-#: templates/navbar.html:57 templates/navbar.html:58
-msgid "Search"
-msgstr "Recherche"
-
-#: search/views.py:101
-msgid "Advanced search"
-msgstr "Recherche avancée"
 
 #: templates/navbar.html:12
 msgid "Media"
@@ -61,6 +48,10 @@ msgstr "Déconnexion"
 #: templates/sidebar.html:32
 msgid "Log in"
 msgstr "Connexion"
+
+#: templates/navbar.html:57 templates/navbar.html:58
+msgid "Search"
+msgstr "Recherche"
 
 #: templates/pagination.html:10
 msgid "First"
