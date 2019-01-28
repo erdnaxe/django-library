@@ -10,6 +10,8 @@ Envoyer un mail lors de la création d'un utilisateur.
 
 Lister les permanenciers pour les adhérents.
 
+Ajouter taille de la boite des jeux. Avec nombre de dimension puis calcul du volume.
+
 Implémenter l'historique des objets selon :
 
 ```Python
