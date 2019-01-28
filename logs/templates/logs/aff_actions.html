@@ -6,7 +6,6 @@
     <thead>
     <tr>
         <th>Objet modifié</th>
-        <th>Type de l'objet</th>
         <th>Modification par</th>
         <th>Date de modification</th>
         <th>Commentaire</th>
@@ -16,8 +15,7 @@
     {% for revision in revisions_list %}
         {% for reversion in revision.version_set.all %}
             <tr>
-                <td>{{ reversion.object|truncatechars:20 }}</td>
-                <td>{{ reversion.object.PRETTY_NAME }}</td>
+                <td>{{ reversion.object|truncatechars:40 }}</td>
                 <td>{{ revision.user }}</td>
                 <td>{{ revision.date_created }}</td>
                 <td>{{ revision.comment }}</td>

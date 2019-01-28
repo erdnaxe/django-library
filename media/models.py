@@ -63,16 +63,16 @@ class BorrowedMedia(models.Model):
         null=True,
         verbose_name=_('given back at'),
     )
-    permanencier_emprunt = models.ForeignKey(
+    borrowed_with_permanent = models.ForeignKey(
         'users.User',
         on_delete=models.PROTECT,
-        related_name='user_permanencier_emprunt',
+        related_name='user_borrowed_with_permanent',
         verbose_name=_('borrowed with permanent'),
     )
-    permanencier_rendu = models.ForeignKey(
+    given_back_with_permanent = models.ForeignKey(
         'users.User',
         on_delete=models.PROTECT,
-        related_name='user_permanencier_rendu',
+        related_name='user_given_back_with_permanent',
         blank=True,
         null=True,
         verbose_name=_('given back with permanent'),

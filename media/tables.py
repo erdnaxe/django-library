@@ -12,8 +12,8 @@ class BaseTable(tables.Table):
 class BorrowedMediaTable(BaseTable):
     class Meta(BaseTable.Meta):
         model = BorrowedMedia
-        fields = ('media', 'user', 'borrowed_at', 'permanencier_emprunt',
-                  'given_back_at', 'permanencier_rendu')
+        fields = ('media', 'user', 'borrowed_at', 'borrowed_with_permanent',
+                  'given_back_at', 'given_back_with_permanent')
 
 
 class AuthorTable(BaseTable):

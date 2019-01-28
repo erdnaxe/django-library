@@ -28,13 +28,13 @@
                     <a href="{% url 'users:profil' userid=emprunt.user.id %}"><b>{{ emprunt.user }}</b></a>
                 </td>
                 <td>{{ emprunt.date_emprunt }}</td>
-                <td>{{ emprunt.permanencier_emprunt }}</td>
+                <td>{{ emprunt.borrowed_with_permanent }}</td>
                 <td>{% if not emprunt.date_rendu %}{% if is_perm %}
                     <a class="btn btn-primary btn-sm" role="button"
                        href="{% url 'media:retour-emprunt' emprunt.id %}"><i
                             class="glyphicon glyphicon-ok"></i> Retour</a>{% endif %}{% else %}
                     {{ emprunt.date_rendu }}{% endif %}</td>
-                <td>{{ emprunt.permanencier_rendu }}</td>
+                <td>{{ emprunt.given_back_with_permanent }}</td>
                 <td>
                     <div class="dropdown">
                         <button class="btn btn-default dropdown-toggle" type="button" id="editionemprunt"

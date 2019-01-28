@@ -7,7 +7,7 @@ from .models import Author, BorrowedMedia, Media, Game
 @admin.register(BorrowedMedia)
 class BorrowedMediaAdmin(VersionAdmin):
     list_display = ('media', 'user', 'borrowed_at', 'given_back_at',
-                    'permanencier_emprunt', 'permanencier_rendu')
+                    'borrowed_with_permanent', 'given_back_with_permanent')
 
 
 @admin.register(Author)

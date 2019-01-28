@@ -1,16 +1,7 @@
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.db import transaction
-from django.shortcuts import render, redirect
-from django.template.context_processors import csrf
-from django.utils import timezone
 from django_tables2 import SingleTableView
-from reversion import revisions as reversion
 
 from med.settings import PAGINATION_NUMBER
-from users.models import User
-from .forms import EmpruntForm, EditEmpruntForm
 from .models import Author, Media, Game, BorrowedMedia
 from .tables import BorrowedMediaTable, AuthorTable, MediaTable, GamesTable
 
@@ -31,14 +22,12 @@ class Index(PermissionRequiredMixin, SingleTableView):
         return context
 
 
+"""
 def form(ctx, template, request):
     c = ctx
     c.update(csrf(request))
     return render(request, template, c)
 
-
-@login_required
-@permission_required('perm')
 def add_emprunt(request, userid):
     try:
         user = User.objects.get(pk=userid)
@@ -56,7 +45,7 @@ def add_emprunt(request, userid):
     if emprunt.is_valid():
         emprunt = emprunt.save(commit=False)
         emprunt.user = user
-        emprunt.permanencier_emprunt = request.user
+        emprunt.borrowed_with_permanent = request.user
         emprunt.date_emprunt = timezone.now()
         with transaction.atomic(), reversion.create_revision():
             emprunt.save()
@@ -98,12 +87,13 @@ def retour_emprunt(request, pk):
         messages.error(request, u"Entrée inexistante")
         return redirect("/media/index_emprunts/")
     with transaction.atomic(), reversion.create_revision():
-        emprunt_instance.permanencier_rendu = request.user
+        emprunt_instance.given_back_with_permanent = request.user
         emprunt_instance.date_rendu = timezone.now()
         emprunt_instance.save()
         reversion.set_user(request.user)
         messages.success(request, "Retour enregistré")
     return redirect("/media/index_emprunts/")
+"""
 
 
 class MyBorrowedMediaIndex(PermissionRequiredMixin, SingleTableView):
@@ -112,7 +102,7 @@ class MyBorrowedMediaIndex(PermissionRequiredMixin, SingleTableView):
     template_name = 'media/index.html'
     model = BorrowedMedia
     table_class = BorrowedMediaTable
-    permission_required = 'emprunt.my_view'
+    permission_required = 'borrowedmedia.my_view'
 
     def get_queryset(self):
         """Filter here"""
