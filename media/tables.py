@@ -12,24 +12,24 @@ class BaseTable(tables.Table):
 class BorrowedMediaTable(BaseTable):
     class Meta(BaseTable.Meta):
         model = BorrowedMedia
-        fields = ('media', 'user', 'date_emprunt', 'permanencier_emprunt',
-                  'date_rendu', 'permanencier_rendu')
+        fields = ('media', 'user', 'borrowed_at', 'permanencier_emprunt',
+                  'given_back_at', 'permanencier_rendu')
 
 
 class AuthorTable(BaseTable):
     class Meta(BaseTable.Meta):
         model = Author
-        fields = ('nom',)
+        fields = ('name',)
 
 
 class MediaTable(BaseTable):
     class Meta(BaseTable.Meta):
         model = Media
-        fields = ('titre', 'auteur', 'cote')
+        fields = ('title', 'author', 'side_title')
 
 
 class GamesTable(BaseTable):
     class Meta(BaseTable.Meta):
         model = Game
-        fields = ('nom', 'proprietaire', 'duree', 'nombre_joueurs_min',
-                  'nombre_joueurs_max', 'comment')
+        fields = ('name', 'owner', 'length', 'min_players', 'max_players',
+                  'comment')

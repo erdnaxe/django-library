@@ -3,6 +3,8 @@
 {% load i18n %}
 {% load crispy_forms_tags %}
 
+{% block title %}{% trans "Search" %}{% endblock %}
+
 {% block content %}
     <h2>{% trans "Search" %}</h2>
 
@@ -18,13 +20,15 @@
             <hr/>
             <h3>{% trans "Results" %}</h3>
 
-            {% for result in page.object_list %}
-                <p>
-                    <a href="{{ result.object.get_absolute_url }}">{{ result.object.titre }}</a>
-                </p>
-            {% empty %}
-                <p>No results found.</p>
-            {% endfor %}
+            <ul>
+                {% for result in page.object_list %}
+                    <li>
+                        {{ result.object.name }}{{ result.object.title }}
+                    </li>
+                {% empty %}
+                    <li>{% trans "No results found." %}</li>
+                {% endfor %}
+            </ul>
 
             {% if page.has_previous or page.has_next %}
                 <div>

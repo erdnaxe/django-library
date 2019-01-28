@@ -6,27 +6,25 @@ from .models import Author, BorrowedMedia, Media, Game
 
 @admin.register(BorrowedMedia)
 class BorrowedMediaAdmin(VersionAdmin):
-    list_display = (
-        'media', 'user', 'date_emprunt', 'date_rendu', 'permanencier_emprunt',
-        'permanencier_rendu')
+    list_display = ('media', 'user', 'borrowed_at', 'given_back_at',
+                    'permanencier_emprunt', 'permanencier_rendu')
 
 
 @admin.register(Author)
 class AuthorAdmin(VersionAdmin):
-    list_display = ('nom',)
+    list_display = ('name',)
 
 
 @admin.register(Media)
 class MediaAdmin(VersionAdmin):
-    list_display = ('titre', 'get_authors', 'cote')
+    list_display = ('title', 'get_authors', 'side_title')
 
     @staticmethod
     def get_authors(obj):
-        return "\n".join(p.nom for p in obj.auteur.all())
+        return "\n".join(p.name for p in obj.author.all())
 
 
 @admin.register(Game)
 class GamesAdmin(VersionAdmin):
-    list_display = (
-        'nom', 'proprietaire', 'duree', 'nombre_joueurs_min',
-        'nombre_joueurs_max', 'comment')
+    list_display = ('name', 'owner', 'length', 'min_players', 'max_players',
+                    'comment')

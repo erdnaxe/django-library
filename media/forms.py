@@ -25,4 +25,4 @@ class EditEmpruntForm(forms.ModelForm):
     class Meta:
         model = BorrowedMedia
         fields = ['media', 'permanencier_emprunt', 'permanencier_rendu',
-                  'date_rendu']
+                  'given_back_at']

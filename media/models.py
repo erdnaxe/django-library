@@ -4,40 +4,40 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Author(models.Model):
-    nom = models.CharField(
+    name = models.CharField(
         max_length=255,
         unique=True,
         verbose_name=_('name'),
     )
 
     def __str__(self):
-        return self.nom
+        return self.name
 
     class Meta:
-        ordering = ['-nom']
+        ordering = ['-name']
         verbose_name = _('author')
         verbose_name_plural = _('authors')
 
 
 class Media(models.Model):
-    titre = models.CharField(
+    title = models.CharField(
         max_length=255,
         verbose_name=_('title'),
     )
-    cote = models.CharField(
+    side_title = models.CharField(
         max_length=31,
         verbose_name=_('side title'),
     )
-    auteur = models.ManyToManyField(
+    author = models.ManyToManyField(
         'Author',
         verbose_name=_('author'),
     )
 
     def __str__(self):
-        return str(self.titre) + ' - ' + str(self.auteur.all().first())
+        return "Media {} de {}".format(self.title, self.author.all().first())
 
     class Meta:
-        ordering = ['-titre']
+        ordering = ['-title']
         verbose_name = _('media')
         verbose_name_plural = _('media')
 
@@ -53,11 +53,11 @@ class BorrowedMedia(models.Model):
         on_delete=models.PROTECT,
         verbose_name=_('borrower'),
     )
-    date_emprunt = models.DateTimeField(
+    borrowed_at = models.DateTimeField(
         help_text='%d/%m/%y %H:%M:%S',
         verbose_name=_('borrowed at'),
     )
-    date_rendu = models.DateTimeField(
+    given_back_at = models.DateTimeField(
         help_text='%d/%m/%y %H:%M:%S',
         blank=True,
         null=True,
@@ -79,10 +79,10 @@ class BorrowedMedia(models.Model):
     )
 
     def __str__(self):
-        return str(self.media) + str(self.user)
+        return "{} borrowed by {}".format(self.media, self.user)
 
     class Meta:
-        ordering = ['-date_emprunt']
+        ordering = ['-borrowed_at']
         permissions = (
             ("my_view", "Can view his borrowed media"),
         )
@@ -91,33 +91,31 @@ class BorrowedMedia(models.Model):
 
 
 class Game(models.Model):
-    DUREE = (
-        ('-1h', '-1h'),
-        ('1-2h', '1-2h'),
-        ('2-3h', '2-3h'),
-        ('3-4h', '3-4h'),
-        ('4h+', '4h+'),
-    )
-
-    nom = models.CharField(
+    name = models.CharField(
         max_length=255,
         verbose_name=_('name'),
     )
-    proprietaire = models.ForeignKey(
+    owner = models.ForeignKey(
         'users.User',
         on_delete=models.PROTECT,
         verbose_name=_('owner'),
     )
-    duree = models.CharField(
-        choices=DUREE,
+    length = models.CharField(
+        choices=(
+            ('-1h', '-1h'),
+            ('1-2h', '1-2h'),
+            ('2-3h', '2-3h'),
+            ('3-4h', '3-4h'),
+            ('4h+', '4h+'),
+        ),
         max_length=255,
         verbose_name=_('length'),
     )
-    nombre_joueurs_min = models.IntegerField(
+    min_players = models.IntegerField(
         validators=[MinValueValidator(1)],
         verbose_name=_('minimum number of players'),
     )
-    nombre_joueurs_max = models.IntegerField(
+    max_players = models.IntegerField(
         validators=[MinValueValidator(1)],
         verbose_name=_('maximum number of players'),
     )
@@ -129,9 +127,9 @@ class Game(models.Model):
     )
 
     def __str__(self):
-        return str(self.nom)
+        return "Game {}".format(self.name)
 
     class Meta:
-        ordering = ['-nom']
+        ordering = ['-name']
         verbose_name = _('game')
         verbose_name_plural = _('games')
