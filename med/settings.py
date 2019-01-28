@@ -36,6 +36,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -93,8 +94,8 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-# https://docs.djangoproject.com/en/1.8/topics/i18n/
-LANGUAGE_CODE = 'fr-fr'
+# https://docs.djangoproject.com/en/2.1/topics/i18n/
+LANGUAGE_CODE = 'fr'
 TIME_ZONE = 'Europe/Paris'
 USE_I18N = True
 USE_L10N = True

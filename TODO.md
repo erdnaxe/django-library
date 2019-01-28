@@ -12,6 +12,8 @@ Lister les permanenciers pour les adhérents.
 
 Ajouter taille de la boite des jeux. Avec nombre de dimension puis calcul du volume.
 
+Être beau dans Google.
+
 Implémenter l'historique des objets selon :
 
 ```Python

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-27 22:20+0100\n"
+"POT-Creation-Date: 2019-01-28 21:21+0100\n"
 "PO-Revision-Date: 2019-01-27 08:46+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -16,7 +16,7 @@ msgstr ""
 msgid "media"
 msgstr "media"
 
-#: media/models.py:10 media/models.py:104
+#: media/models.py:10 media/models.py:96
 msgid "name"
 msgstr "nom"
 
@@ -64,31 +64,31 @@ msgstr "media emprunté"
 msgid "borrowed medias"
 msgstr "media empruntés"
 
-#: media/models.py:109
+#: media/models.py:101
 msgid "owner"
 msgstr "propriétaire"
 
-#: media/models.py:114
+#: media/models.py:112
 msgid "length"
 msgstr "durée"
 
-#: media/models.py:118
+#: media/models.py:116
 msgid "minimum number of players"
 msgstr "nombre minimum de joueurs"
 
-#: media/models.py:122
+#: media/models.py:120
 msgid "maximum number of players"
 msgstr "nombre maximum de joueurs"
 
-#: media/models.py:128
+#: media/models.py:126
 msgid "comment"
 msgstr "commentaire"
 
-#: media/models.py:136
+#: media/models.py:134
 msgid "game"
 msgstr "jeu"
 
-#: media/models.py:137
+#: media/models.py:135
 msgid "games"
 msgstr "jeux"
 

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-27 22:20+0100\n"
+"POT-Creation-Date: 2019-01-28 21:21+0100\n"
 "PO-Revision-Date: 2019-01-24 08:55+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -12,15 +12,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: med/urls.py:7
+#: med/urls.py:9
 msgid "Med database administration"
 msgstr "Administration de la base de données de la Mediathèque"
 
-#: med/urls.py:8
+#: med/urls.py:10
 msgid "Med Admin"
 msgstr "Med Admin"
 
-#: templates/base.html:9 templates/navbar.html:5 templates/sidebar.html:63
+#: templates/base.html:10 templates/navbar.html:5 templates/sidebar.html:63
 msgid "Med"
 msgstr "Med"
 
@@ -42,17 +42,18 @@ msgstr "Administration"
 
 #: templates/navbar.html:41 templates/sidebar.html:40
 msgid "Log out"
-msgstr "Déconnexion"
+msgstr ""
 
 #: templates/navbar.html:48 templates/registration/login.html:15
 #: templates/sidebar.html:53
 msgid "Log in"
-msgstr "Connexion"
+msgstr ""
 
 #: templates/navbar.html:58 templates/navbar.html:59
-#: templates/search/search.html:7 templates/search/search.html:14
+#: templates/search/search.html:6 templates/search/search.html:9
+#: templates/search/search.html:16
 msgid "Search"
-msgstr "Recherche"
+msgstr ""
 
 #: templates/pagination.html:10
 msgid "First"
@@ -78,69 +79,55 @@ msgstr "Authentification utilisateur"
 msgid "Forgotten password ?"
 msgstr "Mot de passe oublié ?"
 
-#: templates/registration/password_reset_complete.html:6
-#: templates/registration/password_reset_complete.html:9
-msgid "Password reset complete"
-msgstr "Réinitialisation du mot de passe effectuée"
-
-#: templates/registration/password_reset_complete.html:11
+#: templates/registration/password_reset_complete.html:10
 msgid "Your password has been set.  You may go ahead and log in now."
 msgstr ""
-"Votre mot de passe a été changé. Vous pouvez maintenant vous connectez."
 
-#: templates/registration/password_reset_confirm.html:6
-#: templates/registration/password_reset_confirm.html:9
-msgid "Enter new password"
-msgstr "Mot de passe oublié ?"
+#: templates/registration/password_reset_confirm.html:12
+msgid ""
+"Please enter your new password twice so we can verify you typed it in "
+"correctly."
+msgstr ""
 
-#: templates/registration/password_reset_confirm.html:15
+#: templates/registration/password_reset_confirm.html:18
 msgid "Change my password"
-msgstr "Changer mon mot de passe"
+msgstr ""
 
-#: templates/registration/password_reset_done.html:6
-msgid "Email Sent"
-msgstr "Courriel envoyé"
-
-#: templates/registration/password_reset_done.html:9
-msgid "Check your inbox."
-msgstr "Vérifiez votre boîte de réception."
+#: templates/registration/password_reset_confirm.html:22
+msgid ""
+"The password reset link was invalid, possibly because it has already been "
+"used.  Please request a new password reset."
+msgstr ""
 
 #: templates/registration/password_reset_done.html:10
 msgid ""
 "We've emailed you instructions for setting your password, if an account "
 "exists with the email you entered. You should receive them shortly."
 msgstr ""
-"Nous vous avons envoyé des instructions pour changer votre mot de passe, si "
-"un compte existe avec ce mail. Vous devriez le recevoir bientôt."
 
 #: templates/registration/password_reset_done.html:11
 msgid ""
 "If you don't receive an email, please make sure you've entered the address "
 "you registered with, and check your spam folder."
 msgstr ""
-"Si vous ne recevez pas de mail, vérifiez que vous avez entré l'addresse avec "
-"laquelle vous vous êtes enregistrés, et vérifiez les spams."
-
-#: templates/registration/password_reset_form.html:6
-#: templates/registration/password_reset_form.html:9
-msgid "Forgot Your Password?"
-msgstr "Mot de passe oublié ?"
 
 #: templates/registration/password_reset_form.html:10
 msgid ""
 "Forgotten your password? Enter your email address below, and we'll email "
 "instructions for setting a new one."
 msgstr ""
-"Vous avez oublié votre mot de passe ? Entrez votre courriel ci-dessous et "
-"nous vous enverrons des instructions pour le réinitialiser."
 
-#: templates/registration/password_reset_form.html:17
-msgid "Send me instructions!"
-msgstr "Envoyez moi les instructions !"
+#: templates/registration/password_reset_form.html:16
+msgid "Reset my password"
+msgstr ""
 
-#: templates/search/search.html:19
+#: templates/search/search.html:21
 msgid "Results"
 msgstr "Résultats"
+
+#: templates/search/search.html:29
+msgid "No results found."
+msgstr "Aucun résultat trouvé."
 
 #: templates/sidebar.html:9
 msgid "Pseudo"
@@ -156,11 +143,11 @@ msgstr "Adhérent pour l'année en cours"
 
 #: templates/sidebar.html:18
 msgid "Yes"
-msgstr "Oui"
+msgstr ""
 
 #: templates/sidebar.html:20
 msgid "No"
-msgstr "Non"
+msgstr ""
 
 #: templates/sidebar.html:24
 msgid "Member since"
