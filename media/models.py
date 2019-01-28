@@ -4,14 +4,10 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Author(models.Model):
-    name = models.CharField(
-        max_length=255,
-        unique=True,
-        verbose_name=_('name'),
-    )
+    name = models.CharField(_('name'), max_length=255, unique=True)
 
     def __str__(self):
-        return self.name
+        return "Author {}".format(self.name)
 
     class Meta:
         ordering = ['-name']
@@ -20,21 +16,12 @@ class Author(models.Model):
 
 
 class Media(models.Model):
-    title = models.CharField(
-        max_length=255,
-        verbose_name=_('title'),
-    )
-    side_title = models.CharField(
-        max_length=31,
-        verbose_name=_('side title'),
-    )
-    author = models.ManyToManyField(
-        'Author',
-        verbose_name=_('author'),
-    )
+    title = models.CharField(_('title'), max_length=255)
+    side_title = models.CharField(_('side title'), max_length=31)
+    author = models.ManyToManyField('Author', verbose_name=_('author'))
 
     def __str__(self):
-        return "Media {} de {}".format(self.title, self.author.all().first())
+        return "Media {} by {}".format(self.title, self.author.all().first())
 
     class Meta:
         ordering = ['-title']
@@ -53,15 +40,11 @@ class BorrowedMedia(models.Model):
         on_delete=models.PROTECT,
         verbose_name=_('borrower'),
     )
-    borrowed_at = models.DateTimeField(
-        help_text='%d/%m/%y %H:%M:%S',
-        verbose_name=_('borrowed at'),
-    )
+    borrowed_at = models.DateTimeField(_('borrowed at'))
     given_back_at = models.DateTimeField(
-        help_text='%d/%m/%y %H:%M:%S',
+        _('given back at'),
         blank=True,
         null=True,
-        verbose_name=_('given back at'),
     )
     borrowed_with_permanent = models.ForeignKey(
         'users.User',
@@ -91,16 +74,14 @@ class BorrowedMedia(models.Model):
 
 
 class Game(models.Model):
-    name = models.CharField(
-        max_length=255,
-        verbose_name=_('name'),
-    )
+    name = models.CharField(_('name'), max_length=255)
     owner = models.ForeignKey(
         'users.User',
         on_delete=models.PROTECT,
         verbose_name=_('owner'),
     )
     length = models.CharField(
+        _('length'),
         choices=(
             ('-1h', '-1h'),
             ('1-2h', '1-2h'),
@@ -109,21 +90,20 @@ class Game(models.Model):
             ('4h+', '4h+'),
         ),
         max_length=255,
-        verbose_name=_('length'),
     )
     min_players = models.IntegerField(
+        _('minimum number of players'),
         validators=[MinValueValidator(1)],
-        verbose_name=_('minimum number of players'),
     )
     max_players = models.IntegerField(
+        _('maximum number of players'),
         validators=[MinValueValidator(1)],
-        verbose_name=_('maximum number of players'),
     )
     comment = models.CharField(
+        _('comment'),
         max_length=255,
         blank=True,
         null=True,
-        verbose_name=_('comment'),
     )
 
     def __str__(self):

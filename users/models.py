@@ -7,19 +7,19 @@ from med.settings import MAX_EMPRUNT
 
 class User(AbstractUser):
     phone = models.CharField(
+        _('phone'),
         max_length=15,
         null=True,
         blank=True,
-        verbose_name=_('phone'),
     )
     max_borrowed = models.IntegerField(
+        _('maximum simultaneous borrowed books'),
         default=MAX_EMPRUNT,
-        verbose_name=_('maximum simultaneous borrowed books'),
     )
     comment = models.CharField(
+        _('comment'),
         max_length=255,
         blank=True,
-        verbose_name=_('comment'),
     )
 
     # Require a valid name
@@ -32,11 +32,7 @@ class User(AbstractUser):
 
 
 class Clef(models.Model):
-    name = models.CharField(
-        max_length=255,
-        unique=True,
-        verbose_name=_('name'),
-    )
+    name = models.CharField(_('name'), max_length=255, unique=True)
     owner = models.ForeignKey(
         'User',
         on_delete=models.PROTECT,
@@ -45,22 +41,16 @@ class Clef(models.Model):
         verbose_name=_('owner'),
     )
     comment = models.CharField(
+        _('comment'),
         max_length=255,
         null=True,
         blank=True,
-        verbose_name=_('comment'),
     )
 
 
 class Adhesion(models.Model):
-    start_at = models.IntegerField(
-        unique=True,
-        verbose_name=_('start at'),
-    )
-    end_at = models.IntegerField(
-        unique=True,
-        verbose_name=_('end at'),
-    )
+    start_at = models.IntegerField(_('start at'), unique=True)
+    end_at = models.IntegerField(_('end at'), unique=True)
     members = models.ManyToManyField(
         'User',
         blank=True,
