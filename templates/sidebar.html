@@ -6,10 +6,10 @@
         <h5 class="card-header">{{ user.first_name }} {{ user.last_name }}</h5>
         <div class="card-body">
             <dl>
-                <dt>{% trans "Pseudo" %}</dt>
+                <dt>{% trans "username"|capfirst %}</dt>
                 <dd>{{ user.username }}</dd>
 
-                <dt>{% trans "E-mail" %}</dt>
+                <dt>{% trans "email address"|capfirst %}</dt>
                 <dd>{{ user.email }}</dd>
 
                 <dt>{% trans "Membership for current year" %}</dt>
@@ -21,7 +21,7 @@
                     {% endif %}
                 </dd>
 
-                <dt>{% trans "Member since" %}</dt>
+                <dt>{% trans "date joined"|capfirst %}</dt>
                 <dd>{{ user.date_joined|date:"F Y" }}</dd>
 
                 {% if user.comment %}

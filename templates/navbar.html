@@ -52,9 +52,9 @@
     </ul>
 
     {# Search form #}
-    <form action="{% url "haystack_search" %}" method="GET" class="form-inline" role="search">
+    <form action="{% url "haystack_search" %}" method="GET" class="form-inline mx-4" role="search">
         {% csrf_token %}
-        <div class="input-group">
+        <div class="input-group input-group-sm">
             <input class="form-control" type="search" placeholder="{% trans "Search" %}"
                    aria-label="{% trans "Search" %}" name="q">
             <div class="input-group-append" id="button-addon4">
@@ -64,6 +64,28 @@
                 <a href="{% url "haystack_search" %}" class="btn btn-secondary" role="button">
                     <span class="oi oi-ellipses"></span>
                 </a>
+            </div>
+        </div>
+    </form>
+
+    <form action="{% url 'set_language' %}" method="post" class="form-inline">
+        {% csrf_token %}
+        <input name="next" type="hidden" value="/"/>
+        <div class="input-group input-group-sm">
+            <select class="custom-select" title="language" name="language" style="width:85pt">
+                {% get_current_language as LANGUAGE_CODE %}
+                {% get_available_languages as LANGUAGES %}
+                {% get_language_info_list for LANGUAGES as languages %}
+                {% for language in languages %}
+                    <option value="{{ language.code }}"{% if language.code == LANGUAGE_CODE %} selected{% endif %}>
+                        {{ language.name_local }} ({{ language.code }})
+                    </option>
+                {% endfor %}
+            </select>
+            <div class="input-group-append" id="button-addon5">
+                <button class="btn btn-info" type="submit">
+                    <span class="oi oi-flag"></span>
+                </button>
             </div>
         </div>
     </form>

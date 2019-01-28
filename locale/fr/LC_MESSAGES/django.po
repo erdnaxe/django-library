@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-28 21:21+0100\n"
+"POT-Creation-Date: 2019-01-28 21:50+0100\n"
 "PO-Revision-Date: 2019-01-24 08:55+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -130,12 +130,12 @@ msgid "No results found."
 msgstr "Aucun résultat trouvé."
 
 #: templates/sidebar.html:9
-msgid "Pseudo"
-msgstr "Pseudo"
+msgid "username"
+msgstr ""
 
 #: templates/sidebar.html:12
-msgid "E-mail"
-msgstr "E-mail"
+msgid "email address"
+msgstr ""
 
 #: templates/sidebar.html:15
 msgid "Membership for current year"
@@ -150,8 +150,8 @@ msgid "No"
 msgstr ""
 
 #: templates/sidebar.html:24
-msgid "Member since"
-msgstr "Médeux depuis"
+msgid "date joined"
+msgstr "médeux depuis"
 
 #: templates/sidebar.html:28
 msgid "Comment"

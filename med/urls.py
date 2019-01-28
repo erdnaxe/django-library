@@ -11,6 +11,7 @@ admin.site.site_title = _('Med Admin')
 
 urlpatterns = [
     path('', RedirectView.as_view(pattern_name='index', permanent=True)),
+    path('i18n/', include('django.conf.urls.i18n')),
 ]
 
 urlpatterns += i18n_patterns(
