@@ -9,6 +9,7 @@ django-crispy-forms = "*"
 django-reversion = "*"
 "django-tables2" = "*"
 django-haystack = "*"
+django-filter = "*"
 
 [dev-packages]
 

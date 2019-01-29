@@ -7,7 +7,7 @@ class Author(models.Model):
     name = models.CharField(_('name'), max_length=255, unique=True)
 
     def __str__(self):
-        return "Author {}".format(self.name)
+        return str(self.name)
 
     class Meta:
         ordering = ['-name']

@@ -6,7 +6,7 @@ from .models import BorrowedMedia, Author, Media, Game
 class BaseTable(tables.Table):
     class Meta:
         template_name = 'django_tables2/bootstrap4.html'
-        attrs = {'class': 'table table-striped'}
+        attrs = {'class': 'table table-hover'}
 
 
 class BorrowedMediaTable(BaseTable):

@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-28 21:50+0100\n"
+"POT-Creation-Date: 2019-01-29 10:14+0100\n"
 "PO-Revision-Date: 2019-01-27 08:46+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -12,83 +12,83 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: media/apps.py:7 media/models.py:41 media/models.py:42 media/models.py:49
+#: media/apps.py:7 media/models.py:28 media/models.py:29 media/models.py:36
 msgid "media"
 msgstr "media"
 
-#: media/models.py:10 media/models.py:96
+#: media/models.py:7 media/models.py:77
 msgid "name"
 msgstr "nom"
 
-#: media/models.py:18 media/models.py:33
+#: media/models.py:14 media/models.py:21
 msgid "author"
 msgstr "auteur"
 
-#: media/models.py:19
+#: media/models.py:15
 msgid "authors"
 msgstr "auteurs"
 
-#: media/models.py:25
+#: media/models.py:19
 msgid "title"
 msgstr "titre"
 
-#: media/models.py:29
+#: media/models.py:20
 msgid "side title"
 msgstr "côte"
 
-#: media/models.py:54
+#: media/models.py:41
 msgid "borrower"
 msgstr "emprunteur"
 
-#: media/models.py:58
+#: media/models.py:43
 msgid "borrowed at"
 msgstr "emprunté le"
 
-#: media/models.py:64
+#: media/models.py:45
 msgid "given back at"
 msgstr "rendu le"
 
-#: media/models.py:70
+#: media/models.py:53
 msgid "borrowed with permanent"
 msgstr "emprunté avec le permanencier"
 
-#: media/models.py:78
+#: media/models.py:61
 msgid "given back with permanent"
 msgstr "rendu avec le permanencier"
 
-#: media/models.py:89
+#: media/models.py:72
 msgid "borrowed media"
 msgstr "media emprunté"
 
-#: media/models.py:90
+#: media/models.py:73
 msgid "borrowed medias"
 msgstr "media empruntés"
 
-#: media/models.py:101
+#: media/models.py:81
 msgid "owner"
 msgstr "propriétaire"
 
-#: media/models.py:112
+#: media/models.py:84
 msgid "length"
 msgstr "durée"
 
-#: media/models.py:116
+#: media/models.py:95
 msgid "minimum number of players"
 msgstr "nombre minimum de joueurs"
 
-#: media/models.py:120
+#: media/models.py:99
 msgid "maximum number of players"
 msgstr "nombre maximum de joueurs"
 
-#: media/models.py:126
+#: media/models.py:103
 msgid "comment"
 msgstr "commentaire"
 
-#: media/models.py:134
+#: media/models.py:114
 msgid "game"
 msgstr "jeu"
 
-#: media/models.py:135
+#: media/models.py:115
 msgid "games"
 msgstr "jeux"
 
@@ -107,3 +107,11 @@ msgstr "Media"
 #: media/templates/media/base.html:21
 msgid "Games"
 msgstr "Jeux"
+
+#: media/templates/media/index.html:17
+msgid "Filter"
+msgstr ""
+
+#: media/templates/media/index.html:22
+msgid "Apply filter"
+msgstr "Appliquer le filtre"

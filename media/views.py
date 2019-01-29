@@ -1,25 +1,10 @@
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django_tables2 import SingleTableView
+from django_filters.views import FilterView
+from django_tables2.views import SingleTableMixin, SingleTableView
 
 from med.settings import PAGINATION_NUMBER
 from .models import Author, Media, Game, BorrowedMedia
 from .tables import BorrowedMediaTable, AuthorTable, MediaTable, GamesTable
-
-
-class Index(PermissionRequiredMixin, SingleTableView):
-    """Parent class to all index pages"""
-    paginate_by = PAGINATION_NUMBER
-    template_name = 'media/index.html'
-    model = Game
-
-    def get_permission_required(self):
-        return self.model._meta.model_name + '.view',
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['name'] = str(self.model._meta.verbose_name)
-        context['name_plural'] = str(self.model._meta.verbose_name_plural)
-        return context
 
 
 class MyBorrowedMediaIndex(PermissionRequiredMixin, SingleTableView):
@@ -42,16 +27,57 @@ class MyBorrowedMediaIndex(PermissionRequiredMixin, SingleTableView):
         return context
 
 
-class AuthorsIndex(Index):
+class AuthorsIndex(PermissionRequiredMixin, SingleTableMixin, FilterView):
+    paginate_by = PAGINATION_NUMBER
+    template_name = 'media/index.html'
     model = Author
     table_class = AuthorTable
+    permission_required = 'author.view'
+    filterset_fields = {
+        'name': ['contains'],
+    }
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['name'] = str(self.model._meta.verbose_name)
+        context['name_plural'] = str(self.model._meta.verbose_name_plural)
+        return context
 
 
-class MediaIndex(Index):
+class MediaIndex(PermissionRequiredMixin, SingleTableMixin, FilterView):
+    paginate_by = PAGINATION_NUMBER
+    template_name = 'media/index.html'
     model = Media
     table_class = MediaTable
+    permission_required = 'media.view'
+    filterset_fields = {
+        'title': ['contains'],
+        'author': ['exact'],
+    }
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['name'] = str(self.model._meta.verbose_name)
+        context['name_plural'] = str(self.model._meta.verbose_name_plural)
+        return context
 
 
-class GamesIndex(Index):
+class GamesIndex(PermissionRequiredMixin, SingleTableMixin, FilterView):
+    paginate_by = PAGINATION_NUMBER
+    template_name = 'media/index.html'
     model = Game
     table_class = GamesTable
+    permission_required = 'game.view'
+    filterset_fields = {
+        'name': ['contains'],
+        'owner': ['exact'],
+        'length': ['exact'],
+        'min_players': ['lte'],
+        'max_players': ['gte'],
+    }
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['name'] = str(self.model._meta.verbose_name)
+        context['name_plural'] = str(self.model._meta.verbose_name_plural)
+        return context

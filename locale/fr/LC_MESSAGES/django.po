@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-28 21:50+0100\n"
+"POT-Creation-Date: 2019-01-29 10:14+0100\n"
 "PO-Revision-Date: 2019-01-24 08:55+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -11,6 +11,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: med/settings.py:172
+msgid "contains"
+msgstr "contient"
+
+#: med/settings.py:173
+msgid "is greater than or equal to"
+msgstr "est plus grand ou égal à"
+
+#: med/settings.py:174
+msgid "is less than or equal to"
+msgstr "est plus petit ou égal à"
 
 #: med/urls.py:9
 msgid "Med database administration"

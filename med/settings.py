@@ -161,6 +161,21 @@ HAYSTACK_CONNECTIONS = {
     },
 }
 
+
+# Django Filters
+def FILTERS_VERBOSE_LOOKUPS():
+    from django_filters.conf import DEFAULTS
+    from django.utils.translation import gettext_lazy as _
+
+    verbose_lookups = DEFAULTS['VERBOSE_LOOKUPS'].copy()
+    verbose_lookups.update({
+        'contains': _('contains'),
+        'gte': _('is greater than or equal to'),
+        'lte': _('is less than or equal to'),
+    })
+    return verbose_lookups
+
+
 # Number of item per page
 PAGINATION_NUMBER = 10
 
