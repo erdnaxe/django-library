@@ -2,8 +2,6 @@
 
 Idée de PA : pouvoir avoir des commentaires par jeu pour discuter des règles.
 
-Idée de Karnaj : avoir une API.
-
 Envoyer un mail lors de la création d'un utilisateur.
 
 Lister les permanenciers pour les adhérents.

@@ -28,6 +28,8 @@ INSTALLED_APPS = [
     'django_tables2',
     'reversion',
     'haystack',
+    'rest_framework',
+    'api.apps.ApiConfig',
     'users.apps.UserConfig',
     'media.apps.MediaConfig',
     'logs.apps.LogsConfig'
@@ -175,6 +177,12 @@ def FILTERS_VERBOSE_LOOKUPS():
     })
     return verbose_lookups
 
+
+# Rest framework
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 10
+}
 
 # Number of item per page
 PAGINATION_NUMBER = 10

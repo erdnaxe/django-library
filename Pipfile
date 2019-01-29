@@ -10,6 +10,8 @@ django-reversion = "*"
 "django-tables2" = "*"
 django-haystack = "*"
 django-filter = "*"
+djangorestframework = "*"
+drf-haystack = "*"
 
 [dev-packages]
 
