@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-29 10:14+0100\n"
+"POT-Creation-Date: 2019-01-29 10:26+0100\n"
 "PO-Revision-Date: 2019-01-24 08:55+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -66,22 +66,6 @@ msgstr ""
 #: templates/search/search.html:16
 msgid "Search"
 msgstr ""
-
-#: templates/pagination.html:10
-msgid "First"
-msgstr "Première"
-
-#: templates/pagination.html:16
-msgid "Previous"
-msgstr "Dernière"
-
-#: templates/pagination.html:36
-msgid "Next"
-msgstr "Suivante"
-
-#: templates/pagination.html:42
-msgid "Last"
-msgstr "Précédente"
 
 #: templates/registration/login.html:6 templates/registration/login.html:9
 msgid "User authentication"

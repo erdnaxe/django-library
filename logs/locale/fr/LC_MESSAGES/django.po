@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-29 10:14+0100\n"
+"POT-Creation-Date: 2019-01-29 10:26+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -15,3 +15,11 @@ msgstr ""
 #: logs/apps.py:7
 msgid "logs"
 msgstr "logs"
+
+#: logs/templates/logs/index.html:17
+msgid "Filter"
+msgstr ""
+
+#: logs/templates/logs/index.html:22
+msgid "Apply filter"
+msgstr "Appliquer le filtre"

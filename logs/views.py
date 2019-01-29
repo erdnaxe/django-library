@@ -1,18 +1,20 @@
 from django.db.models import Count
-from django_tables2 import SingleTableView
+from django_filters.views import FilterView
+from django_tables2.views import SingleTableMixin, SingleTableView
 from reversion.models import Revision
 
 from med.settings import PAGINATION_NUMBER
 from users.models import User
-from .mixin import SuperUserRequiredMixin
+from .mixins import SuperUserRequiredMixin
 from .tables import RevisionTable, StatsTable
 
 
-class LogsIndex(SuperUserRequiredMixin, SingleTableView):
+class LogsIndex(SuperUserRequiredMixin, SingleTableMixin, FilterView):
     paginate_by = PAGINATION_NUMBER
     template_name = 'logs/index.html'
     model = Revision
     table_class = RevisionTable
+    filterset_fields = ['user']
 
     def get_queryset(self):
         return Revision.objects.all().order_by(
