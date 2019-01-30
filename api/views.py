@@ -2,7 +2,7 @@ from django.contrib.auth.models import Group
 from rest_framework import viewsets
 
 from media.models import Author, Media, Game
-from users.models import User, Clef, Adhesion
+from users.models import User, Key, Membership
 from . import serializers
 
 
@@ -32,10 +32,10 @@ class GameViewSet(viewsets.ModelViewSet):
 
 
 class KeyViewSet(viewsets.ModelViewSet):
-    queryset = Clef.objects.all()
+    queryset = Key.objects.all()
     serializer_class = serializers.KeySerializer
 
 
 class MembershipViewSet(viewsets.ModelViewSet):
-    queryset = Adhesion.objects.all()
+    queryset = Membership.objects.all()
     serializer_class = serializers.MembershipSerializer

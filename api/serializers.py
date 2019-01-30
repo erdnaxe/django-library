@@ -2,7 +2,7 @@ from django.contrib.auth.models import Group
 from rest_framework import serializers
 
 from media.models import Author, Media, Game
-from users.models import User, Clef, Adhesion
+from users.models import User, Key, Membership
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -38,11 +38,11 @@ class GameSerializer(serializers.HyperlinkedModelSerializer):
 
 class KeySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Clef
+        model = Key
         fields = ('name', 'owner', 'comment')
 
 
 class MembershipSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Adhesion
+        model = Membership
         fields = ('start_at', 'end_at', 'members')

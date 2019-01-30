@@ -27,11 +27,11 @@ class User(AbstractUser):
 
     @property
     def is_adherent(self):
-        return self in Adhesion.objects.all().order_by(
+        return self in Membership.objects.all().order_by(
             '-start_at').first().members.all()
 
 
-class Clef(models.Model):
+class Key(models.Model):
     name = models.CharField(_('name'), max_length=255, unique=True)
     owner = models.ForeignKey(
         'User',
@@ -48,7 +48,7 @@ class Clef(models.Model):
     )
 
 
-class Adhesion(models.Model):
+class Membership(models.Model):
     start_at = models.IntegerField(_('start at'), unique=True)
     end_at = models.IntegerField(_('end at'), unique=True)
     members = models.ManyToManyField(

@@ -2,15 +2,15 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from reversion.admin import VersionAdmin
 
-from .models import User, Adhesion, Clef
+from .models import User, Membership, Key
 
 
-@admin.register(Clef)
+@admin.register(Key)
 class ClefAdmin(VersionAdmin):
     list_display = ('owner', 'name')
 
 
-@admin.register(Adhesion)
+@admin.register(Membership)
 class AdhesionAdmin(VersionAdmin):
     list_display = ('start_at', 'end_at', 'members_list')
 
