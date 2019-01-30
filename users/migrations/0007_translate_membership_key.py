@@ -5,6 +5,8 @@ from django.db import migrations
 
 class Migration(migrations.Migration):
 
+    atomic = False
+
     replaces = [('users', '0007_auto_20190130_2107'), ('users', '0008_auto_20190130_2108')]
 
     dependencies = [
