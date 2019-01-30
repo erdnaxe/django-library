@@ -33,3 +33,8 @@ def revert_action(request, revision_id):
     c.update(csrf(request))
     return render(request, 'logs/delete.html', c)
 ```
+
+Ce qui serait super bien, ce serait la possibilité de laisser un avis sur un jeu/manga /BD
+Avec peut être un système de « notes »
+Ou d’étoiles
+
