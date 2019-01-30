@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-30 21:44+0100\n"
+"POT-Creation-Date: 2019-01-30 22:03+0100\n"
 "PO-Revision-Date: 2019-01-27 08:46+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -12,107 +12,131 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: media/apps.py:7 media/models.py:33 media/models.py:34 media/models.py:41
+#: media/apps.py:7 media/models.py:63 media/models.py:64 media/models.py:71
 msgid "media"
 msgstr "media"
 
-#: media/models.py:7 media/models.py:82 media/models.py:94
+#: media/fields.py:13
+msgid "ISBN-10 or ISBN-13"
+msgstr ""
+
+#: media/models.py:9 media/models.py:112 media/models.py:124
 msgid "name"
 msgstr "nom"
 
-#: media/models.py:14 media/models.py:26
+#: media/models.py:16 media/models.py:28
 msgid "author"
 msgstr "auteur"
 
-#: media/models.py:15
+#: media/models.py:17
 msgid "authors"
 msgstr "auteurs"
 
-#: media/models.py:19
+#: media/models.py:21
 msgid "title"
 msgstr "titre"
 
-#: media/models.py:21
+#: media/models.py:23
 msgid "side title"
 msgstr "côte"
 
-#: media/models.py:46
+#: media/models.py:30
+msgid "ISBN"
+msgstr "ISBN"
+
+#: media/models.py:35
+msgid "edition"
+msgstr "édition"
+
+#: media/models.py:41
+msgid "binding"
+msgstr "reliure"
+
+#: media/models.py:47
+msgid "publisher"
+msgstr "éditeur"
+
+#: media/models.py:53
+msgid "published on"
+msgstr "édité le"
+
+#: media/models.py:76
 msgid "borrower"
 msgstr "emprunteur"
 
-#: media/models.py:48
+#: media/models.py:78
 msgid "borrowed at"
 msgstr "emprunté le"
 
-#: media/models.py:50
+#: media/models.py:80
 msgid "given back at"
 msgstr "rendu le"
 
-#: media/models.py:58
+#: media/models.py:88
 msgid "borrowed with permanent"
 msgstr "emprunté avec le permanencier"
 
-#: media/models.py:66
+#: media/models.py:96
 msgid "given back with permanent"
 msgstr "rendu avec le permanencier"
 
-#: media/models.py:77
+#: media/models.py:107
 msgid "borrowed media"
 msgstr "media emprunté"
 
-#: media/models.py:78
+#: media/models.py:108
 msgid "borrowed medias"
 msgstr "media empruntés"
 
-#: media/models.py:89 media/models.py:100
+#: media/models.py:119 media/models.py:130
 msgid "game type"
 msgstr "type de jeu"
 
-#: media/models.py:90
+#: media/models.py:120
 msgid "game types"
 msgstr "types de jeu"
 
-#: media/models.py:105
+#: media/models.py:135
 msgid "owner"
 msgstr "propriétaire"
 
-#: media/models.py:108
+#: media/models.py:138
 msgid "length"
 msgstr "durée"
 
-#: media/models.py:121
+#: media/models.py:151
 msgid "minimum number of players"
 msgstr "nombre minimum de joueurs"
 
-#: media/models.py:127
+#: media/models.py:157
 msgid "maximum number of players"
 msgstr "nombre maximum de joueurs"
 
-#: media/models.py:133
+#: media/models.py:163
 msgid "box length"
 msgstr "longueur de la boîte"
 
-#: media/models.py:138
+#: media/models.py:168
 msgid "box width"
 msgstr "largeur de la boîte"
 
-#: media/models.py:143
+#: media/models.py:173
 msgid "box depth"
 msgstr "hauteur de la boîte"
 
-#: media/models.py:148
+#: media/models.py:178
 msgid "last time it was the week game"
 msgstr "dernière fois qu'il a été jeu de la semaine"
 
-#: media/models.py:153
+#: media/models.py:183
 msgid "comment"
 msgstr "commentaire"
 
-#: media/models.py:164
+#: media/models.py:194
 msgid "game"
 msgstr "jeu"
 
-#: media/models.py:165
+#: media/models.py:195
 msgid "games"
 msgstr "jeux"
 
@@ -139,3 +163,19 @@ msgstr ""
 #: media/templates/media/index.html:22
 msgid "Apply filter"
 msgstr "Appliquer le filtre"
+
+#: media/validators.py:16
+msgid "Invalid ISBN: Not a string"
+msgstr "ISBN invalide : Pas une chaîne de caractères"
+
+#: media/validators.py:19
+msgid "Invalid ISBN: Wrong length"
+msgstr "ISBN invalide : Mauvaise longueur"
+
+#: media/validators.py:22
+msgid "Invalid ISBN: Failed checksum"
+msgstr "ISBN invalide : Mauvaise somme de contrôle"
+
+#: media/validators.py:25
+msgid "Invalid ISBN: Only upper case allowed"
+msgstr "ISBN invalide : Seul les majuscules sont autorisées"

@@ -12,6 +12,7 @@ django-haystack = "*"
 django-filter = "*"
 djangorestframework = "*"
 drf-haystack = "*"
+python-stdnum = "*"
 
 [dev-packages]
 

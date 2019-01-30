@@ -53,6 +53,9 @@ class MediaIndex(PermissionRequiredMixin, SingleTableMixin, FilterView):
     filterset_fields = {
         'title': ['contains'],
         'author': ['exact'],
+        'isbn': ['contains'],
+        'edition': ['contains'],
+        'publisher': ['contains'],
     }
 
     def get_context_data(self, **kwargs):

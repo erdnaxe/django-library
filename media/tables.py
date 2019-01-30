@@ -26,7 +26,8 @@ class AuthorTable(BaseTable):
 class MediaTable(BaseTable):
     class Meta(BaseTable.Meta):
         model = Media
-        fields = ('title', 'author', 'side_title')
+        fields = ('title', 'side_title', 'author', 'isbn', 'edition',
+                  'publisher', 'published_on')
 
 
 class GamesTable(BaseTable):

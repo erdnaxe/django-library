@@ -17,7 +17,8 @@ class AuthorAdmin(VersionAdmin):
 
 @admin.register(Media)
 class MediaAdmin(VersionAdmin):
-    list_display = ('title', 'get_authors', 'side_title')
+    list_display = ('title', 'side_title', 'get_authors', 'isbn', 'edition',
+                    'publisher', 'published_on')
 
     @staticmethod
     def get_authors(obj):

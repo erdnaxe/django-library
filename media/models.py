@@ -2,6 +2,8 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from .fields import ISBNField
+
 
 class Author(models.Model):
     name = models.CharField(_('name'), max_length=255, unique=True)
@@ -24,6 +26,34 @@ class Media(models.Model):
         null=True,
     )
     author = models.ManyToManyField('Author', verbose_name=_('author'))
+    isbn = ISBNField(
+        _('ISBN'),
+        blank=True,
+        null=True,
+    )
+    edition = models.CharField(
+        _('edition'),
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+    binding = models.CharField(
+        _('binding'),
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+    publisher = models.CharField(
+        _('publisher'),
+        max_length=255,
+        blank=True,
+        null=True,
+    )
+    published_on = models.DateField(
+        _('published on'),
+        blank=True,
+        null=True,
+    )
 
     def __str__(self):
         return "Media {} by {}".format(self.title, self.author.all().first())
