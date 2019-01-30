@@ -16,7 +16,7 @@ class AdhesionAdmin(VersionAdmin):
 
     @staticmethod
     def members_list(obj):
-        return "\n".join(p.get_full_name() for p in obj.member.all())
+        return "\n".join(p.get_full_name() for p in obj.members.all())
 
 
 admin.site.register(User, UserAdmin)
