@@ -40,3 +40,6 @@ venv.bak/
 
 # Django statics
 static_files/
+
+# UWSGI
+uwsgi.pid
