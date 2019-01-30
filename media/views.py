@@ -70,6 +70,7 @@ class GamesIndex(PermissionRequiredMixin, SingleTableMixin, FilterView):
     permission_required = 'game.view'
     filterset_fields = {
         'name': ['contains'],
+        'type': ['exact'],
         'owner': ['exact'],
         'length': ['exact'],
         'min_players': ['lte'],

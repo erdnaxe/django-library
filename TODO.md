@@ -6,14 +6,9 @@ Envoyer un mail lors de la création d'un utilisateur.
 
 Lister les permanenciers pour les adhérents.
 
-Ajouter taille de la boite des jeux. Avec nombre de dimension puis calcul du volume.
-
 Être beau dans Google.
 
-Ajouter des types aux jeux « stratégie », « cartes », « jeu débile »
-
 Un flag « jeu de la semaine » et une façon de noter le leaderaboard/ les achievements peut être sympa
-Stocker la date à laquel un jeu a été jeu de la semaine pour la dernière fois.
 
 Bouton pour revert une modif dans les logs. Et changer le nom de la première colonne.
 

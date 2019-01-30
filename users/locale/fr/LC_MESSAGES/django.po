@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-29 10:26+0100\n"
+"POT-Creation-Date: 2019-01-30 21:44+0100\n"
 "PO-Revision-Date: 2019-01-27 08:56+0100\n"
 "Last-Translator: Alexandre Iooss <erdnaxe@crans.org>\n"
 "Language: FR\n"
@@ -37,13 +37,29 @@ msgid "owner"
 msgstr "propriétaire"
 
 #: users/models.py:52
+msgid "key"
+msgstr "clé"
+
+#: users/models.py:53
+msgid "keys"
+msgstr "clés"
+
+#: users/models.py:57
 msgid "start at"
 msgstr "à partir de"
 
-#: users/models.py:53
+#: users/models.py:58
 msgid "end at"
 msgstr "jusqu'à"
 
-#: users/models.py:57
+#: users/models.py:62
 msgid "members"
 msgstr "membres"
+
+#: users/models.py:67
+msgid "membership"
+msgstr "adhésion"
+
+#: users/models.py:68
+msgid "memberships"
+msgstr "adhésions"

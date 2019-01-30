@@ -1,7 +1,7 @@
 from django.contrib.auth.models import Group
 from rest_framework import serializers
 
-from media.models import Author, Media, Game
+from media.models import Author, Media, GameType, Game
 from users.models import User, Key, Membership
 
 
@@ -29,11 +29,18 @@ class MediaSerializer(serializers.HyperlinkedModelSerializer):
         fields = ('url', 'title', 'author', 'side_title')
 
 
+class GameTypeSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = GameType
+        fields = ('name',)
+
+
 class GameSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Game
-        fields = ('url', 'name', 'owner', 'length', 'min_players',
-                  'max_players', 'comment')
+        fields = ('url', 'name', 'type', 'owner', 'length', 'min_players',
+                  'max_players', 'box_length', 'box_width', 'box_depth',
+                  'last_time_week_game', 'comment')
 
 
 class KeySerializer(serializers.HyperlinkedModelSerializer):

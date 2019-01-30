@@ -1,7 +1,7 @@
 from django.contrib import admin
 from reversion.admin import VersionAdmin
 
-from .models import Author, BorrowedMedia, Media, Game
+from .models import Author, BorrowedMedia, Media, GameType, Game
 
 
 @admin.register(BorrowedMedia)
@@ -24,7 +24,13 @@ class MediaAdmin(VersionAdmin):
         return "\n".join(p.name for p in obj.author.all())
 
 
+@admin.register(GameType)
+class GameTypeAdmin(VersionAdmin):
+    list_display = ('name',)
+
+
 @admin.register(Game)
 class GamesAdmin(VersionAdmin):
-    list_display = ('name', 'owner', 'length', 'min_players', 'max_players',
-                    'comment')
+    list_display = ('name', 'type', 'owner', 'length', 'min_players',
+                    'max_players', 'box_length', 'box_width', 'box_depth',
+                    'last_time_week_game', 'comment')

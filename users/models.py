@@ -47,6 +47,11 @@ class Key(models.Model):
         blank=True,
     )
 
+    class Meta:
+        ordering = ['name']
+        verbose_name = _('key')
+        verbose_name_plural = _('keys')
+
 
 class Membership(models.Model):
     start_at = models.IntegerField(_('start at'), unique=True)
@@ -56,3 +61,8 @@ class Membership(models.Model):
         blank=True,
         verbose_name=_('members'),
     )
+
+    class Meta:
+        ordering = ['-start_at']
+        verbose_name = _('membership')
+        verbose_name_plural = _('memberships')

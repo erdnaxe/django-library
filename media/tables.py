@@ -30,7 +30,8 @@ class MediaTable(BaseTable):
 
 
 class GamesTable(BaseTable):
+    # TODO: compute volume
     class Meta(BaseTable.Meta):
         model = Game
-        fields = ('name', 'owner', 'length', 'min_players', 'max_players',
-                  'comment')
+        fields = ('name', 'type', 'owner', 'length', 'min_players',
+                  'max_players', 'last_time_week_game', 'comment')

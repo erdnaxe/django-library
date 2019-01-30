@@ -17,7 +17,12 @@ class Author(models.Model):
 
 class Media(models.Model):
     title = models.CharField(_('title'), max_length=255)
-    side_title = models.CharField(_('side title'), max_length=31)
+    side_title = models.CharField(
+        _('side title'),
+        max_length=31,
+        blank=True,
+        null=True,
+    )
     author = models.ManyToManyField('Author', verbose_name=_('author'))
 
     def __str__(self):
@@ -73,8 +78,27 @@ class BorrowedMedia(models.Model):
         verbose_name_plural = _('borrowed medias')
 
 
+class GameType(models.Model):
+    name = models.CharField(_('name'), max_length=255)
+
+    def __str__(self):
+        return str(self.name)
+
+    class Meta:
+        ordering = ['-name']
+        verbose_name = _('game type')
+        verbose_name_plural = _('game types')
+
+
 class Game(models.Model):
     name = models.CharField(_('name'), max_length=255)
+    type = models.ForeignKey(
+        'media.GameType',
+        on_delete=models.PROTECT,
+        blank=True,
+        null=True,
+        verbose_name=_('game type'),
+    )
     owner = models.ForeignKey(
         'users.User',
         on_delete=models.PROTECT,
@@ -90,14 +114,40 @@ class Game(models.Model):
             ('4h+', '4h+'),
         ),
         max_length=255,
+        blank=True,
+        null=True,
     )
     min_players = models.IntegerField(
         _('minimum number of players'),
         validators=[MinValueValidator(1)],
+        blank=True,
+        null=True,
     )
     max_players = models.IntegerField(
         _('maximum number of players'),
         validators=[MinValueValidator(1)],
+        blank=True,
+        null=True,
+    )
+    box_length = models.FloatField(
+        _('box length'),
+        blank=True,
+        null=True,
+    )
+    box_width = models.FloatField(
+        _('box width'),
+        blank=True,
+        null=True,
+    )
+    box_depth = models.FloatField(
+        _('box depth'),
+        blank=True,
+        null=True,
+    )
+    last_time_week_game = models.DateField(
+        _('last time it was the week game'),
+        blank=True,
+        null=True,
     )
     comment = models.CharField(
         _('comment'),
