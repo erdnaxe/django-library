@@ -1,0 +1,12 @@
+{
+  "dependencies": {
+    "bootstrap": "^4.2.1",
+    "jquery": "^3.3.1",
+    "open-iconic": "^1.1.1",
+    "popper.js": "^1.14.7",
+    "quagga": "^0.12.1"
+  },
+  "name": "med",
+  "version": "1.0.0",
+  "main": "manage.py"
+}

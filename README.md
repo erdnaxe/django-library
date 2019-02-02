@@ -21,9 +21,11 @@ pipenv install
 pipenv shell
 ```
 
-Ensuite il suffit de suivre les procédures standards de Django :
+Ensuite faut déployer les paquets Yarn et
+suivre les procédures standards de Django :
 
 ```bash
+yarn --prod
 ./manage.py migrate
 ./manage.py collectstatic
 ./manage.py runserver
