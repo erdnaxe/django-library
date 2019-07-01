@@ -1,0 +1,8 @@
+[run]
+source = src/library
+omit = *migrations*, *tests*
+plugins =
+    django_coverage_plugin
+
+[html]
+directory = coverage

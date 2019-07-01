@@ -1,27 +1,49 @@
-import os
+# -*- mode: python; coding: utf-8 -*-
+# Copyright (C) 2016-2019 by Cr@ns
+# SPDX-License-Identifier: GPL-2.0-or-later
+# This file is part of django-library.
 
-from django.contrib.messages import constants as messages
+"""
+Django settings for django-library project.
+"""
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+import os
+
+from django.utils.translation import gettext_lazy as _
+
+# Compatibility with Bootstrap 3
+from django.contrib.messages import constants as messages
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
+# See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '+9*v^ww%sea&$#45uyuldikymgcijrq6&vp@y8s97%&3@vzvli'
+SECRET_KEY = '$!-7^wl#wjifjbh)5@f7ji%x!vp7s1vzbvwt27hxv$idixq0u0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+ADMINS = (
+    #('Admin', 'webmaster@example.com'),
+)
+
+SITE_ID = 1
+
 ALLOWED_HOSTS = []
 
 # Application definition
+
 INSTALLED_APPS = [
+    'django_crans_theme',
     'django.contrib.admin',
+    'django.contrib.admindocs',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
+    'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'crispy_forms',
@@ -29,31 +51,34 @@ INSTALLED_APPS = [
     'reversion',
     'haystack',
     'rest_framework',
-    'api.apps.ApiConfig',
-    'users.apps.UserConfig',
-    'media.apps.MediaConfig',
-    'logs.apps.LogsConfig'
+    'api',
+    'users',
+    'django_library',
+    'logs',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.admindocs.middleware.XViewMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
+    'django.contrib.sites.middleware.CurrentSiteMiddleware',
 ]
 
-ROOT_URLCONF = 'med.urls'
+ROOT_URLCONF = 'example_project.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
+            'debug': DEBUG,
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
@@ -64,22 +89,23 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'med.wsgi.application'
+WSGI_APPLICATION = 'example_project.wsgi.application'
 
-# Django crispy forms
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 # Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'NAME': os.path.join(BASE_DIR, 'library.db'),
     }
 }
 
+
 # Password validation
-# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
+# https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
+
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -95,51 +121,38 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-# Internationalization
-# https://docs.djangoproject.com/en/2.1/topics/i18n/
-LANGUAGE_CODE = 'fr'
-TIME_ZONE = 'Europe/Paris'
-USE_I18N = True
-USE_L10N = True
-USE_TZ = True
-LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale'), ]
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
-STATIC_ROOT = os.path.join(BASE_DIR, 'static_files')
-STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'),
-    os.path.join(BASE_DIR, 'node_modules'),
+# Internationalization
+# https://docs.djangoproject.com/en/2.2/topics/i18n/
+
+LANGUAGE_CODE = 'en'
+
+LANGUAGES = [
+    ('en', _('English')),
+    ('fr', _('French')),
 ]
 
-# Emails
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_USE_SSL = False
-# EMAIL_HOST = ''
-# EMAIL_PORT = 25
-# EMAIL_HOST_USER = 'change_me'
-# EMAIL_HOST_PASSWORD = 'change_me'
-DEFAULT_FROM_EMAIL = 'webmaster@localhost'
-SERVER_EMAIL = 'root@localhost'
+TIME_ZONE = 'Europe/Paris'
 
-# Set these to True if using HTTPS
-CSRF_COOKIE_SECURE = False
-SESSION_COOKIE_SECURE = False
+USE_I18N = True
 
-# Send 500 errors to these emails
-# eg: ADMINS = [('pseudo', 'mymail@something.org')]
-ADMINS = []
+USE_L10N = True
 
-# Use message tags for Bootstrap 4
-MESSAGE_TAGS = {
-    messages.DEBUG: 'alert-info',
-    messages.INFO: 'alert-info',
-    messages.SUCCESS: 'alert-success',
-    messages.WARNING: 'alert-warning',
-    messages.ERROR: 'alert-danger',
-}
+USE_TZ = True
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/2.2/howto/static-files/
+
+# Absolute path to the directory static files should be collected to.
+# Don't put anything in this directory yourself; store your static files
+# in apps' "static/" subdirectories and in STATICFILES_DIRS.
+# Example: "/var/www/example.com/static/"
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+# URL prefix for static files.
+# Example: "http://example.com/static/", "http://static.example.com/"
+STATIC_URL = '/static/'
 
 # Auth definition
 # SSHA password hashed is from re2o and *shouldn't* be here
@@ -150,10 +163,6 @@ PASSWORD_HASHERS = (
     'med.ssha_login.SSHAPasswordHasher',
 )
 
-# Django login
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
-
 # Custom user model
 AUTH_USER_MODEL = 'users.User'
 
@@ -163,7 +172,6 @@ HAYSTACK_CONNECTIONS = {
         'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
     },
 }
-
 
 # Django Filters
 def FILTERS_VERBOSE_LOOKUPS():
@@ -177,7 +185,6 @@ def FILTERS_VERBOSE_LOOKUPS():
         'lte': _('is less than or equal to'),
     })
     return verbose_lookups
-
 
 # Rest framework
 REST_FRAMEWORK = {
@@ -195,3 +202,8 @@ PAGINATION_NUMBER = 10
 # Affchage des résultats
 MAX_EMPRUNT = 5
 SEARCH_DISPLAY_PAGE = 10
+
+try:
+    from settings_local import *
+except ImportError:
+    pass
