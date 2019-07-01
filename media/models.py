@@ -12,7 +12,7 @@ class Author(models.Model):
         return str(self.name)
 
     class Meta:
-        ordering = ['-name']
+        ordering = ['name']
         verbose_name = _('author')
         verbose_name_plural = _('authors')
 
