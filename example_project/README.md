@@ -41,3 +41,20 @@ CREATE USER 'newuser'@'localhost' IDENTIFIED BY 'password';
 GRANT ALL PRIVILEGES ON library.* TO 'newuser'@'localhost';
 FLUSH PRIVILEGES;
 ```
+
+## Launch with uwsgi
+
+```bash
+uwsgi --chdir="$(pwd)" \
+	--module=example_project.wsgi:application \
+	--env DJANGO_SETTINGS_MODULE=example_project.settings \
+	--master --pidfile="$(pwd)/uwsgi.pid" \
+	--socket="$(pwd)/uwsgi.sock" \
+	--processes=5 \
+	--chmod-socket=600 \
+	--harakiri=20 \
+	--max-requests=5000 \
+	--vacuum \
+	--daemonize="$(pwd)/uwsgi.log" \
+	--protocol=fastcgi
+```
