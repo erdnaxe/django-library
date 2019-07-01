@@ -1,32 +1,22 @@
-# Site de la Med
+# Django-library
 
-Le projet Med permet la gestion de la base de donnée de la médiathèque de l'ENS Paris-Saclay.
-Elle permet de gérer les medias, bd, jeux, emprunts, ainsi que les adhérents de la med.
+[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+[![CircleCI](https://circleci.com/gh/erdnaxe/django-library.svg?style=svg)](https://circleci.com/gh/erdnaxe/django-library)
+[![Maintainability](https://api.codeclimate.com/v1/badges/7305ad4e59855729d001/maintainability)](https://codeclimate.com/github/erdnaxe/django-library/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/7305ad4e59855729d001/test_coverage)](https://codeclimate.com/github/erdnaxe/django-library/test_coverage)
 
-## Licence
+This is a Django app to manage a media library.
 
-Ce projet est sous la licence GNU public license v2.0.
+## Manual install
 
-Il a été forké par Gabriel Détraz il y a bien longtemps à partir de
-[re2o](<https://gitlab.rezometz.org/rezo/re2o>).
-Néanmoins depuis le code a été majoritairement réécrit dans une optique d'être maintenable à long terme.
-
-# Développement
-
-Le projet utilise Pipenv donc pour avoir un environnement fonctionnel avec les mêmes versions qu'en prod,
-il suffit d'executer :
+For development in a virtualenv:
 
 ```bash
-pipenv install
-pipenv shell
+$ pip3 install -e . --user
 ```
 
-Ensuite faut déployer les paquets Yarn et
-suivre les procédures standards de Django :
+## License
 
-```bash
-yarn --prod
-./manage.py migrate
-./manage.py collectstatic
-./manage.py runserver
-``` 
+This project is under the [GPL license](COPYING) because we believe in open
+development.
+Please see COPYING file for more details.
